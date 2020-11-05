@@ -138,6 +138,6 @@ Readiness content packs for Azure Synapse Analytics features released at GA.
 
 Name | Description
 ---|---
-Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark tabke -> AutoML model -> ONNX model -> SQL Pool + PREDICT
+Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT
 Working with Apache Spark in Synapse Analytics | TDB...
 
