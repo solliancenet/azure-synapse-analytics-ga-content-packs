@@ -75,7 +75,7 @@ Readiness content packs for Azure Synapse Analytics features released at GA.
         <tr>
             <td>Synapse Link SQL serverless - CosmosDB</td>
             <td>Video</td>
-            <td>https://docs.microsoft.com/en-us/azure/cosmos-db/synapse-link<be/>https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/query-cosmos-db-analytical-store</td>
+            <td>https://docs.microsoft.com/en-us/azure/cosmos-db/synapse-link<br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/query-cosmos-db-analytical-store</td>
         </tr>
         <tr>
             <td rowspan="6">Development</td>
