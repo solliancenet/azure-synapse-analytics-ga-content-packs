@@ -16,12 +16,12 @@ Readiness content packs for Azure Synapse Analytics features released at GA.
         <tr>
             <td rowspan="2">Migration from ADF and SQL DW</td>
             <td>ADF import to Synapse Pipeline</td>
-            <td>Video</td>
+            <td>Video/Lab</td>
             <td>Coming soon...</td>
         </tr>
         <tr>
             <td>Synapse workspace addition on top of existing SQL DW</td>
-            <td>Video</td>
+            <td>Video/Lab</td>
             <td></td>
         </tr>
         <tr>
@@ -95,18 +95,18 @@ Readiness content packs for Azure Synapse Analytics features released at GA.
         </tr>
         <tr>
             <td>MSSparkUtil library, Hummingbird library</td>
-            <td>Video</td>
+            <td>Video/Lab</td>
             <td>Coming soon...</td>
         </tr>
         <tr>
             <td>Metastore - Spark and serverless SQL pool</td>
-            <td>Video</td>
+            <td>Video/Lab</td>
             <td>https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database <br/>
             https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/table</td>
         </tr>
         <tr>
             <td>Hyperspace</td>
-            <td>Video</td>
+            <td>Video/Lab</td>
             <td>Coming soon...<br/>https://github.com/microsoft/hyperspace</td>
         </tr>
         <tr>
@@ -139,5 +139,6 @@ Readiness content packs for Azure Synapse Analytics features released at GA.
 Name | Description
 ---|---
 Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT
-Working with Apache Spark in Synapse Analytics | TDB...
+Working with Apache Spark in Synapse Analytics | TBD...
+Migrating ADF and SQL DW service to Synapse Analytics | TBD...
 
