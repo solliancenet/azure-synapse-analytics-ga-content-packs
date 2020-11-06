@@ -81,7 +81,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td>Integration - Azure Data Explorer</td>
             <td>Markdown / Video 03 / Lab 02 v1</td>
             <td></td>
-            <td></td>
+            <td>https://docs.microsoft.com/en-us/azure/synapse-analytics/quickstart-connect-azure-data-explorer</td>
         </tr>
         <tr>
             <td rowspan="2">Synapse Link</td>
