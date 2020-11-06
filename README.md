@@ -67,19 +67,19 @@ The following table shows the mapping of categories and topics to content packs:
         </tr>
         <tr>
             <td>Integration - AML</td>
-            <td>Markdown / Video 03</td>
+            <td>Markdown / Video 03 / Lab 01 v1</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td>Integration - Cognitive Services</td>
-            <td>Markdown / Video 03</td>
+            <td>Markdown / Video 03 / Lab 01 v1</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td>Integration - Azure Data Explorer</td>
-            <td>Markdown / Video 03</td>
+            <td>Markdown / Video 03 / Lab 02 v1</td>
             <td></td>
             <td></td>
         </tr>
@@ -100,39 +100,39 @@ The following table shows the mapping of categories and topics to content packs:
             <td rowspan="6">Development</td>
             <td>Data Wrangling using Power Query</td>
             <td></td>
-            <td>Markdown / Video 09 / Lab 02 v2</td>
+            <td>Markdown / Video 10</td>
             <td></td>
         </tr>
         <tr>
             <td>Apache Spark in Synapse</td>
+            <td>Markdown / Video 05 / Lab 02 v1</td>
             <td></td>
-            <td>Markdown / Video 09 / Lab 02 v2</td>
             <td></td>
         </tr>
         <tr>
             <td>What does it mean to run Apache Spark in Synapse - benefits, unique capabilities</td>
+            <td>Markdown / Video 05 / Lab 02 v1</td>
             <td></td>
-            <td>Markdown / Video 09 / Lab 02 v2</td>
             <td></td>
         </tr>
         <tr>
             <td>MSSparkUtil library, Hummingbird library</td>
+            <td>Markdown / Video 05</td>
             <td></td>
-            <td>Markdown / Video 09 / Lab 02 v2</td>
             <td></td>
         </tr>
         <tr>
             <td>Metastore - Spark and serverless SQL pool</td>
-            <td>Markdown / Video 05 / Lab 02 v1</td>
+            <td>Markdown / Video 05</td>
             <td></td>
             <td>https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database <br/>
             https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/table</td>
         </tr>
         <tr>
             <td>Hyperspace</td>
+            <td>Markdown / Video 05</td>
             <td></td>
-            <td>Markdown / Video 10 / Lab 02 v2</td>
-            <td>Coming soon...<br/>https://github.com/microsoft/hyperspace</td>
+            <td>https://github.com/microsoft/hyperspace</td>
         </tr>
         <tr>
             <td rowspan="4">Monitoring</td>
@@ -168,6 +168,6 @@ The following table shows the mapping of categories and topics to content packs:
 Id | Name | Description
 ---|---|---
 Lab 01 | Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT
-Lab 02 | Working with Apache Spark in Synapse Analytics | TBD...
+Lab 02 | Working with Apache Spark in Synapse Analytics | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse.
 Lab 03 | Migrating ADF and SQL DW service to Synapse Analytics | TBD...
 
