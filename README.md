@@ -23,13 +23,13 @@ The following table shows the mapping of categories and topics to content packs:
         <tr>
             <td rowspan="2">Migration from ADF and SQL DW</td>
             <td>ADF import to Synapse Pipeline</td>
+            <td>Markdown / Lab 03 v1</td>
             <td></td>
-            <td>Markdown / Video 07 / Lab 03 v2</td>
             <td></td>
         </tr>
         <tr>
             <td>Synapse workspace addition on top of existing SQL DW</td>
-            <td>Markdown / Video 01 / Lab 03 v1</td>
+            <td>Markdown / Video 01</td>
             <td></td>
             <td></td>
         </tr>
@@ -62,7 +62,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td rowspan="4">Linked Services</td>
             <td>Integration - Babylon</td>
             <td></td>
-            <td>Markdown / Video 08</td>
+            <td>Markdown / Video 07</td>
             <td></td>
         </tr>
         <tr>
@@ -87,7 +87,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td rowspan="2">Synapse Link</td>
             <td>Synapse Link with MongoDB API</td>
             <td></td>
-            <td>Markdown / Video 09</td>
+            <td>Markdown / Video 08</td>
             <td></td>
         </tr>
         <tr>
@@ -100,7 +100,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td rowspan="6">Development</td>
             <td>Data Wrangling using Power Query</td>
             <td></td>
-            <td>Markdown / Video 10</td>
+            <td>Markdown / Video 09</td>
             <td></td>
         </tr>
         <tr>
@@ -165,9 +165,9 @@ The following table shows the mapping of categories and topics to content packs:
 
 ## Labs
 
-Id | Name | Description
----|---|---
-Lab 01 | Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT
+Id | Name | Description | Useful links
+---|---|---|---
+Lab 01 | Integrated Machine Learning process in Synapse Analytics | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT | https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/quickstart-integrate-azure-machine-learning <br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/tutorial-sql-pool-model-scoring-wizard
 Lab 02 | Working with Apache Spark in Synapse Analytics | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse.
-Lab 03 | Migrating ADF and SQL DW service to Synapse Analytics | TBD...
+Lab 03 | Migrating Data Factory Pipelines to Synapse Analytics Pipelines | "Manual" migration of ADF pipelines to Synapse Analytics using the Synapse Analytics SDK. | https://docs.microsoft.com/en-us/dotnet/api/azure.analytics.synapse.artifacts?view=azure-dotnet-preview
 
