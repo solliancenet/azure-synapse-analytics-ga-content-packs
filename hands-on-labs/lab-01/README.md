@@ -1,6 +1,5 @@
 # The Integrated Machine Learning Process in Synapse Analytics
 
-- [The Integrated Machine Learning Process in Synapse Analytics](#the-integrated-machine-learning-process-in-synapse-analytics)
 - [Before the hands-on lab](#before-the-hands-on-lab)
 - [Exercise 1 - Create an Azure Machine Learning linked service](#exercise-1---create-an-azure-machine-learning-linked-service)
     - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
