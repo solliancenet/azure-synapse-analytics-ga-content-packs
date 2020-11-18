@@ -107,7 +107,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td>Apache Spark in Synapse</td>
             <td>Markdown / Video 05 / Lab 02 v1</td>
             <td></td>
-            <td></td>
+            <td>https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/overview</td>
         </tr>
         <tr>
             <td>What does it mean to run Apache Spark in Synapse - benefits, unique capabilities</td>
