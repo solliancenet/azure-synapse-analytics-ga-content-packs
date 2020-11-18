@@ -168,6 +168,6 @@ The following table shows the mapping of categories and topics to content packs:
 Id | Name | Description | Useful links
 ---|---|---|---
 Lab 01 | [The Integrated Machine Learning process in Synapse Analytics](./hands-on-labs/lab-01/README.md) | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT | https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/quickstart-integrate-azure-machine-learning <br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/tutorial-sql-pool-model-scoring-wizard
-Lab 02 | Working with Apache Spark in Synapse Analytics | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse.
+Lab 02 | Working with Apache Spark in Synapse Analytics | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse. | https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview
 Lab 03 | Migrating Data Factory Pipelines to Synapse Analytics Pipelines | "Manual" migration of ADF pipelines to Synapse Analytics using the Synapse Analytics SDK. | https://docs.microsoft.com/en-us/dotnet/api/azure.analytics.synapse.artifacts?view=azure-dotnet-preview
 
