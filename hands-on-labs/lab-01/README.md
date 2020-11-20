@@ -1,5 +1,11 @@
 # The Integrated Machine Learning Process in Synapse Analytics
 
+This lab demonstrates the integrated, end-to-end Azure Machine Learning experience in Azure Synapse Analytics. You will learn how to connect an Azure Synapse Analytics workspace to an Azure Machine Learning workspace using a Linked Service and then trigger an Automated ML experiment that uses data from a Spark table. You will also learn how to use the trained model to enrich data in a SQL pool table and then serve prediction results using Power BI.
+
+After completing the lab, you will understand the main steps of an end-to-end Machine Learning process that build on top of the integration between Azure Synapse Analytics and Azure Machine Learning.
+
+This lab has the following structure:
+
 - [Before the hands-on lab](#before-the-hands-on-lab)
 - [Exercise 1 - Create an Azure Machine Learning linked service](#exercise-1---create-an-azure-machine-learning-linked-service)
     - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
