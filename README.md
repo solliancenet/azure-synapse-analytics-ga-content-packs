@@ -56,7 +56,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td>Workspace access control</td>
             <td>Markdown / Video 02</td>
             <td></td>
-            <td></td>
+            <td>Admin, data engineer/scientist, data/business analyst</td>
         </tr>
         <tr>
             <td rowspan="4">Linked Services</td>
@@ -119,7 +119,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td>MSSparkUtil library, Hummingbird library</td>
             <td>Markdown / Video 05</td>
             <td></td>
-            <td></td>
+            <td>https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python<br/></td>
         </tr>
         <tr>
             <td>Metastore - Spark and serverless SQL pool</td>
@@ -130,7 +130,7 @@ The following table shows the mapping of categories and topics to content packs:
         </tr>
         <tr>
             <td>Hyperspace</td>
-            <td>Markdown / Video 05</td>
+            <td>Markdown / Lab 02</td>
             <td></td>
             <td>https://github.com/microsoft/hyperspace</td>
         </tr>
@@ -168,6 +168,6 @@ The following table shows the mapping of categories and topics to content packs:
 Id | Name | Description | Useful links
 ---|---|---|---
 Lab 01 | [The Integrated Machine Learning process in Synapse Analytics](./hands-on-labs/lab-01/README.md) | Data Lake -> Spark table -> AutoML model -> ONNX model -> SQL Pool + PREDICT | https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/quickstart-integrate-azure-machine-learning <br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/machine-learning/tutorial-sql-pool-model-scoring-wizard
-Lab 02 | [Working with Apache Spark in Synapse Analytics](./hands-on-labs/lab-02/README.md) | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse. | https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview
+Lab 02 | [Working with Apache Spark in Synapse Analytics](./hands-on-labs/lab-02/README.md) | Load data from Kusto, Data Lake, SQL table in Spark data frame, consolidate and enrich data, save in Spark table or SQL Pool table for later reuse. | https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview<br/>https://techcommunity.microsoft.com/t5/azure-data-explorer/announcing-azure-data-explorer-data-connector-for-azure-synapse/ba-p/1743868
 Lab 03 | [Migrating Data Factory Pipelines to Synapse Analytics Pipelines](./hands-on-labs/lab-03/README.md) | "Manual" migration of ADF pipelines to Synapse Analytics using the Synapse Analytics SDK. | https://docs.microsoft.com/en-us/dotnet/api/azure.analytics.synapse.artifacts?view=azure-dotnet-preview
 

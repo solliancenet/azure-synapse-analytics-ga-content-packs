@@ -52,6 +52,10 @@ Task content
 
 Task content
 
+### Task 4 - Import a pipeline trigger
+
+Task content
+
 ## Exercise 3 - Test the imported pipeline
 
 Exercise content
