@@ -13,7 +13,38 @@ The following requirements must be met before the deployment:
 - A unique suffix to be used when generating the name of the workspace. All workspaces deployed using the templates in this repo are named `asagaworkspace<unique_suffix>`, where `<unique_suffix>` gets replaced with the value you provide. Make sure the unique suffix is specific enough to avoid potential naming collisions (i.e. avoid using common values like `01`, `1`, `test`, etc.). Make sure you remember the unique suffix as you need to use it for additional configuration once the Azure Synapse Analytics workspace deployment is complete.
 - A password for the SQL admin account of the workspace. Make sure you save the password in a secure location (like a password manager) as you will need to use it later.
 
-## Deploy the workspace
+## Configure the Azure Cloud Shell
+
+>**NOTE**
+>
+>If Cloud Shell is already configured, you can skip this section entirely and advance to [Deploy the workspace](#deploy-the-workspace).
+
+In the Azure Portal, navigate to your resource group and create a new storage account to be used in the Cloud Shell configuration process (make sure the resource type you create is `Storage account`). In the newly created storage account, select `File shares` (under the `File service` settings group) and create a new file share.
+
+Next, select the Cloud Shell icon (located in the top right part of the page) and then select `PowerShell`:
+
+![Cloud Shell configuration start](./../media/cloudshell-configure-01.png)
+
+Select your subscription under `Subscription` if it's not already selected, and then select `Show advanced settings`:
+
+![Cloud Shell configuration advanced settings](./../media/cloudshell-configure-02.png)
+
+Provide values for the following fields:
+
+- **Cloud Shell region**: the same region as the region of your resource group.
+- **Resource group**: select `Use existing` and then select you resource group from the list.
+- **Storage account**: select `Use existing` and then select the storage account you created above.
+- **File share**: select `Use existing` and then select the file share you created above.
+
+Select `Attach storage` once all the values are in place.
+
+![Cloud Shell configuration advanced settings values](./../media/cloudshell-configure-03.png)
+
+Once configuration is complete, you should get an instance of Cloud Shell:
+
+![Cloud Shell](./../media/cloudshell-configure-04.png)
+
+## Deploy the Synapse Analytics workspace
 
 Click the `Deploy to Azure` button below to start the deployment process.
 
