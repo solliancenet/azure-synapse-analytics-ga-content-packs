@@ -7,6 +7,8 @@ After completing the lab, you will understand the main steps of an end-to-end Ma
 This lab has the following structure:
 
 - [Before the hands-on lab](#before-the-hands-on-lab)
+  - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
+  - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
 - [Exercise 1 - Create an Azure Machine Learning linked service](#exercise-1---create-an-azure-machine-learning-linked-service)
   - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
   - [Task 2 - Explore Azure Machine Learning integration features in Synapse Studio](#task-2---explore-azure-machine-learning-integration-features-in-synapse-studio)
@@ -27,7 +29,19 @@ This lab has the following structure:
 
 ## Before the hands-on lab
 
-Instructions to setup the lab environment.
+Before stepping through the exercises in this lab, make sure you have properly configured your Azure Synapse Analytics workspace. Perform the tasks below to configure the workspace.
+
+### Task 1 - Create and configure the Azure Synapse Analytics workspace
+
+>**NOTE**
+>
+>If you have already created and configured the Synapse Analytics workspace while running one of the other labs available in this repo, you must not perform this task again and you can move on to the next task. The labs are designed to share the Synapse Analytics workspace, so you only need to create it once.
+
+Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../setup/deploy-asa-workspace.md) to create and configure the workspace.
+
+### Task 2 - Create and configure additional resources for this lab
+
+Instructions to create and configure additional resources for the lab.
 
 ## Exercise 1 - Create an Azure Machine Learning linked service
 
@@ -91,7 +105,7 @@ New data has landed in the Data Lake
 
 ## After the hands-on lab
 
-Instructions to cleanup resources after the lab.
+Follow the instructions in [Clean-up your subscription](./../setup/cleanup.md) to clean-up your environment after the hands-on lab.
 
 ## Resources
 

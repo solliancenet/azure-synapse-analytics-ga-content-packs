@@ -8,7 +8,9 @@ The following requirements must be met before the deployment:
 
     >**IMPORTANT**
     >
-    >The Azure AD account used to deploy the Azure Synapse Analytics workspace must have permissions to create new resource groups in the subscription (this is required because Synapse Analytics requires an additional resource group to keep various hidden artifacts; this resource group is created during the deployment process).
+    >In case you didn't create the resource group yourself, make sure your account has the `Owner` role on the resource group.
+    >
+    >Also, your account (i.e. the Azure AD account used to deploy the Azure Synapse Analytics workspace) must have permissions to create new resource groups in the subscription (this is required because Synapse Analytics requires an additional resource group to keep various hidden artifacts; this resource group is created during the deployment process).
 
 - A unique suffix to be used when generating the name of the workspace. All workspaces deployed using the templates in this repo are named `asagaworkspace<unique_suffix>`, where `<unique_suffix>` gets replaced with the value you provide. Make sure the unique suffix is specific enough to avoid potential naming collisions (i.e. avoid using common values like `01`, `1`, `test`, etc.). Make sure you remember the unique suffix as you need to use it for additional configuration once the Azure Synapse Analytics workspace deployment is complete.
 - A password for the SQL admin account of the workspace. Make sure you save the password in a secure location (like a password manager) as you will need to use it later.
@@ -74,4 +76,4 @@ Select the `Tags` section and add a new tag named `DeploymentId`. Use the unique
 
 ![Synapse Analytics workspace resource group tagging](./../media/asaworkspace-deploy-tag.png)
 
-The deployment of your Synapse Analytics workspace is now complete.
+The deployment of your Synapse Analytics workspace is now complete. Next, you will deploy the artifacts required by the labs into the newly created Synapse Analytics workspace.
