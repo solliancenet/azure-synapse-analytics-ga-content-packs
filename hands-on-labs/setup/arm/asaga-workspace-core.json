@@ -9,7 +9,7 @@
       }
     },
     "sqlAdministratorLoginPassword": {
-      "type": "String",
+      "type": "securestring",
       "metadata": {
         "description": "Password for SQL Admin"
       }
