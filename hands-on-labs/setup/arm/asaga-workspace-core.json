@@ -11,6 +11,7 @@
     "sqlAdministratorLoginPassword": {
       "type": "securestring",
       "metadata": {
+        "name": "SQL Administrator Password",
         "description": "Password for SQL Admin"
       }
     }
