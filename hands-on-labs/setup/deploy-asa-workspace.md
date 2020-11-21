@@ -17,7 +17,7 @@ The following requirements must be met before the deployment:
 
 >**NOTE**
 >
->If Cloud Shell is already configured, you can skip this section entirely and advance to [Deploy the workspace](#deploy-the-workspace).
+>If Cloud Shell is already configured, you can skip this section entirely and advance to [Deploy the workspace](#deploy-the-synapse-analytics-workspace).
 
 In the Azure Portal, navigate to your resource group and create a new storage account to be used in the Cloud Shell configuration process (make sure the resource type you create is `Storage account`). In the newly created storage account, select `File shares` (under the `File service` settings group) and create a new file share.
 
