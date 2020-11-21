@@ -147,7 +147,7 @@
       "apiVersion": "2019-06-01-preview",
       "name": "[concat(variables('workspaceName'), '/allowAll')]",
       "dependsOn": [
-        "[concat('Microsoft.Synapse/workspaces', variables('workspaceName'))]"
+        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
       ],
       "properties": {
         "startIpAddress": "0.0.0.0",
@@ -159,7 +159,7 @@
       "apiVersion": "2019-06-01-preview",
       "name": "[concat(variables('workspaceName'), '/AutoResolveIntegrationRuntime')]",
       "dependsOn": [
-        "[concat('Microsoft.Synapse/workspaces', variables('workspaceName'))]"
+        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
       ],
       "properties": {
         "type": "Managed",
