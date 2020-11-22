@@ -149,11 +149,195 @@ Task content
 
 ### Task 2 - Index the Data Lake storage with Hyperspace
 
-Task content
+Hyperspace introduces the ability for Apache Spark users to create indexes on their datasets, such as CSV, JSON, and Parquet, and use them for potential query and workload acceleration.
+
+Hyperspace lets you create indexes on records scanned from persisted data files. After they're successfully created, an entry that corresponds to the index is added to the Hyperspace's metadata. This metadata is later used by Apache Spark's optimizer (with our extensions) during query processing to find and use proper indexes.
+
+If the underlying data changes, you can refresh an existing index to capture that.
+
+Hyperspace allows users to compare their original plan versus the updated index-dependent plan before running their query
+
+```scala
+%%spark
+
+//
+// Hyperspace: An indexing subsystem for Apache Spark
+//
+// https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-performance-hyperspace?pivots=programming-language-scala
+//
+// 1. Indices are persistent, only create them once
+// 2. Only creating index over HDFS file based scan nodes is supported.
+//
+
+import com.microsoft.hyperspace._
+import com.microsoft.hyperspace.index._
+
+// Disable BroadcastHashJoin, so Spark will use standard SortMergeJoin. Currently, Hyperspace indexes utilize SortMergeJoin to speed up query.
+spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
+dfSales.show(10)
+
+val dfCustomers = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/data-generators/generator-customer-clean.csv")
+dfCustomers.show(10)
+
+//Create an instance of Hyperspace
+val hyperspace: Hyperspace = Hyperspace()
+
+//create indices: each one contains a name, a set of indexed columns and a set of included columns
+val indexConfigSales = IndexConfig("indexSALES", Seq("CustomerId"), Seq("TotalAmount"))
+val indexConfigCustomers = IndexConfig("indexCUSTOMERS", Seq("CustomerId"), Seq("FullName"))
+
+
+hyperspace.indexes.show
+//hyperspace.deleteIndex("indexSALES")
+//hyperspace.vacuumIndex("indexSALES")
+//hyperspace.deleteIndex("indexCUSTOMERS")
+//hyperspace.vacuumIndex("indexCUSTOMERS")
+hyperspace.createIndex(dfSales, indexConfigSales)             //only create index once
+hyperspace.createIndex(dfCustomers, indexConfigCustomers)     //only create index once
+hyperspace.indexes.show
+
+//Enable Hyperspace - Hyperspace optimization rules become visible to the Spark optimizer and exploit existing Hyperspace indexes to optimize user queries
+spark.enableHyperspace
+
+//If the original data on which an index was created changes, the index will no longer capture the latest state of data. You can refresh a stale index
+//hyperspace.refreshIndex("indexSALES")
+//hyperspace.refreshIndex("indexCUSTOMERS")
+
+val df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
+df1.show()
+df1.explain(true)
+
+val df2 = dfCustomers.filter("""CustomerId = 203""").select("""FullName""")
+df2.show()
+df2.explain(true)
+
+val eqJoin = dfSales.join(dfCustomers, dfSales("CustomerId") === dfCustomers("CustomerId")).select(dfSales("TotalAmount"), dfCustomers("FullName"))
+eqJoin.show()
+eqJoin.explain(true)
+
+//Plan with indexes versus... Plan without indexes
+//we should see this in the plan: InMemoryFileIndex[abfss://datasets@hyperspacebenchmark.dfs.core.windows.net/hyperspaceon...
+spark.conf.set("spark.hyperspace.explain.displayMode", "html")
+hyperspace.explain(eqJoin) //{ displayHTML }
+
+//Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
+//spark.disableHyperspace
+```
+
+Same example as above, this time using Python code
+
+```python
+%%pyspark
+
+#
+# Hyperspace: An indexing subsystem for Apache Spark
+#
+# https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-performance-hyperspace?pivots=programming-language-python
+#
+# 1. Indices are persistent, only create them once
+# 2. Only creating index over HDFS file based scan nodes is supported.
+#
+
+from com.microsoft.hyperspace import *
+from com.microsoft.hyperspace.index import *
+
+# Disable BroadcastHashJoin, so Spark will use standard SortMergeJoin. Currently, Hyperspace indexes utilize SortMergeJoin to speed up query.
+spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+
+dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
+dfSales.show(10)
+
+dfCustomers = spark.read.load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/data-generators/generator-customer-clean.csv", format="csv", header=True)
+dfCustomers.show(10)
+
+# Create an instance of Hyperspace
+hyperspace = Hyperspace(spark)
+
+#create indices: each one contains a name, a set of indexed columns and a set of included columns
+indexConfigSales = IndexConfig("indexSALES", ["CustomerId"], ["TotalAmount"])
+indexConfigCustomers = IndexConfig("indexCUSTOMERS", ["CustomerId"], ["FullName"])
+
+
+#hyperspace.indexes().show()
+#hyperspace.deleteIndex("indexSALES")
+#hyperspace.vacuumIndex("indexSALES")
+#hyperspace.deleteIndex("indexCUSTOMERS")
+#hyperspace.vacuumIndex("indexCUSTOMERS")
+hyperspace.createIndex(dfSales, indexConfigSales)			# only create index once
+hyperspace.createIndex(dfCustomers, indexConfigCustomers)	# only create index once
+hyperspace.indexes().show()
+
+#Enable Hyperspace - Hyperspace optimization rules become visible to the Spark optimizer and exploit existing Hyperspace indexes to optimize user queries
+Hyperspace.enable(spark)
+
+#If the original data on which an index was created changes, the index will no longer capture the latest state of data. You can refresh a stale index
+#hyperspace.refreshIndex("indexSALES")
+#hyperspace.refreshIndex("indexCUSTOMERS")
+
+df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
+df1.show()
+df1.explain(True)
+
+df2 = dfCustomers.filter("""CustomerId = 203""").select("""FullName""")
+df2.show()
+df2.explain(True)
+
+eqJoin = dfSales.join(dfCustomers, dfSales.CustomerId == dfCustomers.CustomerId).select(dfSales.TotalAmount, dfCustomers.FullName)
+eqJoin.show()
+eqJoin.explain(True)
+
+#Plan with indexes versus... Plan without indexes
+#we should see this in the plan: InMemoryFileIndex[abfss://datasets@hyperspacebenchmark.dfs.core.windows.net/hyperspaceon...
+spark.conf.set("spark.hyperspace.explain.displayMode", "html")
+hyperspace.explain(eqJoin, True, displayHTML)
+
+#Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
+#Hyperspace.disable(spark)
+```
+
+When running the spark queries with Hyperspace enabled and indices are present, the query plan shows that the Hyperspace indices are being used.
+
 
 ### Task 3 - Explore the Data Lake storage with the MSSparkUtil library
 
-Task content
+Microsoft Spark Utilities (MSSparkUtils) is a builtin package to help you easily perform common tasks. You can use MSSparkUtils to work with file systems, to get environment variables, and to work with secrets.
+
+```python
+%%pyspark
+
+from notebookutils import mssparkutils
+from pyspark.sql import SparkSession
+
+#
+# Microsoft Spark Utilities
+#
+# https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python
+#
+
+# Azure storage access info
+blob_account_name = 'asadatalake01'
+blob_container_name = 'DLContainerName'
+blob_relative_path = '/'
+linkedServiceName = 'Azure Data Lake Storage Gen2'
+blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linkedServiceName)
+
+# Allow SPARK to access from Blob remotely
+spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name), blob_sas_token)
+
+path = 'abfss://%s@%s.dfs.core.windows.net/' % (blob_container_name, blob_account_name, blob_relative_path)
+
+files = mssparkutils.fs.ls(path)
+for file in files:
+    print(file.name, file.isDir, file.isFile, file.path, file.size)
+
+mssparkutils.fs.mkdirs('NewFolder')
+
+files = mssparkutils.fs.ls(path)
+for file in files:
+    print(file.name, file.isDir, file.isFile, file.path, file.size)
+```
 
 ### Task 4 - Load data from Data Lake storage
 
