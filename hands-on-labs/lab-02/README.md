@@ -302,7 +302,42 @@ When running the spark queries with Hyperspace enabled and indices are present, 
 
 ### Task 3 - Explore the Data Lake storage with the MSSparkUtil library
 
-Task content
+Microsoft Spark Utilities (MSSparkUtils) is a builtin package to help you easily perform common tasks. You can use MSSparkUtils to work with file systems, to get environment variables, and to work with secrets.
+
+```python
+%%pyspark
+
+from notebookutils import mssparkutils
+from pyspark.sql import SparkSession
+
+#
+# Microsoft Spark Utilities
+#
+# https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/microsoft-spark-utilities?pivots=programming-language-python
+#
+
+# Azure storage access info
+blob_account_name = 'asadatalake01'
+blob_container_name = 'DLContainerName'
+blob_relative_path = '/'
+linkedServiceName = 'Azure Data Lake Storage Gen2'
+blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linkedServiceName)
+
+# Allow SPARK to access from Blob remotely
+spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name), blob_sas_token)
+
+path = 'abfss://%s@%s.dfs.core.windows.net/' % (blob_container_name, blob_account_name, blob_relative_path)
+
+files = mssparkutils.fs.ls(path)
+for file in files:
+    print(file.name, file.isDir, file.isFile, file.path, file.size)
+
+mssparkutils.fs.mkdirs('NewFolder')
+
+files = mssparkutils.fs.ls(path)
+for file in files:
+    print(file.name, file.isDir, file.isFile, file.path, file.size)
+```
 
 ### Task 4 - Load data from Data Lake storage
 
