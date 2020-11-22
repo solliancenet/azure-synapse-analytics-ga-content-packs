@@ -341,27 +341,128 @@ for file in files:
 
 ### Task 4 - Load data from Data Lake storage
 
-Task content
+Use spark to read parquet files from DataLake
+
+```python
+%%pyspark
+#load parquet as a spark dataframe
+dfSales = spark.read.parquet('abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet')
+dfSales.printSchema()
+dfSales.show(10)
+```
 
 ### Task 5 - Load data from SQL Pool
 
-Task content
+Use spark to read SQLDB contents via the `sqlanalytics` connector. Only Scala is supported.
+
+```scala
+%%spark
+
+import com.microsoft.spark.sqlanalytics.utils.Constants
+import org.apache.spark.sql.SqlAnalyticsConnector._
+
+//read from SQLDB
+val dfInput3 = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+dfInput3.head(10)
+```
 
 ### Task 6 - Enrich data from multiple sources
 
-Task content
+Using Spark we can perform powerful queries on all our data.
+
+```python
+%%pyspark
+
+from pyspark.sql.window import Window
+import _datetime
+
+#read sales from datalake
+#TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
+
+#read products from sqldb
+val dfProducts = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+#val dfCustomers = spark.read.sqlanalytics("SQLPool02.wwi.Customers") 
+
+#read telemetry from ade/kusto
+#CustomerId,ProductId,Timestamp,Url
+dfTelemetry  = spark.read \
+    .format("com.microsoft.kusto.spark.synapse.datasource") \
+    .option("spark.synapse.linkedService", "asadataexplorer01") \
+    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
+    .option("kustoQuery", "ASA-Data-Explorer-DB-01-Table-01") \
+    .load()
+
+
+#link sales with product details
+#df1 = dfSales.join(dfProducts, dfSales.name == dfProducts.name)
+#df2 = dfTelemetry.join(df1, (dfTelemetry.ProductId == df1.ProductId) & (dfTelemetry.CustomerId == df1.CustomerId))
+
+#add new column to transactions to have the full timestamp
+def getTransactionTimestamp(dt, hh, mm):
+    dt = _datetime.datetime.strptime(dt, "%Y%m%d")
+    return _datetime.datetime(dt.year, dt.month, dt.day, hh, mm, 0, 0)
+func1 = udf(lambda dt,hh,mm: getTransactionTimestamp(dt,hh,mm), TimestampType())
+val dfTrans = dfSales.withColumn("TransactionTimestamp", func1(dfSales.TransactionDate, dfSales.Hour, dfSales.Minute))
+
+
+#match transactions with telemetry entries
+#a telemetry entry belongs to a transaction if it was logged during the 15 minutes before the transaction
+def isWithinTransTimeFrame(tsTelem, tsTrans):
+    deltaSec = (tsTrans-tsTelem).total_seconds()
+    return 0 < deltaSec and deltaSec < 900
+func2 = udf(lambda x, y: isWithinTransTimeFrame(x, y), BooleanType())
+df = dfTelemetry.crossJoin(dfTrans).where(func2(dfTelemetry.Timestamp, dfTrans.TransactionTimestamp))
+
+#for each TransactionTimestamp we get a window frame / partition sorted by telemetry Timestamps
+windowSpec = Window.partitionBy(df['TransactionTimestamp']).orderBy(df['Timestamp'].desc())
+
+#compute the time-to-trans and clicks-to-trans
+dfClicks = df.withColumn("ClicksToPurchase", count("Timestamp").over(windowSpec))
+dfTime = df.withColumn("TimeToPurchase", min("Timestamp").over(windowSpec))
+```
 
 ## Exercise 3 - Publish and consume enriched data
 
-Exercise description
+The output data will be now persisted in order to be used for further analysis.
 
 ### Task 1 - Save enriched data to Data Lake storage
 
-Task content
+Use spark to write dataframe to DataLake:
+
+```python
+%%pyspark
+
+#write to datalake
+df \
+ .coalesce(1) \
+ .write \
+ .mode("overwrite") \
+ .option("header", "true") \
+ .format("com.databricks.spark.csv") \
+ .save('abfss://wwi-02@asadatalake01.dfs.core.windows.net/output')
+```
 
 ### Task 2 - Access data with the SQL built-in pool
 
-Task content
+
+We can create shared database/table metadata (between its serverless Apache Spark pools and serverless SQL pool)
+
+```python
+%%pyspark
+
+#
+# create an external/unmanaged database/table from datalake information
+#
+# see https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/overview
+#
+spark.sql("CREATE DATABASE IF NOT EXISTS ASA_SPARK_DB01")
+spark.sql("CREATE TABLE IF NOT EXISTS ASA_SPARK_DB01.salesmall201912 USING Parquet LOCATION 'abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet'")
+
+#since we now have table metadata, we can now use SQL queries (with or without spark)
+dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmall201912")
+dfExt.show(10)
+```
 
 ### Task 3 - Display enriched data in Power BI
 
