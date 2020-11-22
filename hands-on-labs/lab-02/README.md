@@ -368,8 +368,58 @@ dfInput3.head(10)
 
 ### Task 6 - Enrich data from multiple sources
 
-Task content
-```
+Using Spark we can perform powerful queries on all our data.
+
+```python
+%%pyspark
+
+from pyspark.sql.window import Window
+import _datetime
+
+#read sales from datalake
+#TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
+
+#read products from sqldb
+val dfProducts = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+#val dfCustomers = spark.read.sqlanalytics("SQLPool02.wwi.Customers") 
+
+#read telemetry from ade/kusto
+#CustomerId,ProductId,Timestamp,Url
+dfTelemetry  = spark.read \
+    .format("com.microsoft.kusto.spark.synapse.datasource") \
+    .option("spark.synapse.linkedService", "asadataexplorer01") \
+    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
+    .option("kustoQuery", "ASA-Data-Explorer-DB-01-Table-01") \
+    .load()
+
+
+#link sales with product details
+#df1 = dfSales.join(dfProducts, dfSales.name == dfProducts.name)
+#df2 = dfTelemetry.join(df1, (dfTelemetry.ProductId == df1.ProductId) & (dfTelemetry.CustomerId == df1.CustomerId))
+
+#add new column to transactions to have the full timestamp
+def getTransactionTimestamp(dt, hh, mm):
+    dt = _datetime.datetime.strptime(dt, "%Y%m%d")
+    return _datetime.datetime(dt.year, dt.month, dt.day, hh, mm, 0, 0)
+func1 = udf(lambda dt,hh,mm: getTransactionTimestamp(dt,hh,mm), TimestampType())
+val dfTrans = dfSales.withColumn("TransactionTimestamp", func1(dfSales.TransactionDate, dfSales.Hour, dfSales.Minute))
+
+
+#match transactions with telemetry entries
+#a telemetry entry belongs to a transaction if it was logged during the 15 minutes before the transaction
+def isWithinTransTimeFrame(tsTelem, tsTrans):
+    deltaSec = (tsTrans-tsTelem).total_seconds()
+    return 0 < deltaSec and deltaSec < 900
+func2 = udf(lambda x, y: isWithinTransTimeFrame(x, y), BooleanType())
+df = dfTelemetry.crossJoin(dfTrans).where(func2(dfTelemetry.Timestamp, dfTrans.TransactionTimestamp))
+
+#for each TransactionTimestamp we get a window frame / partition sorted by telemetry Timestamps
+windowSpec = Window.partitionBy(df['TransactionTimestamp']).orderBy(df['Timestamp'].desc())
+
+#compute the time-to-trans and clicks-to-trans
+dfClicks = df.withColumn("ClicksToPurchase", count("Timestamp").over(windowSpec))
+dfTime = df.withColumn("TimeToPurchase", min("Timestamp").over(windowSpec))
 ```
 
 ## Exercise 3 - Publish and consume enriched data
