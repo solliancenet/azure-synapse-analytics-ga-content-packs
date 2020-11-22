@@ -341,27 +341,78 @@ for file in files:
 
 ### Task 4 - Load data from Data Lake storage
 
-Task content
+Use spark to read parquet files from DataLake
+
+```python
+%%pyspark
+#load parquet as a spark dataframe
+dfSales = spark.read.parquet('abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet')
+dfSales.printSchema()
+dfSales.show(10)
+```
 
 ### Task 5 - Load data from SQL Pool
 
-Task content
+Use spark to read SQLDB contents via the `sqlanalytics` connector. Only Scala is supported.
+
+```scala
+%%spark
+
+import com.microsoft.spark.sqlanalytics.utils.Constants
+import org.apache.spark.sql.SqlAnalyticsConnector._
+
+//read from SQLDB
+val dfInput3 = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+dfInput3.head(10)
+```
 
 ### Task 6 - Enrich data from multiple sources
 
 Task content
+```
+```
 
 ## Exercise 3 - Publish and consume enriched data
 
-Exercise description
+The output data will be now persisted in order to be used for further analysis.
 
 ### Task 1 - Save enriched data to Data Lake storage
 
-Task content
+Use spark to write dataframe to DataLake:
+
+```python
+%%pyspark
+
+#write to datalake
+df \
+ .coalesce(1) \
+ .write \
+ .mode("overwrite") \
+ .option("header", "true") \
+ .format("com.databricks.spark.csv") \
+ .save('abfss://wwi-02@asadatalake01.dfs.core.windows.net/output')
+```
 
 ### Task 2 - Access data with the SQL built-in pool
 
-Task content
+
+We can create shared database/table metadata (between its serverless Apache Spark pools and serverless SQL pool)
+
+```python
+%%pyspark
+
+#
+# create an external/unmanaged database/table from datalake information
+#
+# see https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/overview
+#
+spark.sql("CREATE DATABASE IF NOT EXISTS ASA_SPARK_DB01")
+spark.sql("CREATE TABLE IF NOT EXISTS ASA_SPARK_DB01.salesmall201912 USING Parquet LOCATION 'abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet'")
+
+#since we now have table metadata, we can now use SQL queries (with or without spark)
+dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmall201912")
+dfExt.show(10)
+```
 
 ### Task 3 - Display enriched data in Power BI
 
