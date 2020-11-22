@@ -1,0 +1,2 @@
+create schema wwi
+go

@@ -88,7 +88,7 @@ $dataLakeAccountName = "asagadatalake$($uniqueId)"
 $keyVaultName = "asagakeyvault$($uniqueId)"
 $keyVaultSQLUserSecretName = "SQL-USER-ASA"
 $sqlPoolName = "SQLPool01"
-$integrationRuntimeName = "AzureIntegrationRuntime01"
+$integrationRuntimeName = "AutoResolveIntegrationRuntime"
 $sparkPoolName = "SparkPool01"
 $global:sqlEndpoint = "$($workspaceName).sql.azuresynapse.net"
 $global:sqlUser = "asaga.sql.admin"
@@ -105,19 +105,19 @@ $global:tokenTimes = [ordered]@{
         PowerBI = (Get-Date -Year 1)
 }
 
-Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
+#Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
 
 #add the current user...
 $user = Get-AzADUser -UserPrincipalName $userName
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId $user.id  # Apache Spark Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId $user.id  # Apache Spark Admin
 
 #Set the Azure AD Admin - otherwise it will bail later
-Set-SqlAdministrator $username $user.id;
+#Set-SqlAdministrator $username $user.id;
 
 #add the permission to the datalake to workspace
 $id = (Get-AzADServicePrincipal -DisplayName $workspacename).id
@@ -129,21 +129,21 @@ Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $key
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $id -PermissionsToSecrets set,delete,get,list
 
 #remove need to ask for the password in script.
-$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name "SqlPassword").SecretValueText
+$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName).SecretValueText
 
-Write-Information "Create SQL-USER-ASA Key Vault Secret"
-$secretValue = ConvertTo-SecureString $sqlPassword -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName -SecretValue $secretValue
+#Write-Information "Create SQL-USER-ASA Key Vault Secret"
+#$secretValue = ConvertTo-SecureString $sqlPassword -AsPlainText -Force
+#Set-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName -SecretValue $secretValue
 
 Write-Information "Create KeyVault linked service $($keyVaultName)"
 
 $result = Create-KeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $keyVaultName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
-Write-Information "Create Integration Runtime $($integrationRuntimeName)"
+#Write-Information "Create Integration Runtime $($integrationRuntimeName)"
 
-$result = Create-IntegrationRuntime -TemplatesPath $templatesPath -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $integrationRuntimeName -CoreCount 16 -TimeToLive 60
-Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+#$result = Create-IntegrationRuntime -TemplatesPath $templatesPath -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $integrationRuntimeName -CoreCount 16 -TimeToLive 60
+#Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Create Data Lake linked service $($dataLakeAccountName)"
 
@@ -151,11 +151,11 @@ $dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -R
 $result = Create-DataLakeLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $dataLakeAccountName  -Key $dataLakeAccountKey
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
-Write-Information "Create Blob Storage linked service $($blobStorageAccountName)"
+#Write-Information "Create Blob Storage linked service $($blobStorageAccountName)"
 
-$blobStorageAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $blobStorageAccountName
-$result = Create-BlobStorageLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $blobStorageAccountName  -Key $blobStorageAccountKey
-Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+#$blobStorageAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $blobStorageAccountName
+#$result = Create-BlobStorageLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $blobStorageAccountName  -Key $blobStorageAccountKey
+#Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Copy Public Data"
 
@@ -208,11 +208,9 @@ if ($download)
 {
         Write-Information "Copying single files from the public data account..."
         $singleFiles = @{
-                customer_info = "wwi-02/customer-info/customerinfo.csv"
                 products = "wwi-02/data-generators/generator-product/generator-product.csv"
                 dates = "wwi-02/data-generators/generator-date.csv"
                 customer = "wwi-02/data-generators/generator-customer.csv"
-                onnx = "wwi-02/ml/onnx-hex/product_seasonality_classifier.onnx.hex"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
@@ -225,11 +223,14 @@ if ($download)
         Write-Information "Copying sample sales raw data directories from the public data account..."
 
         $dataDirectories = @{
-                salesmall = "wwi-02,wwi-02/sale-small/"
-                analytics = "wwi-02,wwi-02/campaign-analytics/"
-                factsale = "wwi-02,wwi-02/sale-csv/"
-                security = "wwi-02,wwi-02-reduced/security/"
-                salespoc = "wwi-02,wwi-02/sale-poc/"
+                salesmall1 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201"
+                salesmall2 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191202"
+                salesmall3 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191203"
+                salesmall4 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191204"
+                salesmall5 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191205"
+                salesmall6 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206"
+                salesmall7 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207"
+                salesmall8 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {
@@ -284,37 +285,37 @@ $result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $
 $result
 
 
-Write-Information "Create tables in the [wwi_ml] schema in $($sqlPoolName)"
+#Write-Information "Create tables in the [wwi_ml] schema in $($sqlPoolName)"
 
-$dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
-$params = @{ 
-        DATA_LAKE_ACCOUNT_NAME = $dataLakeAccountName  
-        DATA_LAKE_ACCOUNT_KEY = $dataLakeAccountKey 
-}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-in-wwi-ml-schema" -Parameters $params
-$result
+#$dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
+#$params = @{ 
+#        DATA_LAKE_ACCOUNT_NAME = $dataLakeAccountName  
+#        DATA_LAKE_ACCOUNT_KEY = $dataLakeAccountKey 
+#}
+#$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-in-wwi-ml-schema" -Parameters $params
+#$result
 
-Write-Information "Create tables in the [wwi_security] schema in $($sqlPoolName)"
+#Write-Information "Create tables in the [wwi_security] schema in $($sqlPoolName)"
 
-$params = @{ 
-        DATA_LAKE_ACCOUNT_NAME = $dataLakeAccountName  
-        DATA_LAKE_ACCOUNT_KEY = $dataLakeAccountKey 
-}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "06-create-tables-in-wwi-security-schema" -Parameters $params
-$result
+#$params = @{ 
+#        DATA_LAKE_ACCOUNT_NAME = $dataLakeAccountName  
+#        DATA_LAKE_ACCOUNT_KEY = $dataLakeAccountKey 
+#}
+#$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "06-create-tables-in-wwi-security-schema" -Parameters $params
+#$result
 
-Write-Information "Create linked service for SQL pool $($sqlPoolName) with user asa.sql.admin"
+Write-Information "Create linked service for SQL pool $($sqlPoolName) with user asaga.sql.admin"
 
 $linkedServiceName = $sqlPoolName.ToLower()
 $result = Create-SQLPoolKeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $linkedServiceName -DatabaseName $sqlPoolName `
-                 -UserName "asa.sql.admin" -KeyVaultLinkedServiceName $keyVaultName -SecretName $keyVaultSQLUserSecretName
+                 -UserName $sqlUser -KeyVaultLinkedServiceName $keyVaultName -SecretName $keyVaultSQLUserSecretName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
-Write-Information "Create linked service for SQL pool $($sqlPoolName) with user asa.sql.highperf"
+Write-Information "Create linked service for SQL pool $($sqlPoolName) with user asaga.sql.highperf"
 
 $linkedServiceName = "$($sqlPoolName.ToLower())_highperf"
 $result = Create-SQLPoolKeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $linkedServiceName -DatabaseName $sqlPoolName `
-                 -UserName "asa.sql.highperf" -KeyVaultLinkedServiceName $keyVaultName -SecretName $keyVaultSQLUserSecretName
+                 -UserName "asaga.sql.highperf" -KeyVaultLinkedServiceName $keyVaultName -SecretName $keyVaultSQLUserSecretName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 <# Day 1-3#>
