@@ -54,6 +54,21 @@
       }
     },
     {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(variables('keyVaultName'), '/SQL-USER-ASA')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+      ],
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('sqlAdministratorLoginPassword')]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('adlsStorageAccountName')]",

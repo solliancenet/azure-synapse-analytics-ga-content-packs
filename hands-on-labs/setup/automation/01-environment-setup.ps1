@@ -83,20 +83,15 @@ $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
 $global:logindomain = (Get-AzContext).Tenant.Id;
 
-$workspaceName = "asaworkspace$($uniqueId)"
-$cosmosDbAccountName = "asacosmosdb$($uniqueId)"
-$cosmosDbDatabase = "CustomerProfile"
-$cosmosDbContainer = "OnlineUserProfile01"
-$dataLakeAccountName = "asadatalake$($uniqueId)"
-$blobStorageAccountName = "asastore$($uniqueId)"
-$keyVaultName = "asakeyvault$($uniqueId)"
+$workspaceName = "asagaworkspace$($uniqueId)"
+$dataLakeAccountName = "asagadatalake$($uniqueId)"
+$keyVaultName = "asagakeyvault$($uniqueId)"
 $keyVaultSQLUserSecretName = "SQL-USER-ASA"
 $sqlPoolName = "SQLPool01"
 $integrationRuntimeName = "AzureIntegrationRuntime01"
 $sparkPoolName = "SparkPool01"
-$amlWorkspaceName = "amlworkspace$($uniqueId)"
 $global:sqlEndpoint = "$($workspaceName).sql.azuresynapse.net"
-$global:sqlUser = "asa.sql.admin"
+$global:sqlUser = "asaga.sql.admin"
 
 $global:synapseToken = ""
 $global:synapseSQLToken = ""
