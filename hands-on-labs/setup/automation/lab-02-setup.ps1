@@ -77,4 +77,4 @@ Invoke-RestMethod -Uri https://$kustoClusterName.$($location).kusto.windows.net/
 $app = ((az ad sp list --display-name "Azure Synapse Analytics GA Labs") | ConvertFrom-Json)[0]
 $scope = "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoClusterName/databases/$kustoDatabaseName"
 Write-Information "Setting Admin permission for scope $($scope)"
-New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Database Admin" -Scope $scope
+New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Database admin" -Scope $scope
