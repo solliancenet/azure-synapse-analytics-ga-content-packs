@@ -74,6 +74,8 @@ $body = "{ db: ""$kustoDatabaseName"", csl: ""$kustoStatement"" }"
 Invoke-RestMethod -Uri https://$kustoClusterName.$($location).kusto.windows.net/v1/rest/mgmt -Method POST -Body $body -Headers @{ Authorization="Bearer $token" } -ContentType "application/json"
 
 
+
+Write-Information "Making the service principal 'Azure Synapse Analytics GA Labs' an admin on the Kust database"
 $app = ((az ad sp list --display-name "Azure Synapse Analytics GA Labs") | ConvertFrom-Json)[0]
 $kustoStatement = ".add database ['$($kustoDatabaseName)'] admins ('aadapp=$($app.appId)')"
 $body = "{ db: ""$kustoDatabaseName"", csl: ""$kustoStatement"" }"
