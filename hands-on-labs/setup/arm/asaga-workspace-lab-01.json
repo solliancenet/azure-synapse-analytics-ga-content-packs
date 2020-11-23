@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
+        "workspaceName": "[concat('asagadataexplorer', variables('uniqueSuffix'))]",
+        "sku": "enterprise",
+        "storageAccountName": "[concat('asagastorage', variables('uniqueSuffix'))]",
+        "storageAccountType": "Standard_LRS",
+        "keyVaultName": "[concat('asagakeyvault', variables('uniqueSuffix'))]",
+        "applicationInsightsName": "[concat('asagaappinsights', variables('uniqueSuffix'))]",
+        "containerRegistry": "[concat('asagacontainerregistry', variables('uniqueSuffix'))]",
+        "tenantId": "[subscription().tenantId]",
+        "storageAccount": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "keyVault": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+        "applicationInsights": "[resourceId(resourceGroup().name, 'Microsoft.Insights/components', variables('applicationInsightsName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "[variables('storageAccountType')]"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "encryption": {
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        },
+                        "file": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "supportsHttpsTrafficOnly": true
+            }
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[variables('applicationInsightsName')]",
+            "location": "[if(or(equals(variables('location'),'eastus2'), equals(variables('location'),'westcentralus')),'southcentralus',variables('location'))]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces",
+            "apiVersion": "2020-03-01",
+            "name": "[variables('workspaceName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[variables('storageAccount')]",
+                "[variables('keyVault')]",
+                "[variables('applicationInsights')]"
+            ],
+            "sku": {
+                "tier": "[variables('sku')]",
+                "name": "[variables('sku')]"
+            },
+            "properties": {
+                "friendlyName": "[variables('workspaceName')]",
+                "storageAccount": "[variables('storageAccount')]",
+                "keyVault": "[variables('keyVault')]",
+                "applicationInsights": "[variables('applicationInsights')]",
+                "containerRegistry": "[if(empty(variables('containerRegistry')), json('null'), variables('containerRegistry'))]"
+            }
+        }
+    ]
+  }
+  
