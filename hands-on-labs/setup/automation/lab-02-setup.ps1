@@ -86,5 +86,5 @@ Write-Information "Create linked service for Kusto database $($kustoDatabaseName
 
 $linkedServiceName = $kustoClusterName.ToLower()
 $result = Create-DataExplorerKeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $linkedServiceName -DataExplorerClusterName "$($kustoClusterName).$($location)" `
-                 -DataExplorerDatabaseName $kustoDatabaseName -AADTenantId $tenantId $AADServicePrincipalId $app.appId -KeyVaultLinkedServiceName $keyVaultName -SecretName "ASA-GA-LABS"
+                 -DataExplorerDatabaseName $kustoDatabaseName -AADTenantId $tenantId -AADServicePrincipalId $app.appId -KeyVaultLinkedServiceName $keyVaultName -SecretName "ASA-GA-LABS"
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
