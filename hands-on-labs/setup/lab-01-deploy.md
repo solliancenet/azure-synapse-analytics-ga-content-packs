@@ -4,7 +4,7 @@
 
 Click the `Deploy to Azure` button below to start the deployment process.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsolliancenet%2Fazure-synapse-analytics-ga-content-packs%2Fmain%2Fhands-on-labs%2Fsetup%2Farm%2Fasaga-workspace-lab-01.json%3Ftoken%3DAA2FKXULG5NURX2EJMKTDRC7YTY2Q)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsolliancenet%2Fazure-synapse-analytics-ga-content-packs%2Fmain%2Fhands-on-labs%2Fsetup%2Farm%2Fasaga-workspace-lab-01.json%3Ftoken%3DAA2FKXQQI5UL5WU44XW55SS7YTZNK)
 
 You should see next the `Custom deployment` screen where you need to provide the resource group where the Synapse Analytics workspace was deployed (see [Pre-requisites for deployment](./asa-workspace-deploy.md#pre-requisites-for-deployment) for details):
 
