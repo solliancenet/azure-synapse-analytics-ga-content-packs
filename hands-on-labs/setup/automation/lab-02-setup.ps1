@@ -88,3 +88,8 @@ $linkedServiceName = $kustoClusterName.ToLower()
 $result = Create-DataExplorerKeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $linkedServiceName -DataExplorerClusterName "$($kustoClusterName).$($location)" `
                  -DataExplorerDatabaseName $kustoDatabaseName -AADTenantId $tenantId -AADServicePrincipalId $app.appId -KeyVaultLinkedServiceName $keyVaultName -SecretName "ASA-GA-LABS"
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+
+Write-Information "Deleting linked service for Kusto database"
+
+$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "linkedservices" -Name $linkedServiceName
+Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
