@@ -65,14 +65,14 @@ $global:tokenTimes = [ordered]@{
 
 Write-Information "Creating the SalesTelemetry table"
 
-$kustoCluster = "asagadataexplorer$($uniqueId).$($location)"
+$kustoClusterName = "asagadataexplorer$($uniqueId)"
 $kustoDatabaseName = "ASA-Data-Explorer-DB-01"
 $kustoStatement = ".create table SalesTelemetry ( CustomerId:int32, ProductId:int32, Timestamp:datetime, Url:string)"
 
 $token = ((az account get-access-token --resource https://help.kusto.windows.net) | ConvertFrom-Json).accessToken
 $body = "{ db: ""$kustoDatabaseName"", csl: ""$kustoStatement"" }"
-Invoke-RestMethod -Uri https://$kustoCluster.kusto.windows.net/v1/rest/mgmt -Method POST -Body $body -Headers @{ Authorization="Bearer $token" } -ContentType "application/json"
+Invoke-RestMethod -Uri https://$kustoClusterName.$($location).kusto.windows.net/v1/rest/mgmt -Method POST -Body $body -Headers @{ Authorization="Bearer $token" } -ContentType "application/json"
 
 
 $app = ((az ad sp list --display-name "Azure Synapse Analytics GA Labs") | ConvertFrom-Json)[0]
-New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Admin" -Scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoCluster/databases/$kustoDatabaseName"
+New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Admin" -Scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoClusterName/databases/$kustoDatabaseName"
