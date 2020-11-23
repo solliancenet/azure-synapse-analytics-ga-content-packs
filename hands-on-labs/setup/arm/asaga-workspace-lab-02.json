@@ -33,7 +33,7 @@
             "type": "Microsoft.Kusto/Clusters/Databases",
             "apiVersion": "2020-06-14",
             "name": "[concat(variables('clusterName'), '/ASA-Data-Explorer-DB-01')]",
-            "location": "variables('location')",
+            "location": "[variables('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Kusto/Clusters', variables('clusterName'))]"
             ],
