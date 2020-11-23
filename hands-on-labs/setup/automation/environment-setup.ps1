@@ -231,7 +231,7 @@ if ($download)
                 salesmall6 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206"
                 salesmall7 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207"
                 salesmall8 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
-                salesmalltelemetry = "wwi-02/sale-small-telemetry,wwi-02/sale-small-telemetry"
+                salesmalltelemetry = "wwi-02,wwi-02/sale-small-telemetry"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {

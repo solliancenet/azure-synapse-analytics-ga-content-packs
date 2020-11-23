@@ -99,7 +99,7 @@ If GIT asks for credentials, provide your GitHub username and password.
 >
 >If your GitHub account has two-factor authentication activated, you need to provide a PAT (Personal Access Token) instead your password. For more details, read the [Creating a personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) section in GitHub Docs.
 >
->When pasting your password or PAT into the Cloud Shell window, make sure you are familiar with the supported key combinations (for more details, see [Using the Azure Cloud Shell window](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#copy-and-paste)).
+>When pasting your password or PAT into the Cloud Shell window, make sure you are familiar with the supported key combinations (Shift-INS for Windows and Cmd-V for Mac). For more details, see [Using the Azure Cloud Shell window](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#copy-and-paste).
 
 Once the repository is successfully cloned, you shoud see a result similar to this:
 
@@ -127,4 +127,4 @@ Enter the name of the resource group where you deployed the Synapse Analytics wo
 
 The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
 
-The process should take 5 - 10 minutes. Wait until the setup script is finished before proceeding to the next steps.
+The process should take 5 to 10 minutes to finish. Wait until the setup script is finished before proceeding to the next steps.
