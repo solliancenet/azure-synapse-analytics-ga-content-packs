@@ -37,34 +37,59 @@ Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../
 
 #### Create an Azure Data Explorer Cluster instance 
 
-Open Azure Data Explorer Clusters and press Add
+&nbsp;
+
+* Open Azure Data Explorer Clusters and press Add
 
 ![Add a new ADE instance](./../media/ade-create-01.png)
 
-Configure your cluster: select Subscription, Resource Group, the Cluster Name, the Region, the Workload and the Compute Specifications, then press Review+Create
+&nbsp;
+
+* Configure your cluster: select Subscription, Resource Group, the Cluster Name, the Region, the Workload and the Compute Specifications, then press Review+Create
 
 ![Configure the ADE instance](./../media/app-create-02.png)
 
-Create the cluster: press the Create button
+&nbsp;
+
+* Create the cluster: press the Create button
+
 ![Create the ADE instance](./../media/ade-create-03.png)
 
-Deploy the cluster: wait until deployment is done and press Go to resource.
+&nbsp;
+
+* Deploy the cluster: wait until deployment is done and press Go to resource.
+
 ![Deploy the ADE instance](./../media/ade-create-04.png)
 
-Create a database: Press Add database button at the top or the Create database button
+&nbsp;
+
+* Create a database: Press Add database button at the top or the Create database button
+
 ![Deploy the ADE instance](./../media/ade-create-05.png)
 
-Choose the database name: enter the database name and press Create
+&nbsp;
+
+* Choose the database name: enter the database name and press Create
+
 ![Deploy the ADE instance](./../media/ade-create-06.png)
 
-Add data to the new database: press Ingest new data
+&nbsp;
+
+* Add data to the new database: press Ingest new data
+
 ![Launch ingestion](./../media/ade-create-07.png)
 
-Add table and data: enter the Table name, choose a Source type and the data
+&nbsp;
+
+* Add table and data: enter the Table name, choose a Source type and the data
+
 ![Configure ingestion](./../media/ade-create-08.png)
 
-Click Start Ingestion and wait.
+&nbsp;
+
+* Click Start Ingestion and wait.
 When data is ingested, your new cluster, database and table are ready to be used.
+
 ![Run the ingestion](./../media/ade-create-09.png)
 
 ## Exercise 1 - Configure an Azure Data Explorer linked service
@@ -78,74 +103,127 @@ This will allow us to use the Azure Data Explorer (Kusto) datasource in our Spar
 We must register an Application before we can create the Linked Service.
 Skip the steps below of you have already created an Application.
 
-Go to App Registrations and create a new application
+&nbsp;
+
+* Go to App Registrations and create a new application
 
 ![Create a new Application](./../media/app-create-01.png)
 
-Choose a name for your application and press Register
+&nbsp;
+
+* Choose a name for your application and press Register
 
 ![Register Application](./../media/app-create-02.png)
 
-The new application must be configured, click on Certificates & Secrets
+&nbsp;
+
+* The new application must be configured, click on Certificates & Secrets
 
 ![Configure Application](./../media/app-create-03.png)
 
-Choose a name for your new secret and press Add. The secret is now generated and ready to be used.
+&nbsp;
+
+* Choose a name for your new secret and press Add. The secret is now generated and ready to be used.
 
 ![Add New Secret](./../media/app-create-04.png)
 
-Your secret is only visible once. Keep a copy of it so that you can store it safely for further use.
+&nbsp;
+
+* Your secret is only visible once. Keep a copy of it so that you can store it safely for further use.
 
 ![Store The Secret](./../media/app-create-05.png)
 
 
 ### Task 2 - Create the linked service
 
-Open your Azure Synapse workspace
+&nbsp;
+
+* Open your Azure Synapse workspace
+
 ![Open workspace](./../media/asa-ade-linked-create-01.png)
 
-Press Manage in the left vertical toolbar
+&nbsp;
+
+* Press Manage in the left vertical toolbar
+
 ![Manage workspace](./../media/asa-ade-linked-create-02.png)
 
-Press Linked Services in the left list then press New
+&nbsp;
+
+* Press Linked Services in the left list then press New
+
 ![Manage workspace](./../media/asa-ade-linked-create-03.png)
 
-The New linked service list appears. Select Azure Data Explorer (Kusto) in the list and press Continue
+&nbsp;
+
+* The New linked service list appears. Select Azure Data Explorer (Kusto) in the list and press Continue
+
 ![Choose Linked Service Type](./../media/asa-ade-linked-create-04.png)
 
-Configure the Linked Service: choose a Name, the Azure subscription.
+&nbsp;
+
+* Configure the Linked Service: choose a Name, the Azure subscription.
 Chose the ADE cluster you want to use. 
 Enter the Service Principal ID of the Application you want to use.
 As Service principal key use the secret you added to that Application.
 Enter the name of the ADE database you want to access through this linked service.
 To make sure the connection works you can press Test connection.
 Once successfull, press Create to make the new linked service available.
+
 ![Configure Kusto Linked Service](./../media/asa-ade-linked-create-05.png)
 
 ### Task 3 - Explore the Azure Data Explorer database in Synapse Studio
 
-Open Azure Data Explorer Clusters
+&nbsp;
+
+* Open Azure Data Explorer Clusters, select your cluster in the left list
+
 ![Open ADE](./../media/asa-ade-browse-01.png)
 
-Select your cluster in the left list, click on Databases and select your database
+&nbsp;
+
+* Click on the Databases item and choose your database
+
 ![Open ADE database](./../media/asa-ade-browse-02.png)
 
-Click Query in the left list
+&nbsp;
+
+* Click Query in the left list
+
 ![Open ADE Query Pane](./../media/asa-ade-browse-03.png)
 
-Select your database and then double click on the table name.
+&nbsp;
+
+* Select your database and then double click on the table name.
 A default query is generate it. Click Run to execute it.
 The results are available in the lower pane.
+
 ![Open ADE Query Pane](./../media/asa-ade-browse-04.png)
 
 
 ## Exercise 2 - Load and enrich data with Spark
 
-Exercise description
+We will use spark to handle our datasets coming from different datasources.
 
 ### Task 1 - Load data from Azure Data Explorer
 
-Task content
+```python
+%%pyspark
+
+# kusto connector 
+# https://techcommunity.microsoft.com/t5/azure-data-explorer/announcing-azure-data-explorer-data-connector-for-azure-synapse/ba-p/1743868
+
+# Read data from Azure Data Explorer table(s)
+# Full Sample Code available at: https://github.com/Azure/azure-kusto-spark/blob/master/samples/src/main/python/SynapseSample.py
+kustoDf  = spark.read \
+    .format("com.microsoft.kusto.spark.synapse.datasource") \
+    .option("spark.synapse.linkedService", "asadataexplorer01") \
+    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
+    .option("kustoQuery", "ASA-Data-Explorer-DB-01-Table-01") \
+    .load()
+
+display(kustoDf)
+```
 
 ### Task 2 - Index the Data Lake storage with Hyperspace
 
@@ -466,7 +544,7 @@ dfExt.show(10)
 
 ### Task 3 - Display enriched data in Power BI
 
-Task content
+TODO
 
 ## After the hands-on lab
 
