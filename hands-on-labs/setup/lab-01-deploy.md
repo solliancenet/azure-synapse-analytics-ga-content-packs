@@ -10,7 +10,7 @@ You should see next the `Custom deployment` screen where you need to provide the
 
 Select `Review + create` to validate the settings.
 
-![Synapse Analytics workspace deployment configuration](../media/lab-02-deploy-configure.png)
+![Synapse Analytics workspace deployment configuration](../media/lab-01-deploy-configure.png)
 
 Once the validation is passed, select `Create` to start the deployment. You should see next an indication of the deployment progress:
 
