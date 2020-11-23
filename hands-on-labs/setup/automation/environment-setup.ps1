@@ -223,14 +223,14 @@ if ($download)
         Write-Information "Copying sample sales raw data directories from the public data account..."
 
         $dataDirectories = @{
-                salesmall1 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201"
-                salesmall2 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191202"
-                salesmall3 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191203"
-                salesmall4 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191204"
-                salesmall5 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191205"
-                salesmall6 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206"
-                salesmall7 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207"
-                salesmall8 = "wwi-02,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
+                salesmall1 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201"
+                salesmall2 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191202,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191202"
+                salesmall3 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191203,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191203"
+                salesmall4 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191204,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191204"
+                salesmall5 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191205,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191205"
+                salesmall6 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191206"
+                salesmall7 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207"
+                salesmall8 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {

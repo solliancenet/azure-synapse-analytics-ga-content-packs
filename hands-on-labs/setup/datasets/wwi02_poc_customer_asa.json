@@ -68,7 +68,7 @@
             }
         ],
         "typeProperties": {
-            "schema": "wwi_poc",
+            "schema": "wwi",
             "table": "Customer"
         }
     }
