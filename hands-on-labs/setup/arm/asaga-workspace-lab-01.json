@@ -15,7 +15,7 @@
         "storageAccount": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "keyVault": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "applicationInsights": "[resourceId(resourceGroup().name, 'Microsoft.Insights/components', variables('applicationInsightsName'))]",
-        "container": "[resourceId(resourceGroup().name, 'Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]"
+        "containerRegistry": "[resourceId(resourceGroup().name, 'Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]"
     },
     "resources": [
         {
