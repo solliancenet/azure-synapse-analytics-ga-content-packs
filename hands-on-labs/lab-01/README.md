@@ -41,7 +41,7 @@ Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../
 
 ### Task 2 - Create and configure additional resources for this lab
 
-Instructions to create and configure additional resources for the lab.
+Follow the instructions in [Deploy resources for Lab 01](./../setup/lab-01-deploy.md) to deploy additional resources for this lab. Once deployment is complete, you are ready to proceed with the exercises in this lab.
 
 ## Exercise 1 - Create an Azure Machine Learning linked service
 

@@ -35,62 +35,7 @@ Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../
 
 ### Task 2 - Create and configure additional resources for this lab
 
-#### Create an Azure Data Explorer Cluster instance 
-
-&nbsp;
-
-* Open Azure Data Explorer Clusters and press Add
-
-![Add a new ADE instance](./../media/ade-create-01.png)
-
-&nbsp;
-
-* Configure your cluster: select Subscription, Resource Group, the Cluster Name, the Region, the Workload and the Compute Specifications, then press Review+Create
-
-![Configure the ADE instance](./../media/app-create-02.png)
-
-&nbsp;
-
-* Create the cluster: press the Create button
-
-![Create the ADE instance](./../media/ade-create-03.png)
-
-&nbsp;
-
-* Deploy the cluster: wait until deployment is done and press Go to resource.
-
-![Deploy the ADE instance](./../media/ade-create-04.png)
-
-&nbsp;
-
-* Create a database: Press Add database button at the top or the Create database button
-
-![Deploy the ADE instance](./../media/ade-create-05.png)
-
-&nbsp;
-
-* Choose the database name: enter the database name and press Create
-
-![Deploy the ADE instance](./../media/ade-create-06.png)
-
-&nbsp;
-
-* Add data to the new database: press Ingest new data
-
-![Launch ingestion](./../media/ade-create-07.png)
-
-&nbsp;
-
-* Add table and data: enter the Table name, choose a Source type and the data
-
-![Configure ingestion](./../media/ade-create-08.png)
-
-&nbsp;
-
-* Click Start Ingestion and wait.
-When data is ingested, your new cluster, database and table are ready to be used.
-
-![Run the ingestion](./../media/ade-create-09.png)
+Follow the instructions in [Deploy resources for Lab 02](./../setup/lab-02-deploy.md) to deploy additional resources for this lab. Once deployment is complete, you are ready to proceed with the exercises in this lab.
 
 ## Exercise 1 - Configure an Azure Data Explorer linked service
 

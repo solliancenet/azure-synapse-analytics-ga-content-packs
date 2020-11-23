@@ -105,7 +105,7 @@ Once the repository is successfully cloned, you shoud see a result similar to th
 
 ![Cloud Shell git clone repository](./../media/cloudshell-setup-02.png)
 
-Change you current directory using
+Change your current directory using
 
 ```cmd
 cd asa/hands-on-labs/setup/automation

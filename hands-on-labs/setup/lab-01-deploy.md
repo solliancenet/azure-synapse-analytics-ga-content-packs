@@ -16,4 +16,4 @@ Once the validation is passed, select `Create` to start the deployment. You shou
 
 ![Synapse Analytics workspace deployment progress](./../media/lab-01-deploy-progress.png)
 
-Wait until the deployment completes successfully before proceeding to the next step.
+Once the deployment completes successfully, you have completed the deployment of the lab.
