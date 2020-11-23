@@ -97,7 +97,7 @@ The following table shows the mapping of categories and topics to content packs:
             <td>https://docs.microsoft.com/en-us/azure/cosmos-db/synapse-link<br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/query-cosmos-db-analytical-store</td>
         </tr>
         <tr>
-            <td rowspan="6">Development</td>
+            <td rowspan="7">Development</td>
             <td>Data Wrangling using Power Query</td>
             <td></td>
             <td>Markdown / Video 08</td>
@@ -132,7 +132,13 @@ The following table shows the mapping of categories and topics to content packs:
             <td>Hyperspace</td>
             <td>Markdown / Lab 02</td>
             <td></td>
-            <td>https://github.com/microsoft/hyperspace</td>
+            <td>https://github.com/microsoft/hyperspace<br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-performance-hyperspace?pivots=programming-language-csharp</td>
+        </tr>
+        <tr>
+            <td>Spark CDM connector</td>
+            <td></td>
+            <td>TBD</td>
+            <td>https://github.com/Azure/spark-cdm-connector</td>
         </tr>
         <tr>
             <td rowspan="4">Monitoring</td>
