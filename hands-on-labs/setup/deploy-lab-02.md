@@ -14,6 +14,6 @@ Select `Review + create` to validate the settings.
 
 Once the validation is passed, select `Create` to start the deployment. You should see next an indication of the deployment progress:
 
-![Synapse Analytics workspace deployment progress](./../media/asaworkspace-deploy-progress.png)
+![Synapse Analytics workspace deployment progress](./../media/lab-02-deploy-progress.png)
 
 Wait until the deployment completes successfully before proceeding to the next step.
