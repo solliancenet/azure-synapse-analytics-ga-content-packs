@@ -92,7 +92,7 @@ The following table shows the mapping of categories and topics to content packs:
         </tr>
         <tr>
             <td>Synapse Link SQL serverless - CosmosDB</td>
-            <td>Markdown / Video 03</td>
+            <td>Markdown / Video 03 (low priority)</td>
             <td></td>
             <td>https://docs.microsoft.com/en-us/azure/cosmos-db/synapse-link<br/>https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/query-cosmos-db-analytical-store</td>
         </tr>
@@ -117,7 +117,7 @@ The following table shows the mapping of categories and topics to content packs:
         </tr>
         <tr>
             <td>Hummingbird library</td>
-            <td>Markdown / Video 04 ?</td>
+            <td>Markdown / (just mention in the lab this is an alternative)</td>
             <td></td>
             <td></td>
         </tr>
