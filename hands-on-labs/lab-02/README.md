@@ -37,7 +37,7 @@ Before stepping through the exercises in this lab, make sure you have properly c
 >
 >If you have already created and configured the Synapse Analytics workspace while running one of the other labs available in this repo, you must not perform this task again and you can move on to the next task. The labs are designed to share the Synapse Analytics workspace, so you only need to create it once.
 
-Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../setup/deploy-asa-workspace.md) to create and configure the workspace.
+Follow the instructions in [Deploy your Azure Synapse Analytics workspace](./../setup/asa-workspace-deploy.md) to create and configure the workspace.
 
 ### Task 2 - Create and configure additional resources for this lab
 

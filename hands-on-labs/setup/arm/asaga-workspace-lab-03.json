@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
+        "dataFactoryName": "[concat('asagadatafactory', variables('uniqueSuffix'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-06-01",
+            "name": "[variables('dataFactoryName')]",
+            "location": "[variables('location')]",
+            "type": "Microsoft.DataFactory/factories",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {}
+        }
+    ]
+  }
+  
