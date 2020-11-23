@@ -1,4 +1,4 @@
-# Working with Apache Spark in Synapse Analytics
+# Lab 02 - Working with Apache Spark in Synapse Analytics
 
 - [Before the hands-on lab](#before-the-hands-on-lab)
   - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)

@@ -1,4 +1,4 @@
-# Migrating Data Factory Pipelines to Synapse Analytics Pipelines
+# Lab 03 - Migrating Data Factory Pipelines to Synapse Analytics Pipelines
 
 - [Before the hands-on lab](#before-the-hands-on-lab)
   - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
