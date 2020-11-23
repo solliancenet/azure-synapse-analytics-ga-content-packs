@@ -10,11 +10,12 @@
         "storageAccountType": "Standard_LRS",
         "keyVaultName": "[concat('asagakeyvault', variables('uniqueSuffix'))]",
         "applicationInsightsName": "[concat('asagaappinsights', variables('uniqueSuffix'))]",
-        "containerRegistry": "[concat('asagacontainerregistry', variables('uniqueSuffix'))]",
+        "containerRegistryName": "[concat('asagacontainerregistry', variables('uniqueSuffix'))]",
         "tenantId": "[subscription().tenantId]",
         "storageAccount": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "keyVault": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-        "applicationInsights": "[resourceId(resourceGroup().name, 'Microsoft.Insights/components', variables('applicationInsightsName'))]"
+        "applicationInsights": "[resourceId(resourceGroup().name, 'Microsoft.Insights/components', variables('applicationInsightsName'))]",
+        "container": "[resourceId(resourceGroup().name, 'Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]"
     },
     "resources": [
         {
@@ -52,6 +53,21 @@
             }
         },
         {
+            "type": "Microsoft.ContainerRegistry/registries",
+            "apiVersion": "2019-12-01-preview",
+            "name": "[variables('containerRegistryName')]",
+            "location": "[variables('location')]",
+            "comments": "Container registry for Azure Machine Learning docker images",
+            "tags": {
+              "displayName": "Container Registry",
+              "container.registry": "[variables('containerRegistryName')]"
+            },
+            "sku": {
+              "name": "Standard",
+              "tier": "Standard"
+            }
+        },
+        {
             "type": "Microsoft.MachineLearningServices/workspaces",
             "apiVersion": "2020-03-01",
             "name": "[variables('workspaceName')]",
@@ -69,7 +85,7 @@
                 "storageAccount": "[variables('storageAccount')]",
                 "keyVault": "[variables('keyVault')]",
                 "applicationInsights": "[variables('applicationInsights')]",
-                "containerRegistry": "[if(empty(variables('containerRegistry')), json('null'), variables('containerRegistry'))]"
+                "containerRegistry": "[if(empty(variables('containerRegistryName')), json('null'), variables('containerRegistry'))]"
             }
         }
     ]
