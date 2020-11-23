@@ -4,7 +4,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
-        "workspaceName": "[concat('asagadataexplorer', variables('uniqueSuffix'))]",
+        "workspaceName": "[concat('asagamachinelearning', variables('uniqueSuffix'))]",
         "sku": "enterprise",
         "storageAccountName": "[concat('asagastorage', variables('uniqueSuffix'))]",
         "storageAccountType": "Standard_LRS",
