@@ -75,4 +75,4 @@ Invoke-RestMethod -Uri https://$kustoCluster.kusto.windows.net/v1/rest/mgmt -Met
 
 
 $app = ((az ad sp list --display-name "Azure Synapse Analytics GA Labs") | ConvertFrom-Json)[0]
-New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Admin" -Scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoCluster/databases/$kustoDatabase"
+New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Admin" -Scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoCluster/databases/$kustoDatabaseName"
