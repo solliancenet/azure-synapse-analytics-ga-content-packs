@@ -1,6 +1,6 @@
 # Deploy resources for Lab 02
 
-## Deploy the Synapse Analytics workspace
+## Deploy services for the lab
 
 Click the `Deploy to Azure` button below to start the deployment process.
 
