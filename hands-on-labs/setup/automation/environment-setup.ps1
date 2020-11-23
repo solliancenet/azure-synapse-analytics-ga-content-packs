@@ -411,3 +411,13 @@ foreach ($dataset in $loadingDatasets.Keys) {
         $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
+
+
+Write-Information "Preparing environment for labs"
+
+$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+
+$secretValue = ConvertTo-SecureString $app.password -AsPlainText -Force
+Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
+
+

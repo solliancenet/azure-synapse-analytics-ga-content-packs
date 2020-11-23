@@ -51,6 +51,18 @@ $sparkPoolName = "SparkPool01"
 $global:sqlEndpoint = "$($workspaceName).sql.azuresynapse.net"
 $global:sqlUser = "asaga.sql.admin"
 
+$global:synapseToken = ""
+$global:synapseSQLToken = ""
+$global:managementToken = ""
+$global:powerbiToken = "";
+
+$global:tokenTimes = [ordered]@{
+        Synapse = (Get-Date -Year 1)
+        SynapseSQL = (Get-Date -Year 1)
+        Management = (Get-Date -Year 1)
+        PowerBI = (Get-Date -Year 1)
+}
+
 Write-Information "Creating the SalesTelemetry table"
 
 $kustoCluster = "asagadataexplorer$($uniqueId).$($location)"
@@ -60,3 +72,7 @@ $kustoStatement = ".create table SalesTelemetry ( CustomerId:int32, ProductId:in
 $token = ((az account get-access-token --resource https://help.kusto.windows.net) | ConvertFrom-Json).accessToken
 $body = "{ db: ""$kustoDatabaseName"", csl: ""$kustoStatement"" }"
 Invoke-RestMethod -Uri https://$kustoCluster.kusto.windows.net/v1/rest/mgmt -Method POST -Body $body -Headers @{ Authorization="Bearer $token" } -ContentType "application/json"
+
+
+$app = ((az ad sp list --display-name "Azure Synapse Analytics GA Labs") | ConvertFrom-Json)[0]
+New-AzRoleAssignment -Objectid $app.objectId -RoleDefinitionName "Admin" -Scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.Kusto/clusters/$kustoCluster/databases/$kustoDatabase"
