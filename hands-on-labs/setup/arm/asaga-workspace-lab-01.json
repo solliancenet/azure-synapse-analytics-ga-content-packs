@@ -76,6 +76,9 @@
                 "[variables('storageAccount')]",
                 "[variables('applicationInsights')]"
             ],
+            "identity": {
+                "type": "systemAssigned"
+            },
             "sku": {
                 "tier": "[variables('sku')]",
                 "name": "[variables('sku')]"
