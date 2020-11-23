@@ -1,0 +1,22 @@
+{
+    "name": "#LINKED_SERVICE_NAME#",
+    "type": "Microsoft.Synapse/workspaces/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "AzureDataExplorer",
+        "typeProperties": {
+            "endpoint": "https://#DATA_EXPLORER_CLUSTER#.kusto.windows.net",
+            "tenant": "#AAD_TENANT_ID#",
+            "servicePrincipalId": "#AAD_SERVICE_PRINCIPAL_ID#",
+            "servicePrincipalKey": {
+                "type": "AzureKeyVaultSecret",
+                "store": {
+                    "referenceName": "#KEY_VAULT_LINKED_SERVICE_NAME#",
+                    "type": "LinkedServiceReference"
+                },
+                "secretName": "#SECRET_NAME#"
+            },
+            "database": "#DATA_EXPLORER_DATABASE#"
+        }
+    }
+}

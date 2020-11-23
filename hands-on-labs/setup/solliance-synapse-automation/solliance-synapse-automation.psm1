@@ -336,6 +336,57 @@ function Create-SQLPoolKeyVaultLinkedService {
     return $result
 }
 
+function Create-DataExplorerKeyVaultLinkedService {
+    
+    param(
+    [parameter(Mandatory=$true)]
+    [String]
+    $TemplatesPath,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $WorkspaceName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $Name,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $DataExplorerClusterName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $DataExplorerDatabaseName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $AADTenantId,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $AADServicePrincipalId,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $KeyVaultLinkedServiceName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $SecretName
+    )
+
+    $itemTemplate = Get-Content -Path "$($TemplatesPath)/data_explorer_key_vault_linked_service.json"
+    $item = $itemTemplate.Replace("#LINKED_SERVICE_NAME#", $Name).Replace("#DATA_EXPLORER_CLUSTER#", $DataExplorerClusterName).Replace("#DATA_EXPLORER_DATABASE#", $DataExplorerDatabaseName)
+        .Replace("#AAD_TENANT_ID#", $AADTenantId).Replace("#AAD_SERVICE_PRINCIPAL_ID#", $AADServicePrincipalId).Replace("#KEY_VAULT_LINKED_SERVICE_NAME#", $KeyVaultLinkedServiceName).Replace("#SECRET_NAME#", $SecretName)
+    $uri = "https://$($WorkspaceName).dev.azuresynapse.net/linkedServices/$($Name)?api-version=2019-06-01-preview"
+
+    Ensure-ValidTokens
+    $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
+
+    return $result
+}
+
 function Create-IntegrationRuntime {
     
     param(
@@ -1656,6 +1707,7 @@ Export-ModuleMember -Function Create-BlobStorageLinkedService
 Export-ModuleMember -Function Create-DataLakeLinkedService
 Export-ModuleMember -Function Create-CosmosDBLinkedService
 Export-ModuleMember -Function Create-SQLPoolKeyVaultLinkedService
+Export-ModuleMember -Function Create-DataExplorerKeyVaultLinkedService
 Export-ModuleMember -Function Create-IntegrationRuntime
 Export-ModuleMember -Function Get-IntegrationRuntime
 Export-ModuleMember -Function Delete-IntegrationRuntime
