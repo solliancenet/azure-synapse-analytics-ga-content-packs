@@ -1,0 +1,41 @@
+{
+    "name": "wwi02_sale_small_telemetry",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "#LINKED_SERVICE_NAME#",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation",
+                "folderPath": "sale-small-telemetry",
+                "fileSystem": "wwi-02"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": [
+            {
+                "name": "CustomerId",
+                "type": "String"
+            },
+            {
+                "name": "ProductId",
+                "type": "String"
+            },
+            {
+                "name": "Timestamp",
+                "type": "String"
+            },
+            {
+                "name": "Url",
+                "type": "String"
+            }
+        ]
+    },
+    "type": "Microsoft.Synapse/workspaces/datasets"
+}

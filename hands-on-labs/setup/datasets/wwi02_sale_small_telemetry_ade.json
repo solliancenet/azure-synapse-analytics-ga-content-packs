@@ -1,0 +1,16 @@
+{
+    "name": "wwi02_sale_small_telemetry_ade",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "#LINKED_SERVICE_NAME#",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureDataExplorerTable",
+        "schema": [],
+        "typeProperties": {
+            "table": "SalesTelemetry"
+        }
+    },
+    "type": "Microsoft.Synapse/workspaces/datasets"
+}

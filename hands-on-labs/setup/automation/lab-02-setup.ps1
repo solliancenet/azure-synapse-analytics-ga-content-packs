@@ -89,6 +89,51 @@ $result = Create-DataExplorerKeyVaultLinkedService -TemplatesPath $templatesPath
                  -DataExplorerDatabaseName $kustoDatabaseName -AADTenantId $tenantId -AADServicePrincipalId $app.appId -KeyVaultLinkedServiceName $keyVaultName -SecretName "ASA-GA-LABS"
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
+
+
+Write-Information "Create data sets for loading sales telemetry data into $($kustoDatabaseName) Kusto database"
+
+$loadingDatasets = @{
+        wwi02_sale_small_telemetry_adls = $dataLakeAccountName
+        wwi02_sale_small_telemetry_ade = $linkedServiceName
+}
+
+foreach ($dataset in $loadingDatasets.Keys) {
+        Write-Information "Creating dataset $($dataset)"
+        $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+        Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+}
+
+Write-Information "Create pipeline to load sales telemetry data into the Data Explorer database"
+
+$params = @{}
+$loadingPipelineName = "Setup - Import sales telemetry data"
+$fileName = "import_sale_small_telemetry_data"
+
+Write-Information "Creating pipeline $($loadingPipelineName)"
+
+$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
+Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+
+Write-Information "Running pipeline $($loadingPipelineName)"
+
+$result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
+$result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
+$result
+
+Write-Information "Deleting pipeline $($loadingPipelineName)"
+
+$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
+Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+
+foreach ($dataset in $loadingDatasets.Keys) {
+        Write-Information "Deleting dataset $($dataset)"
+        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
+        Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+}
+
+
+
 Write-Information "Deleting linked service for Kusto database"
 
 $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "linkedservices" -Name $linkedServiceName
