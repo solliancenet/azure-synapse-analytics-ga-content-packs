@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
+        "clusterName": "[concat('asagadataexplorer', parameters('uniqueSuffix'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Kusto/Clusters",
+            "apiVersion": "2020-06-14",
+            "name": "[variables('clusterName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Dev(No SLA)_Standard_E2a_v4",
+                "tier": "Basic",
+                "capacity": 1
+            },
+            "properties": {
+                "trustedExternalTenants": [
+                    {
+                        "value": "*"
+                    }
+                ],
+                "enableDiskEncryption": false,
+                "enableStreamingIngest": false,
+                "enablePurge": false,
+                "enableDoubleEncryption": false
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2020-06-14",
+            "name": "[concat(variables('clusterName'), '/ASA-Data-Explorer-DB-01')]",
+            "location": "variables('location')",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', variables('clusterName'))]"
+            ],
+            "kind": "ReadWrite",
+            "properties": {
+                "softDeletePeriod": "P3650D",
+                "hotCachePeriod": "P31D"
+            }
+        }
+    ]
+}
