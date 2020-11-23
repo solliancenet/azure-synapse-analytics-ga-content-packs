@@ -14,6 +14,7 @@ The following requirements must be met before the deployment:
 
 - A unique suffix to be used when generating the name of the workspace. All workspaces deployed using the templates in this repo are named `asagaworkspace<unique_suffix>`, where `<unique_suffix>` gets replaced with the value you provide. Make sure the unique suffix is specific enough to avoid potential naming collisions (i.e. avoid using common values like `01`, `1`, `test`, etc.). Make sure you remember the unique suffix as you need to use it for additional configuration once the Azure Synapse Analytics workspace deployment is complete.
 - A password for the SQL admin account of the workspace. Make sure you save the password in a secure location (like a password manager) as you will need to use it later.
+- A GitHub account to access the content packs repository.
 
 ## Configure the Azure Cloud Shell
 
@@ -77,3 +78,53 @@ Select the `Tags` section and add a new tag named `DeploymentId`. Use the unique
 ![Synapse Analytics workspace resource group tagging](./../media/asaworkspace-deploy-tag.png)
 
 The deployment of your Synapse Analytics workspace is now complete. Next, you will deploy the artifacts required by the labs into the newly created Synapse Analytics workspace.
+
+## Run the global setup script in Cloud Shell
+
+In the Azure Portal, navigate to the resource group you used to deploy the Synapse Analytics workspace (see [Pre-requisites for deployment](#pre-requisites-for-deployment) above for details) and start a Cloud Shell instance (see [Configure the Azure Cloud Shell](#configure-the-azure-cloud-shell) above for details).
+
+Once the Cloud Shell instance becomes available, run ```az login``` to make sure the correct account and subscription context are set:
+
+![Cloud Shell login](./../media/cloudshell-setup-01.png)
+
+Clone the content packs repository into the `asa` local folder using
+
+```cmd
+git clone https://github.com/solliancenet/azure-synapse-analytics-ga-content-packs asa
+```
+
+If GIT asks for credentials, provide your GitHub username and password.
+
+>**IMPORTANT**
+>
+>If your GitHub account has two-factor authentication activated, you need to provide a PAT (Personal Access Token) instead your password. For more details, read the [Creating a personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) section in GitHub Docs.
+>
+>When pasting your password or PAT into the Cloud Shell window, make sure you are familiar with the supported key combinations (for more details, see [Using the Azure Cloud Shell window](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#copy-and-paste)).
+
+Once the repository is successfully cloned, you shoud see a result similar to this:
+
+![Cloud Shell git clone repository](./../media/cloudshell-setup-02.png)
+
+Change you current directory using
+
+```cmd
+cd asa/hands-on-labs/setup/automation
+```
+
+and then start the setup script using
+
+```powershell
+.\environment-setup.ps1
+```
+
+Make sure the selected subscription is the one that contains the resource group where you deployed the Synapse Analytics workspace:
+
+![Cloud Shell select subscription](./../media/cloudshell-setup-03.png)
+
+Enter the name of the resource group where you deployed the Synapse Analytics workspace:
+
+![Cloud Shell select resource group](./../media/cloudshell-setup-04.png)
+
+The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
+
+The process should take 5 - 10 minutes. Wait until the setup script is finished before proceeding to the next steps.
