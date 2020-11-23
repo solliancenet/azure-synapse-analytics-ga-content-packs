@@ -100,11 +100,35 @@ Next, select `Test connection` to make sure all settings are correct, and then s
 
 ### Task 2 - Explore Azure Machine Learning integration features in Synapse Studio
 
-Task content
+First, we need to create a Spark table as a starting point for the Machine Learning model trainig process. In Synapse Studio, select the `Data` hub and then the `Linked` section. In the primary `Azure Data Lake Storage Gen 2` account, select the `wwi-02` file system, and then select the `sale-small-20191201-snappy.parquet` file under `wwi-02\sale-small\Year=2019\Quarter=Q4\Month=12\Day=20191201`. Right click the file and select `New notebook -> New Spark table`.
+
+![Create new Spark table from Parquet file in primary data lake](./../media/lab-01-ex-01-task-02-create-spark-table.png)
+
+Replace the content of the notebook cell with the following code:
+
+```python
+import pyspark.sql.functions as f
+
+df = spark.read.load('abfss://wwi-02@asagadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*/*.parquet',
+    format='parquet')
+df_consolidated = df.groupBy('ProductId', 'TransactionDate', 'Hour').agg(f.sum('Quantity').alias('TotalQuantity'))
+df_consolidated.write.mode("overwrite").saveAsTable("default.SaleConsolidated")
+```
+
+The code takes all data available for December 2019 and aggregates it at the `ProductId`, `TransactionDate`, and `Hour` level, calculating the total product quantities sold as `TotalQuantity`. The result is then saved as a Spark table named `SaleConsolidated`. To view the table in the `Data`hub, expand the `default (Spark)` database in the `Workspace` section. Your table will show up in the `Tables` folder. Select the three dots at the right of the table name to view the `Machine Learning` option in the context menu.
+
+![Machine Learning option in the context menu of a Spark table](./../media/lab-01-ex-01-task-02-ml-menu.png)
+
+The following options are available in the `Machine Learning` section:
+
+- Enrich with new model: allows you to start an AutoML experiment to train a new model.
+- Enrich with existing model: allows you to use an existing Azure Cognitive Services model.
 
 ## Exercise 2 - Trigger an Auto ML experiment using data from a Spark table
 
-Exercise description
+To trigger the execution of a new AutoML experiment, select `Enrich with new model`.
+
+![Trigger new AutoML experiment from Spark table](./../media/lab-01-ex-02-task-01-trigger-experiment.png)
 
 ### Task 1 - Create a Spark table on top of data from the Data Lake
 
