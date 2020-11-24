@@ -36,19 +36,19 @@ DROP TABLE [wwi].[Customer]
 CREATE TABLE wwi.Customer
 (
     CustomerId INT NOT NULL
-    ,FirstName NVARCHAR(1000) NOT NULL
+    ,FirstName NVARCHAR(50) NOT NULL
     ,MiddleInitial NVARCHAR(10) NULL
-    ,LastName NVARCHAR(1000) NOT NULL
-    ,FullName NVARCHAR(2010) NOT NULL
-    ,Gender NVARCHAR(100) NULL
+    ,LastName NVARCHAR(50) NOT NULL
+    ,FullName NVARCHAR(110) NOT NULL
+    ,Gender NVARCHAR(15) NULL
     ,Age INT NULL
     ,BirthDate DATE NULL
     ,Address_PostalCode NVARCHAR(200) NULL
     ,Address_Street NVARCHAR(2000) NULL
     ,Address_City NVARCHAR(2000) NULL
     ,Address_Country NVARCHAR(2000) NULL
-    ,Mobile NVARCHAR(500) NULL
-    ,Email NVARCHAR(500) NULL
+    ,Mobile NVARCHAR(20) NULL
+    ,Email NVARCHAR(20) NULL
 )
 WITH
 (
