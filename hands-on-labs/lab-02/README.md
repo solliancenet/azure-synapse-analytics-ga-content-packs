@@ -269,6 +269,7 @@ Same example as above, this time using Python code
 # 2. Only creating index over HDFS file based scan nodes is supported.
 #
 
+from hyperspace import *  
 from com.microsoft.hyperspace import *
 from com.microsoft.hyperspace.index import *
 
