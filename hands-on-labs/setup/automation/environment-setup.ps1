@@ -211,6 +211,7 @@ if ($download)
                 products = "wwi-02/data-generators/generator-product/generator-product.csv"
                 dates = "wwi-02/data-generators/generator-date.csv"
                 customer = "wwi-02/data-generators/generator-customer-clean.csv"
+                reviews = "wwi-02/sale-small-product-reviews/ProductReviews.csv"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
