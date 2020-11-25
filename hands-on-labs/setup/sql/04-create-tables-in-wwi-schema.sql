@@ -82,3 +82,31 @@ WITH
 			20190101, 20190201, 20190301, 20190401, 20190501, 20190601, 20190701, 20190801, 20190901, 20191001, 20191101, 20191201)
 	)
 )
+
+IF OBJECT_ID(N'[wwi].[ProductQuantityForecast]', N'U') IS NOT NULL   
+DROP TABLE [wwi].[ProductQuantityForecast]
+
+CREATE TABLE [wwi].[ProductQuantityForecast]
+( 
+	[ProductId] [int]  NOT NULL,
+	[TransactionDate] [int]  NOT NULL,
+	[Hour] [int]  NOT NULL,
+	[TotalQuantity] [int]  NOT NULL
+)
+WITH
+(
+	DISTRIBUTION = REPLICATE
+)
+
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (100, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (200, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (300, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (400, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (500, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (600, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (700, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (800, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (900, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1000, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1100, 20201209, 10, 0)
+INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1200, 20201209, 10, 0)

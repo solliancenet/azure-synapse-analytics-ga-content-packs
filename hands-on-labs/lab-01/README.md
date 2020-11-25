@@ -13,9 +13,8 @@ This lab has the following structure:
   - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
   - [Task 2 - Explore Azure Machine Learning integration features in Synapse Studio](#task-2---explore-azure-machine-learning-integration-features-in-synapse-studio)
 - [Exercise 2 - Trigger an Auto ML experiment using data from a Spark table](#exercise-2---trigger-an-auto-ml-experiment-using-data-from-a-spark-table)
-  - [Task 1 - Create a Spark table on top of data from the Data Lake](#task-1---create-a-spark-table-on-top-of-data-from-the-data-lake)
-  - [Task 2 - Trigger a regression Auto ML experiment on a Spark table](#task-2---trigger-a-regression-auto-ml-experiment-on-a-spark-table)
-  - [Task 3 - View experiment details in Azure Machine Learning workspace](#task-3---view-experiment-details-in-azure-machine-learning-workspace)
+  - [Task 1 - Trigger a regression Auto ML experiment on a Spark table](#task-1---trigger-a-regression-auto-ml-experiment-on-a-spark-table)
+  - [Task 2 - View experiment details in Azure Machine Learning workspace](#task-2---view-experiment-details-in-azure-machine-learning-workspace)
 - [Exercise 3 - Enrich data in a SQL pool table using a trained model](#exercise-3---enrich-data-in-a-sql-pool-table-using-a-trained-model)
   - [Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning](#task-1---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-machine-learning)
   - [Task 2 - Enrich data in a SQL pool table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-cognitive-services)
@@ -126,29 +125,130 @@ The following options are available in the `Machine Learning` section:
 
 ## Exercise 2 - Trigger an Auto ML experiment using data from a Spark table
 
-To trigger the execution of a new AutoML experiment, select `Enrich with new model`.
+In this exercise, you will trigger the execution of an Auto ML experiment and view its progress in Azure Machine learning studio.
+
+### Task 1 - Trigger a regression Auto ML experiment on a Spark table
+
+To trigger the execution of a new AutoML experiment, select the `Data` hub and then select the `...` area on the right of the `saleconsolidated` Spark table to activate the context menu.
+
+![Context menu on the SaleConsolidated Spark table](./../media/lab-01-ex-02-task-01-ml-menu.png)
+
+From the context menu, select `Enrich with new model`.
+
+![Machine Learning option in the context menu of a Spark table](./../media/lab-01-ex-01-task-02-ml-menu.png)
+
+The `Enrich with new model` dialog allow you to set the properties for the Azure Machine Learning experiment. Provide values as follows:
+
+- **Azure Machine Learning workspace**: leave unchanged, should be automaticall populated with your Azure Machine Learning workspace name.
+- **Experiment name**: leave unchanged, a name will be automatically suggested.
+- **Best model name**: leave unchanged, a name will be automatically suggested. Save this name as you will need it later to identify the model in the Azure Machine Learning Studio.
+- **Target column**: Select `TotalQuantity(long)` - this is the feature you are looking to predict.
+- **Spark pool**: leave unchanged, should be automaticall populated with your Spark pool name.
 
 ![Trigger new AutoML experiment from Spark table](./../media/lab-01-ex-02-task-01-trigger-experiment.png)
 
-### Task 1 - Create a Spark table on top of data from the Data Lake
+Notice the Apache Spark configuration details:
 
-Task content
+- The number of executors that will be used
+- The size of the executor
 
-### Task 2 - Trigger a regression Auto ML experiment on a Spark table
+Select `Continue` to advance with the configuration of your Auto ML experiment.
 
-Task content
+Next, you will choose the model type. In this case, the choice will be `Regression` as we try to predict a continuous numerical value. After selecting the model type, select `Continue` to advance.
 
-### Task 3 - View experiment details in Azure Machine Learning workspace
+![Select model type for Auto ML experiment](./../media/lab-01-ex-02-task-01-model-type.png)
 
-Task content (includes viewing an already registered model in the workspace and its details)
+On the `Configure regression model` dialog, provide values as follows:
+
+- **Primary metric**: leave unchanged, `Spearman correlation` should be suggested by default.
+- **Training job time (hours)**: set to 0.25 to force the process to finish after 15 minutes.
+- **Max concurrent iterations**: leave unchanged.
+- **ONNX model compatibility**: set to `Enable` - this is very important as currently only ONNX models are supported in the Synapse Studio integrated experience.
+
+Once you have set all the values, select `Create run` to advance.
+
+![Configure regression model](./../media/lab-01-ex-02-task-01-regressio-model-configuration.png)
+
+As your run is being submitted, a notification will pop up instructing you to wait until the Auto ML run is submited. You can check the status of the notification by selecting the `Notifications` icon on the top right part of your screen.
+
+![Submit AutoML run notification](./../media/lab-01-ex-02-task-01-submit-notification.png)
+
+Once your run is successfully submitted, you will get another notification that will inform you about the actual start of the Auto ML experiment run.
+
+![Started AutoML run notification](./../media/lab-01-ex-02-task-01-started-notification.png)
+
+>**NOTE**
+>
+>Alongside the `Create run` option you might have noticed the `Open in notebook option`. Selecting that option allows you to review the actual Python code that is used to submit the Auto ML run. As an exercise, try re-doing all the steps in this task, but instead of selecting `Create run`, select `Open in notebook`. You should see a notebook similar to this:
+>
+>![Open AutoML code in notebook](./../media/lab-01-ex-02-task-01-open-in-notebook.png)
+>
+>Take a moment to read through the code that is generated for you.
+
+### Task 2 - View experiment details in Azure Machine Learning workspace
+
+To view the experiment run you just started, open the Azure Portal, select your resource group, and then select the Azure Machine Learning workspace from the resource group.
+
+![Open Azure Machine Learning workspace](./../media/lab-01-ex-02-task-02-open-aml-workspace.png)
+
+Locate and select the `Launch studio` button to start the Azure Machine Learning Studio.
+
+In Azure Machine Leanring Studio, select the `Automated ML` section on the left and identify the experiment run you have just started. Note the experiment name, the `Running status`, and the `local` compute target.
+
+![AutoML experiment run in Azure Machine Learning Studio](./../media/lab-01-ex-02-task-02-experiment-run.png)
+
+The reason why you see `local` as the compute target is because you are running the AutoML experiment on the Spark pool inside Synapse Analytics. From the point of view of Azure Machine Learning, you are not running your experiment on Azure Machine Learning's compute resources, but on your "local" compute resources.
+
+Select your run, and then select the `Models` tab to view the current list of models being built by your run. The models are listed in descending order of the metric value (which is `Spearman correlation` in this case), the best ones being listed first.
+
+![Models built by AutoML run](./../media/lab-01-ex-02-task-02-run-details.png)
+
+Select the best model (the one at the top of the list) and then select the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
+
+![Explainability of the best AutoML model](./../media/lab-01-ex-02-task-02-best-mode-explained.png)
+
+Next, select the `Models` section on the left in Azure Machine Learning Studio and see your best model registered with Azure Machine Learning. This allows you to refer to this model later on in this lab.
+
+![AutoML best model registered in Azure Machine Learning](./../media/lab-01-ex-02-task-02-model-registry.png)
 
 ## Exercise 3 - Enrich data in a SQL pool table using a trained model
 
-Exercise description
+In this exercise, you will use the model you trained in Exercise 2 to perform predictions on new data.
 
 ### Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning
 
-Task description
+In Synapse Studio, select the `Data` hub, then select the `Workspace` tab, and then locate the `wwi.ProductQuantityForecast` table in the `SQLPool01 (SQL)` database (under `Databases`). Activate the context menu by selecting `...` from the righ side of the table name, and then select `New SQL script > Select TOP 100 rows`. The table contains the following columns:
+
+-**ProductId**: the identifier of the product for which we want to predict
+-**TransactionDate**: the future date for which we want to predict
+-**Hour**: the hour from the future date for which we want to predict
+-**TotalQuantity**: the value we want to predict for the specified product, day, and hour.
+
+![ProductQuantitForecast table in the SQL pool](./../media/lab-01-ex-03-task-01-explore-table.png)
+
+Notice that `TotalQuantity` is zero in all rows as this is the placeholder for the predicted values we are looking to get.
+
+To use the model you just trained in Azure Machine Learning, activate the context menu of the `wwi.ProductQuantityForecast`, and then select `Machine Learning > Enrich with existing model`. This will open the `Enrich with existing model` dialog where you can select your model. Select the most recent model and then select `Continue`.
+
+![Select trained Machine Learning model](./../media/lab-01-ex-03-task-01-select-model.png)
+
+Next, you will manage the input and output column mappings. Because the column names from the target table and the table used for model training match, you can leave all mappings as suggested by default. Select `Continue` to advance.
+
+![Column mapping in model selection](./../media/lab-01-ex-03-task-01-map-columns.png)
+
+The final step presents you with options to name the stored procedure that will perform the predictions and the table that will store the serialized form of your model. Provide the following values:
+
+- **Stored procedure name**: `[wwi].[ForecastProductQuantity]`
+- **Select target table**: `Create new`
+- **New table**: `[wwi].[Model]
+
+Select `Deploy model + open script` to deploy your model into the SQL pool.
+
+![Configure model deployment](./../media/lab-01-ex-03-task-01-deploy-model.png)
+
+A new SQL script is created for you:
+
+![SQL script for stored procedure](./../media/lab-01-ex-03-task-01-forecast-stored-procedure.png)
 
 ### Task 2 - Enrich data in a SQL pool table using a trained model from Azure Cognitive Services
 
