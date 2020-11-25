@@ -249,7 +249,7 @@ eqJoin.explain(true)
 //Plan with indexes versus... Plan without indexes
 //we should see this in the plan: InMemoryFileIndex[abfss://datasets@hyperspacebenchmark.dfs.core.windows.net/hyperspaceon...
 spark.conf.set("spark.hyperspace.explain.displayMode", "html")
-hyperspace.explain(eqJoin) //{ displayHTML }
+hyperspace.explain(eqJoin)(displayHTML(_))
 
 //Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
 //spark.disableHyperspace
@@ -338,7 +338,6 @@ Microsoft Spark Utilities (MSSparkUtils) is a builtin package to help you easily
 %%pyspark
 
 from notebookutils import mssparkutils
-from pyspark.sql import SparkSession
 
 #
 # Microsoft Spark Utilities
@@ -348,23 +347,21 @@ from pyspark.sql import SparkSession
 
 # Azure storage access info
 blob_account_name = 'asadatalake01'
-blob_container_name = 'DLContainerName'
+blob_container_name = 'wwi-02'
 blob_relative_path = '/'
-linkedServiceName = 'Azure Data Lake Storage Gen2'
+linkedServiceName = 'asadatalake01'
 blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linkedServiceName)
 
 # Allow SPARK to access from Blob remotely
 spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name), blob_sas_token)
 
-path = 'abfss://%s@%s.dfs.core.windows.net/' % (blob_container_name, blob_account_name, blob_relative_path)
-
-files = mssparkutils.fs.ls(path)
+files = mssparkutils.fs.ls('/')
 for file in files:
     print(file.name, file.isDir, file.isFile, file.path, file.size)
 
 mssparkutils.fs.mkdirs('NewFolder')
 
-files = mssparkutils.fs.ls(path)
+files = mssparkutils.fs.ls('/')
 for file in files:
     print(file.name, file.isDir, file.isFile, file.path, file.size)
 ```
