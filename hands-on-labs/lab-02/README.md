@@ -20,10 +20,9 @@ This lab has the following structure:
   - [Task 4 - Load data from Data Lake storage](#task-4---load-data-from-data-lake-storage)
   - [Task 5 - Load data from SQL Pool](#task-5---load-data-from-sql-pool)
   - [Task 6 - Enrich data from multiple sources](#task-6---enrich-data-from-multiple-sources)
-- [Exercise 3 - Publish and consume enriched data](#exercise-3---publish-and-consume-enriched-data)
-  - [Task 1 - Save enriched data to Data Lake storage](#task-1---save-enriched-data-to-data-lake-storage)
-  - [Task 2 - Access data with the SQL built-in pool](#task-2---access-data-with-the-sql-built-in-pool)
-  - [Task 3 - Display enriched data in Power BI](#task-3---display-enriched-data-in-power-bi)
+- [Exercise 3 - Consume enriched data](#exercise-3---consume-enriched-data)
+  - [Task 1 - Access data with the SQL built-in pool](#task-1---access-data-with-the-sql-built-in-pool)
+  - [Task 2 - Display enriched data in Power BI](#task-2---display-enriched-data-in-power-bi)
 - [After the hands-on lab](#after-the-hands-on-lab)
 - [Resources](#resources)
 
@@ -414,8 +413,6 @@ import java.time.format.DateTimeFormatter
 
 val zoneId = ZoneId.systemDefault()
 
-val cond = 'CustomerId === 22 && 'ProductId === 1325
-
 //
 // 1. read customers/products from sqldb
 //
@@ -436,7 +433,7 @@ val cond = 'CustomerId === 22 && 'ProductId === 1325
 //
 
 //TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
-val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")//.limit(1200)//.where(cond)
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")
 
 val func1 = udf((dt:String, hh:Int, mm:Int) => {
     val fmt = DateTimeFormatter.ofPattern("yyyyMMdd")
@@ -453,7 +450,7 @@ dfSales2.show
 //
 
 //CustomerId,ProductId,Timestamp,Url
-val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")//.limit(1800)//.where(cond)
+val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")
 
 //dfTelemetry  = spark.read \
 //    .format("com.microsoft.kusto.spark.synapse.datasource") \
@@ -475,12 +472,11 @@ dfTelemetry2.show
 // Enrichment
 //
 
-//do a cross-join to match transactions with telemetry entries based on this fuzzy logic:
+//match transactions with telemetry entries based on this fuzzy logic:
 //a telemetry entry belongs to a transaction if it was logged during the 15 minutes before the transaction
 val dfEnriched = dfTelemetry2.repartition(800).join(dfSales2, dfTelemetry2("TCustomerId")===dfSales2("CustomerId") && dfTelemetry2("TProductId")===dfSales2("ProductId")).withColumn("deltaSec", 'DtSales - 'DtTelem).where('deltaSec > 0 and 'deltaSec < 900).drop("TCustomerId").drop("TProductId")
 dfEnriched.show
 
-//use window function: for each TransactionTimestamp we get a window frame / partition sorted by telemetry Timestamps
 //compute the time-to-trans and clicks-to-trans
 val windowSpec = Window.partitionBy($"TransactionId", $"ProductId", $"CustomerId").orderBy('Timestamp desc)
 val countClicks = count('*).over(windowSpec)
@@ -490,35 +486,23 @@ val dfOut = dfEnriched.withColumn("ClicksToPurchase", countClicks).withColumn("T
 val dfResult = dfOut.groupBy($"TransactionId", $"ProductId", $"CustomerId").agg(max('ClicksToPurchase), max('TimeToPurchase))
 dfResult.show
 
+val df = dfResult.withColumnRenamed("CustomerId", "GCustomerId").withColumnRenamed("ProductId", "GProductId").withColumnRenamed("TransactionId", "GTransactionId")
+df.show
+
+val dfSaved = df.join(dfOut, df("GCustomerId")===dfOut("CustomerId") && df("GProductId")===dfOut("ProductId") && df("GTransactionId")===dfOut("TransactionId")).drop("GCustomerId").drop("GProductId").drop("GTransactionId")
+dfSaved.show
+
 //
 // write output to datalake
 //
-//val dfOut = spark.sqlContext.sql("select * from df")
-//dfOut.write.sqlanalytics("SQLPool02.wwi_02.GA", Constants.INTERNAL)
+dfSaved.coalesce(1).write.partitionBy("TransactionDate").format("csv").option("header", "true").mode("overwrite").save("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
 ```
 
-## Exercise 3 - Publish and consume enriched data
+## Exercise 3 - Consume enriched data
 
-The output data will be now persisted in order to be used for further analysis.
+The persisted output data will be now used for further analysis.
 
-### Task 1 - Save enriched data to Data Lake storage
-
-Use spark to write dataframe to DataLake:
-
-```python
-%%pyspark
-
-#write to datalake
-df \
- .coalesce(1) \
- .write \
- .mode("overwrite") \
- .option("header", "true") \
- .format("com.databricks.spark.csv") \
- .save('abfss://wwi-02@asadatalake01.dfs.core.windows.net/stats/sale-small-stats.csv')
-```
-
-### Task 2 - Access data with the SQL built-in pool
+### Task 1 - Access data with the SQL built-in pool
 
 
 ```sql
@@ -551,7 +535,7 @@ dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmall201912")
 dfExt.show(10)
 ```
 
-### Task 3 - Display enriched data in Power BI
+### Task 2 - Display enriched data in Power BI
 
 TODO
 
