@@ -155,7 +155,49 @@ The results are available in the lower pane.
 
 We will use spark to handle our datasets coming from different datasources.
 
+In order to execute our code, we will use the Azure Analytics Synapse workspace that we have already created.
+
+In a workspace you can create notebooks in order to use code snippets, written in scala, python or sql, to be executed on top of your datasources.
+
+To execute the code for our tasks below we'll use such notebooks, so let's see how notebooks are created first.
+
+&nbsp;
+
+* Create a notebook: go to the left vertical menu, choose Notebooks, press the + button in the toolbar
+
+![Create a notebook](./../media/asa-notebook-01.png)
+
+&nbsp;
+
+* Configure your new notebooks: go to Properties, choose a name. To save changes, you'll have to click on `Publish all`
+
+![Configure the notebook](./../media/asa-notebook-02.png)
+
+&nbsp;
+
+* Save your new notebooks: go to the `Publish all` button in your toolbar, then press `Publish` to save changes. Wait until publishing finishes.
+
+![Publish the notebook](./../media/asa-notebook-03.png)
+
+&nbsp;
+
+* You can now edit your notebook's contents. Select your notebook in the left list, then press `Add code` or `Add text` in the main pane.
+
+![Edit the notebook](./../media/asa-notebook-04.png)
+
+&nbsp;
+
+* Each item, code or text is called a `Cell`. You can execute your code cells. First, choose a Spark pool to be used for your code. Then press the `Run cell`
+Once execution is done, a pane below your code cell shows the output for that cell.
+
+![Run the notebook's code](./../media/asa-notebook-05.png)
+
+Our tasks below use python or scala or sql code. Code cells can use the "magic" prefix to indicate the syntax we use for that code. 
+We use `%%pyspark` to indicate python code, `%%spark` for scala code and `%%sql` for SQL.
+
 ### Task 1 - Load data from Azure Data Explorer
+
+To load the data stored in the linked service for Azure Data Explorer, we can use the following code:
 
 ```python
 %%pyspark
@@ -503,30 +545,6 @@ dfSaved.coalesce(1).write.partitionBy("TransactionDate").parquet("abfss://wwi-02
 ## Exercise 3 - Consume enriched data
 
 The persisted output data will be now used for further analysis.
-In a workspace you can create notebooks in order to use code snippets, written in scala, python or sql, to be executed on top of your datasources.
-
-&nbsp;
-
-* Create a notebook: go to the left vertical menu, choose Notebooks, press the + button in the toolbar
-
-![Create a notebook](./../media/asa-notebook-01.png)
-
-* Configure your new notebooks: go to Properties, choose a name. To save changes, you'll have to click on `Publish all`
-
-![Configure the notebook](./../media/asa-notebook-02.png)
-
-* Save your new notebooks: go to the `Publish all` button in your toolbar, then press `Publish` to save changes. Wait until publishing finishes.
-
-![Publish the notebook](./../media/asa-notebook-03.png)
-
-* You can now edit your notebook's contents. Select your notebook in the left list, then press `Add code` or `Add text` in the main pane.
-
-![Edit the notebook](./../media/asa-notebook-04.png)
-
-* Each item, code or text is called a `Cell`. You can execute your code cells. First, choose a Spark pool to be used for your code. Then press the `Run cell`
-Once execution is done, a pane below your code cell shows the output for that cell.
-
-![Run the notebook's code](./../media/asa-notebook-05.png)
 
 ### Task 1 - Access data with the SQL built-in pool
 
