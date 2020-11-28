@@ -503,15 +503,40 @@ dfSaved.coalesce(1).write.partitionBy("TransactionDate").parquet("abfss://wwi-02
 ## Exercise 3 - Consume enriched data
 
 The persisted output data will be now used for further analysis.
+In a workspace you can create notebooks in order to use code snippets, written in scala, python or sql, to be executed on top of your datasources.
+
+&nbsp;
+
+* Create a notebook: go to the left vertical menu, choose Notebooks, press the + button in the toolbar
+
+![Create a notebook](./../media/asa-notebook-01.png)
+
+* Configure your new notebooks: go to Properties, choose a name. To save changes, you'll have to click on `Publish all`
+
+![Configure the notebook](./../media/asa-notebook-02.png)
+
+* Save your new notebooks: go to the `Publish all` button in your toolbar, then press `Publish` to save changes. Wait until publishing finishes.
+
+![Publish the notebook](./../media/asa-notebook-03.png)
+
+* You can now edit your notebook's contents. Select your notebook in the left list, then press `Add code` or `Add text` in the main pane.
+
+![Edit the notebook](./../media/asa-notebook-04.png)
+
+* Each item, code or text is called a `Cell`. You can execute your code cells. First, choose a Spark pool to be used for your code. Then press the `Run cell`
+Once execution is done, a pane below your code cell shows the output for that cell.
+
+![Run the notebook's code](./../media/asa-notebook-05.png)
 
 ### Task 1 - Access data with the SQL built-in pool
 
 &nbsp;
 
-Create SQL query: go to your datalake source, find the container and the path where enriched data is stored. Right click on the desired file, choose New SQL Script, pick one of the scripts.
-By default an SQL query that allows us to browse the first rows in the dataset is generated.
+* Create SQL query: go to your datalake source, find the container and the path where enriched data is stored. Right click on the desired file, choose New SQL Script, pick one of the scripts.
 
 ![Create SQL query](./../media/asa-enriched-consume-01.png)
+
+By default an SQL query that allows us to browse the first rows in the dataset is generated. You can customize the SQL query.
 
 ```sql
 SELECT
@@ -524,7 +549,7 @@ FROM
 ```
 &nbsp;
 
-Run query and view results
+Run query and view results: click on the Run button to execute your query and the lower pane will show the results.
 
 ![Run SQL query](./../media/asa-enriched-consume-02.png)
 
