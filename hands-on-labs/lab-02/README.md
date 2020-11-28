@@ -388,8 +388,8 @@ import com.microsoft.spark.sqlanalytics.utils.Constants
 import org.apache.spark.sql.SqlAnalyticsConnector._
 
 //read from SQLDB
-val dfInput3 = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
-dfInput3.head(10)
+val dfProducts = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+dfProducts.head(10)
 ```
 
 ### Task 6 - Enrich data from multiple sources
@@ -413,6 +413,8 @@ import java.time.format.DateTimeFormatter
 
 val zoneId = ZoneId.systemDefault()
 
+val cond = 'CustomerId === 22 && 'ProductId === 1325
+
 //
 // 1. read customers/products from sqldb
 //
@@ -433,7 +435,7 @@ val zoneId = ZoneId.systemDefault()
 //
 
 //TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
-val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")//.limit(1200)//.where(cond)
 
 val func1 = udf((dt:String, hh:Int, mm:Int) => {
     val fmt = DateTimeFormatter.ofPattern("yyyyMMdd")
@@ -450,7 +452,7 @@ dfSales2.show
 //
 
 //CustomerId,ProductId,Timestamp,Url
-val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")
+val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")//.limit(1800)//.where(cond)
 
 //dfTelemetry  = spark.read \
 //    .format("com.microsoft.kusto.spark.synapse.datasource") \
@@ -482,8 +484,8 @@ val windowSpec = Window.partitionBy($"TransactionId", $"ProductId", $"CustomerId
 val countClicks = count('*).over(windowSpec)
 val countTime = max('deltaSec).over(windowSpec)
 
-val dfOut = dfEnriched.withColumn("ClicksToPurchase", countClicks).withColumn("TimeToPurchase", countTime)
-val dfResult = dfOut.groupBy($"TransactionId", $"ProductId", $"CustomerId").agg(max('ClicksToPurchase), max('TimeToPurchase))
+val dfOut = dfEnriched.withColumn("ClicksBeforePurchase", countClicks).withColumn("SecondsBeforePurchase", countTime)
+val dfResult = dfOut.groupBy($"TransactionId", $"ProductId", $"CustomerId").agg(max('ClicksBeforePurchase) as "ClicksToPurchase", max('SecondsBeforePurchase) as "TimeToPurchase")
 dfResult.show
 
 val df = dfResult.withColumnRenamed("CustomerId", "GCustomerId").withColumnRenamed("ProductId", "GProductId").withColumnRenamed("TransactionId", "GTransactionId")
@@ -495,7 +497,9 @@ dfSaved.show
 //
 // write output to datalake
 //
-dfSaved.coalesce(1).write.partitionBy("TransactionDate").format("csv").option("header", "true").mode("overwrite").save("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
+//dfSaved.coalesce(1).write.partitionBy("TransactionDate").format("csv").option("header", "true").mode("overwrite").save("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
+dfSaved.coalesce(1).write.partitionBy("TransactionDate").parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
+
 ```
 
 ## Exercise 3 - Consume enriched data
@@ -504,17 +508,14 @@ The persisted output data will be now used for further analysis.
 
 ### Task 1 - Access data with the SQL built-in pool
 
-
 ```sql
 SELECT
-    TOP 100 *
+    TOP 100 *
 FROM
-    OPENROWSET(
-        BULK 'https://asadatalake01.dfs.core.windows.net/wwi-02/stats/sale-small-stats.csv',
-        FORMAT = 'CSV',
-        PARSER_VERSION='2.0'
-    ) AS [result]
-
+    OPENROWSET(
+        BULK 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/part-00000-91ef00e3-dc2a-41f8-a6dd-80841a934ec3.c000.snappy.parquet',
+        FORMAT='PARQUET'
+    ) AS [result]
 ```
 
 Note that we can also create shared database/table metadata (between the Apache Spark pools and the SQL pool)
@@ -528,10 +529,10 @@ Note that we can also create shared database/table metadata (between the Apache 
 # see https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/overview
 #
 spark.sql("CREATE DATABASE IF NOT EXISTS ASA_SPARK_DB01")
-spark.sql("CREATE TABLE IF NOT EXISTS ASA_SPARK_DB01.salesmall201912 USING Parquet LOCATION 'abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet'")
+spark.sql("CREATE TABLE IF NOT EXISTS ASA_SPARK_DB01.salesmallstats201912 USING Parquet LOCATION 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/*.parquet'")
 
 #since we now have table metadata, we can now use SQL queries (with or without spark)
-dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmall201912")
+dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmallstats201912")
 dfExt.show(10)
 ```
 
