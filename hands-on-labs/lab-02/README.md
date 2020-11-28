@@ -413,8 +413,6 @@ import java.time.format.DateTimeFormatter
 
 val zoneId = ZoneId.systemDefault()
 
-val cond = 'CustomerId === 22 && 'ProductId === 1325
-
 //
 // 1. read customers/products from sqldb
 //
@@ -513,7 +511,7 @@ SELECT
     TOP 100 *
 FROM
     OPENROWSET(
-        BULK 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/part-00000-91ef00e3-dc2a-41f8-a6dd-80841a934ec3.c000.snappy.parquet',
+        BULK 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/*.parquet',
         FORMAT='PARQUET'
     ) AS [result]
 ```
