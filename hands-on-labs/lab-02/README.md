@@ -433,7 +433,7 @@ val zoneId = ZoneId.systemDefault()
 //
 
 //TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
-val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")//.limit(1200)//.where(cond)
+val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")
 
 val func1 = udf((dt:String, hh:Int, mm:Int) => {
     val fmt = DateTimeFormatter.ofPattern("yyyyMMdd")
@@ -450,7 +450,7 @@ dfSales2.show
 //
 
 //CustomerId,ProductId,Timestamp,Url
-val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")//.limit(1800)//.where(cond)
+val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")
 
 //dfTelemetry  = spark.read \
 //    .format("com.microsoft.kusto.spark.synapse.datasource") \
@@ -506,6 +506,13 @@ The persisted output data will be now used for further analysis.
 
 ### Task 1 - Access data with the SQL built-in pool
 
+&nbsp;
+
+Create SQL query: go to your datalake source, find the container and the path where enriched data is stored. Right click on the desired file, choose New SQL Script, pick one of the scripts.
+By default an SQL query that allows us to browse the first rows in the dataset is generated.
+
+![Create SQL query](./../media/asa-enriched-consume-01.png)
+
 ```sql
 SELECT
     TOP 100 *
@@ -515,6 +522,11 @@ FROM
         FORMAT='PARQUET'
     ) AS [result]
 ```
+&nbsp;
+
+Run query and view results
+
+![Run SQL query](./../media/asa-enriched-consume-02.png)
 
 Note that we can also create shared database/table metadata (between the Apache Spark pools and the SQL pool)
 
