@@ -1,0 +1,37 @@
+{
+    "name": "wwi02_sale_small_product_quantity_forecast_asa",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "#LINKED_SERVICE_NAME#",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlDWTable",
+        "schema": [
+            {
+                "name": "ProductId",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "TransactionDate",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "Hour",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "TotalQuantity",
+                "type": "int",
+                "precision": 10
+            }
+        ],
+        "typeProperties": {
+            "schema": "wwi",
+            "table": "ProductQuantityForecast"
+        }
+    }
+}
