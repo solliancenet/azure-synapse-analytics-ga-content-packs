@@ -240,15 +240,70 @@ The final step presents you with options to name the stored procedure that will 
 
 - **Stored procedure name**: `[wwi].[ForecastProductQuantity]`
 - **Select target table**: `Create new`
-- **New table**: `[wwi].[Model]
+- **New table**: `[wwi].[Model]`
 
 Select `Deploy model + open script` to deploy your model into the SQL pool.
 
 ![Configure model deployment](./../media/lab-01-ex-03-task-01-deploy-model.png)
 
-A new SQL script is created for you:
+From the new SQL script that is created for you, copy the ID of the model:
 
 ![SQL script for stored procedure](./../media/lab-01-ex-03-task-01-forecast-stored-procedure.png)
+
+The T-SQL code that is generated will only return the results of the prediction, without actually saving them. To save the results of the prediction directly into the `[wwi].[ProductQuantityForecast]` table, replace the generated code with the following:
+
+```sql
+CREATE PROC [dbo].[ProductQuantityPrediction] AS
+BEGIN
+
+SELECT
+    CAST([ProductId] AS [bigint]) AS [ProductId],
+    CAST([TransactionDate] AS [bigint]) AS [TransactionDate],
+    CAST([Hour] AS [bigint]) AS [Hour]
+INTO #ProductQuantityForecast
+FROM [wwi].[ProductQuantityForecast];
+
+SELECT
+    ProductId
+    ,TransactionDate
+    ,Hour
+    ,CAST(variable_out1 as INT) as TotalQuantity
+INTO
+    #Pred
+FROM PREDICT (MODEL = (SELECT [model] FROM dbo.MLModel WHERE [ID] = '<your_model_id>'),
+            DATA = #ProductQuantityForecast,
+            RUNTIME = ONNX) WITH ([variable_out1] [real])
+
+MERGE [wwi].[ProductQuantityForecast] AS target  
+    USING (select * from #Pred) AS source (ProductId, TransactionDate, Hour, TotalQuantity)  
+ON (target.ProductId = source.ProductId and target.TransactionDate = source.TransactionDate and target.Hour = source.Hour)  
+    WHEN MATCHED THEN
+        UPDATE SET target.TotalQuantity = source.TotalQuantity;
+END
+GO
+```
+
+In the code above, make sure you replace `<your_model_id>` with the actual ID of the model (the one you copied in the previous step).
+
+>**NOTE**:
+>
+>Our version of the stored procedure uses the `MERGE` commdand to update the values of the `TotalQuantity` field in-place, in the `wwi.ProductQuantityForecast` table. The `MERGE` command has been recently added to Azure Synapse Analytics. For more details, read [New MERGE command for Auzre Synapse Analytics](https://azure.microsoft.com/en-us/updates/new-merge-command-for-azure-synapse-analytics/).
+
+You are now ready to perform the forecast on the `TotalQuantity` column. Open a new SQL script and run the following statement:
+
+```sql
+EXEC
+    wwi.ForecastProductQuantity
+
+SELECT  
+    *
+FROM
+    wwi.ProductQuantityForecast
+```
+
+Notice how the values in the `TotalQuantity` column have changed from zero to non-zero predicted values:
+
+![Execute forecast and view results](./../media/lab-01-ex-03-task-01-run-forecast.png)
 
 ### Task 2 - Enrich data in a SQL pool table using a trained model from Azure Cognitive Services
 
