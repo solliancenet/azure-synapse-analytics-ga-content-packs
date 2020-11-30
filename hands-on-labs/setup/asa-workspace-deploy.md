@@ -15,6 +15,8 @@ The following requirements must be met before the deployment:
 - A unique suffix to be used when generating the name of the workspace. All workspaces deployed using the templates in this repo are named `asagaworkspace<unique_suffix>`, where `<unique_suffix>` gets replaced with the value you provide. Make sure the unique suffix is specific enough to avoid potential naming collisions (i.e. avoid using common values like `01`, `1`, `test`, etc.). Make sure you remember the unique suffix as you need to use it for additional configuration once the Azure Synapse Analytics workspace deployment is complete.
 - A password for the SQL admin account of the workspace. Make sure you save the password in a secure location (like a password manager) as you will need to use it later.
 - A GitHub account to access the content packs repository.
+- A Power BI Pro subscription attached to the Azure AD account you will use to setup the Synapse Analytics workspace. In case you do not have a paid Power BI Pro subscription, you can get a 60 days trial by signing in to `https://powerbi.com` with your account and selecting `Try free`.
+- A Power BI Pro workspace (for details about creating a workspace in Power BI, see [Create the new workspaces in Power BI](https://docs.microsoft.com/en-us/azure/synapse-analytics/quickstart-power-bi)).
 
 ## Configure the Azure Cloud Shell
 
@@ -128,3 +130,25 @@ Enter the name of the resource group where you deployed the Synapse Analytics wo
 The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
 
 The process should take 5 to 10 minutes to finish. Wait until the setup script is finished before proceeding to the next steps.
+
+## Connect the Azure Synapse Analytics workspace to your Power BI workspace
+
+In the Azure Portal, navigate to your resource group, open the Synapse workspace resource (should be named `asagaworkspace<unque_suffix>` where `<unique_suffix>` is the one you specified when creating the workspace), and then open Synapse Studio.
+
+In Synapse Studio, select the `Manage` hub on the left side, select `Linked Services`, and then select `+ New` to start creating a new linked service. Select `Connect to Power BI` to start configuring the linked service (if the `Connect to Power BI` option does not show up, enter `Power BI` in the search box, select `Power BI` and then select `Continue`).
+
+![Start configuring a new Power BI linked service](./../media/asaworkspace-deploy-pbi-linked-service-01.png)
+
+In the `New linked service (Power BI)` dialog enter settings as follows:
+
+- **Name**: enter `asagapowerbi<unique_suffix>` (where `<unique_suffix>` is the one you specified when creating the Synapse Analytics workspace).
+- **Tenant**: ensure the correct tenant is selected (the one that contains your Azure AD account).
+- **Workspace name**: select the Power BI workspace you want to use.
+
+Select `Create` to create the Power BI linked service.
+
+![Power BI linked service configuration](./../media/asaworkspace-deploy-pbi-linked-service-02.png)
+
+After the linked service is successfully created, select the `Develop` hub on the left side and expand the `Power BI` section. You should see your Power BI workspace listed.
+
+![Check Power BI linked service configuration](./../media/asaworkspace-deploy-pbi-linked-service-03.png)

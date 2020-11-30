@@ -15,9 +15,9 @@ This lab has the following structure:
 - [Exercise 2 - Trigger an Auto ML experiment using data from a Spark table](#exercise-2---trigger-an-auto-ml-experiment-using-data-from-a-spark-table)
   - [Task 1 - Trigger a regression Auto ML experiment on a Spark table](#task-1---trigger-a-regression-auto-ml-experiment-on-a-spark-table)
   - [Task 2 - View experiment details in Azure Machine Learning workspace](#task-2---view-experiment-details-in-azure-machine-learning-workspace)
-- [Exercise 3 - Enrich data in a SQL pool table using a trained model](#exercise-3---enrich-data-in-a-sql-pool-table-using-a-trained-model)
+- [Exercise 3 - Enrich data using trained models](#exercise-3---enrich-data-using-trained-models)
   - [Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning](#task-1---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-machine-learning)
-  - [Task 2 - Enrich data in a SQL pool table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-cognitive-services)
+  - [Task 2 - Enrich data in a Spark table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-spark-table-using-a-trained-model-from-azure-cognitive-services)
   - [Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline](#task-3---integrate-a-machine-learning-based-enrichment-procedure-in-a-synapse-pipeline)
 - [Exercise 4 - Serve prediction results using Power BI](#exercise-4---serve-prediction-results-using-power-bi)
   - [Task 1 - Create a view on top of a prediction query](#task-1---create-a-view-on-top-of-a-prediction-query)
@@ -103,16 +103,20 @@ First, we need to create a Spark table as a starting point for the Machine Learn
 
 ![Create new Spark table from Parquet file in primary data lake](./../media/lab-01-ex-01-task-02-create-spark-table.png)
 
-Replace the content of the notebook cell with the following code:
+Replace the content of the notebook cell with the following code and then run the cell:
 
 ```python
 import pyspark.sql.functions as f
 
-df = spark.read.load('abfss://wwi-02@asagadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*/*.parquet',
+df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*/*.parquet',
     format='parquet')
 df_consolidated = df.groupBy('ProductId', 'TransactionDate', 'Hour').agg(f.sum('Quantity').alias('TotalQuantity'))
 df_consolidated.write.mode("overwrite").saveAsTable("default.SaleConsolidated")
 ```
+
+>**NOTE**:
+>
+>Replace `<data_lake_account_name>` with the actual name of your Synapse Analytics primary data lake account.
 
 The code takes all data available for December 2019 and aggregates it at the `ProductId`, `TransactionDate`, and `Hour` level, calculating the total product quantities sold as `TotalQuantity`. The result is then saved as a Spark table named `SaleConsolidated`. To view the table in the `Data`hub, expand the `default (Spark)` database in the `Workspace` section. Your table will show up in the `Tables` folder. Select the three dots at the right of the table name to view the `Machine Learning` option in the context menu.
 
@@ -211,9 +215,9 @@ Next, select the `Models` section on the left in Azure Machine Learning Studio a
 
 ![AutoML best model registered in Azure Machine Learning](./../media/lab-01-ex-02-task-02-model-registry.png)
 
-## Exercise 3 - Enrich data in a SQL pool table using a trained model
+## Exercise 3 - Enrich data using trained models
 
-In this exercise, you will use the model you trained in Exercise 2 to perform predictions on new data.
+In this exercise, you will use existing trained models to perform predictions on data. Task 1 used a trained model from Azure Machine Learning services while Task 2 uses one from Azure Cognitive Services.
 
 ### Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning
 
@@ -305,13 +309,63 @@ Notice how the values in the `TotalQuantity` column have changed from zero to no
 
 ![Execute forecast and view results](./../media/lab-01-ex-03-task-01-run-forecast.png)
 
-### Task 2 - Enrich data in a SQL pool table using a trained model from Azure Cognitive Services
+### Task 2 - Enrich data in a Spark table using a trained model from Azure Cognitive Services
 
-Task description
+First, we need to create a Spark table to be used as the input for the Cognitive Services model. In Synapse Studio, select the `Data` hub and then the `Linked` section. In the primary `Azure Data Lake Storage Gen 2` account, select the `wwi-02` file system, and then select the `ProductReviews.csv` file under `wwi-02\sale-small-product-reviews`. Right click the file and select `New notebook -> New Spark table`.
+
+![Create new Spark table from product reviews file in primary data lake](./../media/lab-01-ex-03-task-02-new-spark-table.png)
+
+Replace the content of the notebook cell with the following code and then run the cell:
+
+```python
+%%pyspark
+df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small-product-reviews/ProductReviews.csv', format='csv'
+,header=True
+)
+df.write.mode("overwrite").saveAsTable("default.ProductReview")
+```
+
+>**NOTE**:
+>
+>Replace `<data_lake_account_name>` with the actual name of your Synapse Analytics primary data lake account.
+
+To view the table in the `Data`hub, expand the `default (Spark)` database in the `Workspace` section. Your table will show up in the `Tables` folder. Select the three dots at the right of the table name to view the `Machine Learning` option in the context menu and then select `Machine Learning > Enrich with existing model`.
+
+In the `Enrich with existing model` dialog, select `Text Analytics - Sentiment Analysis` under `Azure Cognitive Services` and then select `Continue`.
+
+![Select text analytics model from Azure Cognitive Services](./../media/lab-01-ex-03-task-02-text-analytics-model.png)
+
+Next, provide values as follows:
+
+- **Azure subscription**: select the Azure subscription of your resource group.
+- **Cognitive Services account**: select the Cogntive Services account that has been provisioned in your resource group. The name should be `asagacognitiveservices<unique_suffix>`, where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace.
+- **Azure Key Vault linked service**: select the Azure Key Vault linked services that has been provisioned in your Synapse Analytics workspace. The name should be `asagakeyvault<unique_suffix>`, where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace.
+- **Secret name**: enter `ASA-GA-COGNITIVE-SERVICES` (the name of the secret that contains the key for the specified Cognitive Services account).
+
+Select `Continue` to move next.
+
+![Configure Cognitive Services account details](./../media/lab-01-ex-03-task-02-connect-to-model.png)
+
+Next, provide values as follows:
+
+- **Language**: select `English`.
+- **Text column**: select `ReviewText (string)`
+
+Select `Open notebook` to view the generated code.
+
+>**NOTE**:
+>
+>When you created the `ProductReview` Spark table by running the notebook cell, you started a Spark session on that notebook. The default settings on your Synapse Analytics workspace will not allow you to start a new notebook that runs in parallel with that one. You will need to copy the contents of the two cells that contain to Cognitive Services integration code into that notebook and run them on the Spark session that you have already started. After copying the two cells, you should see a screen similar to this:
+>
+>![Text Analytics service integration code in notebook](./../media/lab-01-ex-03-task-02-text-analytics-code.png)
+
+Run cells 2 and 3 in the notebook to get the sentiment analysis results for your data.
+
+![Sentiment analytis on data from the Spark table](./../media/lab-01-ex-03-task-02-text-analytics-results.png)
 
 ### Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline
 
-Task description
+
 
 ## Exercise 4 - Serve prediction results using Power BI
 
