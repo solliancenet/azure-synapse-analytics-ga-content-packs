@@ -427,7 +427,7 @@ In the results you should now see forecasted values for Hour = 11 (which are cor
 
 ## Exercise 4 - Serve prediction results using Power BI
 
-Exercise description
+In this exercise you will view the prediction results in a Power BI report. You will also trigger the forecast pipeline with new input data and view the updated quantites in the Power BI report.
 
 ### Task 1 - Create a view on top of a prediction query
 
