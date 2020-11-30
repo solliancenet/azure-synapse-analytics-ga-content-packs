@@ -478,7 +478,7 @@ Download the `ProductQuantity-20201209-12.csv` file from https://solliancepublic
 
 In Synapse Studio, select the `Data` hub on the left side, navigate to the primary data lake account in the `Linked` section, and open the `wwi-02 > sale-small-product-quantity-forecast` path. Delete the existing `ProductQuantity-20201209-11.csv` file and upload the `ProductQuantity-20201209-12.csv` file. This will trigger the `Product Quantity Forecast` pipeline wich will import the forecast requests from the CSV file and run the forecasting stored procedure.
 
-
+In Synapse Studio, select the `Monitor` hub on the left side, and then select `Trigger runs` to see the newly activated pipeline run. Once the pipeline is finished, refresh the Power BI report in Synapse Studio to view the updated data.
 
 ## After the hands-on lab
 
