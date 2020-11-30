@@ -1,0 +1,107 @@
+{
+    "name": "Setup - Import product reviews data",
+    "properties": {
+        "activities": [
+            {
+                "name": "Copy Product Reviews",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "AzureBlobFSReadSettings",
+                            "recursive": true
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "SqlDWSink",
+                        "allowPolyBase": true,
+                        "polyBaseSettings": {
+                            "rejectValue": 0,
+                            "rejectType": "value",
+                            "useTypeDefault": true
+                        }
+                    },
+                    "enableStaging": true,
+                    "stagingSettings": {
+                        "linkedServiceName": {
+                            "referenceName": "#BLOB_STORAGE_LINKED_SERVICE_NAME#",
+                            "type": "LinkedServiceReference"
+                        },
+                        "path": "staging"
+                    },
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "mappings": [
+                            {
+                                "source": {
+                                    "name": "UserId",
+                                    "type": "String"
+                                },
+                                "sink": {
+                                    "name": "UserId",
+                                    "type": "Int32"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": " ProductId",
+                                    "type": "String"
+                                },
+                                "sink": {
+                                    "name": "ProductId",
+                                    "type": "Int32"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": " ReviewText",
+                                    "type": "String"
+                                },
+                                "sink": {
+                                    "name": "ReviewText",
+                                    "type": "String"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": " ReviewDate",
+                                    "type": "String"
+                                },
+                                "sink": {
+                                    "name": "ReviewDate",
+                                    "type": "DateTime"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "wwi02_sale_small_product_review_adls",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "wwi02_sale_small_product_review_asa",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "annotations": []
+    }
+}

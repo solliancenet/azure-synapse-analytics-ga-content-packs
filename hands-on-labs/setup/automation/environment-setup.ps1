@@ -414,6 +414,52 @@ foreach ($dataset in $loadingDatasets.Keys) {
 }
 
 
+
+Write-Information "Create data sets for Product Reviews data load in SQL pool $($sqlPoolName)"
+
+$loadingDatasets = @{
+        wwi02_sale_small_product_review_adls = $dataLakeAccountName
+        wwi02_sale_small_product_review_asa = $sqlPoolName.ToLower()
+}
+
+foreach ($dataset in $loadingDatasets.Keys) {
+        Write-Information "Creating dataset $($dataset)"
+        $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+        Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+}
+
+Write-Information "Create pipeline to load Product Review data into the SQL pool"
+
+$params = @{
+        BLOB_STORAGE_LINKED_SERVICE_NAME = $dataLakeAccountName
+}
+$loadingPipelineName = "Setup - Load SQL Pool (product vreviews)"
+$fileName = "import_sale_small_product_review_data"
+
+Write-Information "Creating pipeline $($loadingPipelineName)"
+
+$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
+Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+
+Write-Information "Running pipeline $($loadingPipelineName)"
+
+$result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
+$result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
+$result
+
+Write-Information "Deleting pipeline $($loadingPipelineName)"
+
+$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
+Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+
+foreach ($dataset in $loadingDatasets.Keys) {
+        Write-Information "Deleting dataset $($dataset)"
+        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
+        Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+}
+
+
+
 Write-Information "Preparing environment for labs"
 
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json

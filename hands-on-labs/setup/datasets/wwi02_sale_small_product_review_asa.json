@@ -1,0 +1,37 @@
+{
+    "name": "wwi02_sale_small_product_review_asa",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "#LINKED_SERVICE_NAME#",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlDWTable",
+        "schema": [
+            {
+                "name": "UserId",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "ProductId",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "ReviewText",
+                "type": "nvarchar"
+            },
+            {
+                "name": "ReviewDate",
+                "type": "datetime",
+                "precision": 23,
+                "scale": 3
+            }
+        ],
+        "typeProperties": {
+            "schema": "wwi",
+            "table": "ProductReview"
+        }
+    }
+}

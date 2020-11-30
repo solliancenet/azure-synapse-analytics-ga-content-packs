@@ -119,7 +119,7 @@ CREATE TABLE [wwi].[ProductReview]
 ( 
 	[UserId] [int] NOT NULL,
 	[ProductId] [int]  NOT NULL,
-	[ReviewText] [nvarchar(1000)]  NOT NULL,
+	[ReviewText] nvarchar(1000)  NOT NULL,
 	[ReviewDate] [datetime]  NOT NULL
 )
 WITH
