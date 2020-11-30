@@ -47,8 +47,8 @@ CREATE TABLE wwi.Customer
     ,Address_Street NVARCHAR(2000) NULL
     ,Address_City NVARCHAR(2000) NULL
     ,Address_Country NVARCHAR(2000) NULL
-    ,Mobile NVARCHAR(20) NULL
-    ,Email NVARCHAR(20) NULL
+    ,Mobile NVARCHAR(50) NULL
+    ,Email NVARCHAR(50) NULL
 )
 WITH
 (

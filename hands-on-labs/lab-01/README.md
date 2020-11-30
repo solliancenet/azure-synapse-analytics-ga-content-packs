@@ -20,9 +20,8 @@ This lab has the following structure:
   - [Task 2 - Enrich data in a Spark table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-spark-table-using-a-trained-model-from-azure-cognitive-services)
   - [Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline](#task-3---integrate-a-machine-learning-based-enrichment-procedure-in-a-synapse-pipeline)
 - [Exercise 4 - Serve prediction results using Power BI](#exercise-4---serve-prediction-results-using-power-bi)
-  - [Task 1 - Create a view on top of a prediction query](#task-1---create-a-view-on-top-of-a-prediction-query)
-  - [Task 2 - Display prediction results in a Power BI report](#task-2---display-prediction-results-in-a-power-bi-report)
-  - [Task 3 - Trigger the pipeline using an event-based trigger](#task-3---trigger-the-pipeline-using-an-event-based-trigger)
+  - [Task 1 - Display prediction results in a Power BI report](#task-1---display-prediction-results-in-a-power-bi-report)
+  - [Task 2 - Trigger the pipeline using an event-based trigger](#task-2---trigger-the-pipeline-using-an-event-based-trigger)
 - [After the hands-on lab](#after-the-hands-on-lab)
 - [Resources](#resources)
 
@@ -429,17 +428,57 @@ In the results you should now see forecasted values for Hour = 11 (which are cor
 
 In this exercise you will view the prediction results in a Power BI report. You will also trigger the forecast pipeline with new input data and view the updated quantites in the Power BI report.
 
-### Task 1 - Create a view on top of a prediction query
+### Task 1 - Display prediction results in a Power BI report
 
-Task description
+First, you will publish a simple Product Quantity Forecast report to Power BI.
 
-### Task 2 - Display prediction results in a Power BI report
+Download the `ProductQuantityForecast.pbix` file from the GitHub repo: https://github.com/solliancenet/azure-synapse-analytics-ga-content-packs/blob/main/hands-on-labs/lab-01/ProductQuantityForecast.pbix (select `Download` on the GitHub page).
 
-Task description
+Open the file with Power BI Desktop (ignore the warning about missing credentials). In the `Home` section, select `Transform data`, then edit the `Source` entry in the `APPLIED STEPS` list of the `ProductQuantityForecast` query. Change the name of the server to `asagaworkspace<unique_suffix>.sql.azuresynapse.net` (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace).
 
-### Task 3 - Trigger the pipeline using an event-based trigger
+![Edit server name in Power BI Desktop](./../media/lab-01-ex-04-task-01-server-in-power-bi-desktop.png)
 
-New data has landed in the Data Lake
+Select `Close & Apply` and then publish the file to your Power BI workspace (ignore any errors related to credentials).
+
+After publishing, edit the credentials on the Power BI portal.
+
+![Edit dataset properties in Power BI Online](./../media/lab-01-ex-04-task-01-edit-dataset-in-power-bi-online.png)
+
+In the `Configure ProductQuantityForecast` dialog provide the following values:
+
+- **Authentication method**: select `Basic`.
+- **User name**: enter `asaga.sql.admin` (this is the name of the SQL administrator account).
+- **Password**: enter the password of the SQL administrator account (the one you specified when you deployed the Synapse Analytics workspace).
+
+![Set credentials in Power BI Online](./../media/lab-01-ex-04-task-01-credentials-in-power-bi.png)
+
+To view the results of the report, in Synapse Studio, select the `Develop` hub on the left side, expand the `Power BI` section, and select the `ProductQuantityForecast` report under the `Power BI reports` section from your workspace.
+
+![View Product Quantity Forecast report in Synapse Studio](./../media/lab-01-ex-04-task-01-view-report.png)
+
+### Task 2 - Trigger the pipeline using an event-based trigger
+
+In Synapse Studio, select the `Integrate` hub on the left side and open the `Product Quantity Forecast` pipeline. Select `+ Add trigger` and specify that you want to create a new pipeline trigger. In the `New trigger` window, provide the following values:
+
+- **Name**: enter `New data trigger`.
+- **Type**: select `Event`.
+- **Azure subscription**: ensure the right Azure subscription is selected (the one containing your resource group).
+- **Storage account name**: select the `asagadatalake<uniqu_prefix>` account (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace).
+- **Container name**: enter `wwi-02`.
+- **Blob path begins with**: enter `sale-small-product-quantity-forecast/ProductQuantity`.
+- **Event**: select `Blob created`.
+
+Select `Continue` to create the trigger, then select once more `Continue` in the `Data preview` dialog, and then `OK` to publish the trigger.
+
+![Configure new storage event trigger on pipeline](./../media/lab-01-ex-04-task-02-create-trigger.png)
+
+In Synapse Studio, select `Publish all` and then `Publish` to publish all changes.
+
+Download the `ProductQuantity-20201209-12.csv` file from https://solliancepublicdata.blob.core.windows.net/wwi-02/sale-small-product-quantity-forecast/ProductQuantity-20201209-12.csv.
+
+In Synapse Studio, select the `Data` hub on the left side, navigate to the primary data lake account in the `Linked` section, and open the `wwi-02 > sale-small-product-quantity-forecast` path. Delete the existing `ProductQuantity-20201209-11.csv` file and upload the `ProductQuantity-20201209-12.csv` file. This will trigger the `Product Quantity Forecast` pipeline wich will import the forecast requests from the CSV file and run the forecasting stored procedure.
+
+
 
 ## After the hands-on lab
 
