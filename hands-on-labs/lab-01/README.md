@@ -217,7 +217,7 @@ Next, select the `Models` section on the left in Azure Machine Learning Studio a
 
 ## Exercise 3 - Enrich data using trained models
 
-In this exercise, you will use existing trained models to perform predictions on data. Task 1 used a trained model from Azure Machine Learning services while Task 2 uses one from Azure Cognitive Services.
+In this exercise, you will use existing trained models to perform predictions on data. Task 1 uses a trained model from Azure Machine Learning services while Task 2 uses one from Azure Cognitive Services. Finally, you will include the prediciton stored procedure created in Task 1 into a Synapse pipeline.
 
 ### Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning
 
@@ -366,7 +366,64 @@ Run cells 2 and 3 in the notebook to get the sentiment analysis results for your
 
 ### Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline
 
+In Synapse studio, select the `Integrate` hub on the left side and then select `+ > Pipeline` to create a new Synapse pipeline.
 
+Enter `Product Quantity Forecast` as the name of the pipeline on the right side.
+
+From the `Move & transform` section, add a `Copy data` activity and name it `Import forecast requests`.
+
+![Create Product Quantity Forecast pipeline](./../media/lab-01-ex-03-task-03-create-pipeline.png)
+
+In the `Source` section of the copy activity properties, provide the following values:
+
+- **Source dataset**: select the `wwi02_sale_small_product_quantity_prediction_adls` dataset.
+- **File path type**: select `Wildcard file path`
+- **Wildcard paths**: enter `sale-small-product-quantity-forecast` in the first textbox, and `*.csv` in the second.
+
+![Copy activity source configuration](./../media/lab-01-ex-03-task-03-pipeline-source.png)
+
+In the `Sink` section of the copy activity properties, provide the following values:
+
+-**Sink dataset**: select the `wwi02_sale_small_product_quantity_prediction_asa` dataset.
+
+![Copy activity sink configuration](./../media/lab-01-ex-03-task-03-pipeline-sink.png)
+
+In the `Mapping` section of the copy activity properties, select `Import schemas` and check field mappings between source and sink.
+
+![Copy activity mapping configuration](./../media/lab-01-ex-03-task-03-pipeline-mapping.png)
+
+In the `Settings` section of the copy activity properties, provide the following values:
+
+- **Enable staging**: select the option.
+- **Staging account linked service**: select the `asagadatalake<unique_suffix>` linked service (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace).
+- **Storage path**: enter `staging`.
+
+![Copy activity settings configuration](./../media/lab-01-ex-03-task-03-pipeline-staging.png)
+
+From the `Synapse` section, add a `SQL pool stored procedure` activity and name it `Forecast product quantities`. Connect the two pipeline activities to ensure the stored procedure runs after the data import.
+
+![Add forecasting store procedure to the pipeline](./../media/lab-01-ex-03-task-03-pipeline-stored-procedure-01.png)
+
+In the `Settings` section of the stored procedure actity properties, provide the following values:
+
+- **Azure Synapse dedicated SQL pool**: select `SQLPool01`.
+- **Stored procedure name**: select `[wwi].[ForecastProductQuantity]`.
+
+Select `Debug` to make sure the pipeline works correctly.
+Select `Publish all` to publish the pipeline.
+
+Create a new SQL script and execute the following script against the `SQLPool01` pool:
+
+```sql
+SELECT  
+    *
+FROM
+    wwi.ProductQuantityForecast
+```
+
+In the results you should now see forecasted values for Hour = 11 (which are corresponding to rows imported by the pipeline):
+
+![Test forecast pipeline](./../media/lab-01-ex-03-task-03-pipeline-test.png)
 
 ## Exercise 4 - Serve prediction results using Power BI
 
