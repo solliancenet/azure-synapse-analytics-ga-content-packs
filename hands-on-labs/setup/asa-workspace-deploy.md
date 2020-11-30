@@ -4,7 +4,7 @@
 
 The following requirements must be met before the deployment:
 
-- A resource group created in the `South Central US` region (this will be provided during the deployment process).
+- A resource group (this will be provided during the deployment process).
 
     >**IMPORTANT**
     >
