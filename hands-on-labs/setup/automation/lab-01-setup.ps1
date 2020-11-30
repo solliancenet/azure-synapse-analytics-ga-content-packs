@@ -74,8 +74,8 @@ Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-COGNITIVE-SERVICES" 
 Write-Information "Create data sets for Product Quantity Forecast data load in SQL pool $($sqlPoolName)"
 
 $loadingDatasets = @{
-        wwi02_sale_small_product_quentity_forecast_adls = $dataLakeAccountName
-        wwi02_sale_small_product_quentity_forecast_asa = $sqlPoolName.ToLower()
+        wwi02_sale_small_product_quantity_forecast_adls = $dataLakeAccountName
+        wwi02_sale_small_product_quantity_forecast_asa = $sqlPoolName.ToLower()
 }
 
 foreach ($dataset in $loadingDatasets.Keys) {
