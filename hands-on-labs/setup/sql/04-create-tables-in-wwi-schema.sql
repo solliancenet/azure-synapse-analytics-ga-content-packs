@@ -110,3 +110,19 @@ INSERT INTO [wwi].[ProductQuantityForecast] VALUES (900, 20201209, 10, 0)
 INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1000, 20201209, 10, 0)
 INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1100, 20201209, 10, 0)
 INSERT INTO [wwi].[ProductQuantityForecast] VALUES (1200, 20201209, 10, 0)
+
+
+IF OBJECT_ID(N'[wwi].[ProductReview]', N'U') IS NOT NULL   
+DROP TABLE [wwi].[ProductReview]
+
+CREATE TABLE [wwi].[ProductReview]
+( 
+	[UserId] [int] NOT NULL,
+	[ProductId] [int]  NOT NULL,
+	[ReviewText] [nvarchar(1000)]  NOT NULL,
+	[ReviewDate] [datetime]  NOT NULL
+)
+WITH
+(
+	DISTRIBUTION = REPLICATE
+)
