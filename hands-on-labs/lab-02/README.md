@@ -10,9 +10,8 @@ This lab has the following structure:
   - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
   - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
 - [Exercise 1 - Configure an Azure Data Explorer linked service](#exercise-1---configure-an-azure-data-explorer-linked-service)
-  - [Task 1 - Set up a service principal for authentication](#task-1---set-up-a-service-principal-for-authentication)
-  - [Task 2 - Create the linked service](#task-2---create-the-linked-service)
-  - [Task 3 - Explore the Azure Data Explorer database in Synapse Studio](#task-3---explore-the-azure-data-explorer-database-in-synapse-studio)
+  - [Task 1 - Create the linked service](#task-1---create-the-linked-service)
+  - [Task 2 - Explore the Azure Data Explorer database in Synapse Studio](#task-2---explore-the-azure-data-explorer-database-in-synapse-studio)
 - [Exercise 2 - Load and enrich data with Spark](#exercise-2---load-and-enrich-data-with-spark)
   - [Task 1 - Load data from Azure Data Explorer](#task-1---load-data-from-azure-data-explorer)
   - [Task 2 - Index the Data Lake storage with Hyperspace](#task-2---index-the-data-lake-storage-with-hyperspace)
@@ -44,178 +43,87 @@ Follow the instructions in [Deploy resources for Lab 02](./../setup/lab-02-deplo
 
 ## Exercise 1 - Configure an Azure Data Explorer linked service
 
-We will link Azure Synapse with an instance of Azure Data Explorer.
+In this exercise, you will link your Synapse Analytics with an instance of Azure Data Explorer. This will allow you to explore Azure Data Explorer databases from Synapse Studio and use the Azure Data Explorer datasource in Spark queries.
 
-This will allow us to use the Azure Data Explorer (Kusto) datasource in our Spark queries.
+### Task 1 - Create the linked service
 
-### Task 1 - Set up a service principal for authentication
+The Synapse Analytics linked service authenticates with Azure Data Explorer using a service principal. The service principal is based on an Azure Active Directory application named `Azure Synapse Analytics GA Labs` and has already been created for you by the deployment procedure. The secret associated with the service principal has also been created and saved in the Azure Key Vault instance, under the `ASA-GA-LABS` name.
 
-We must register an Application before we can create the Linked Service.
-Skip the steps below of you have already created an Application.
+>**NOTE**
+>
+>In the labs provided by this repo, the Azure AD application is used in a single Azure AD tenant which means it has exactly one service principal associated to it. Consequently, we will use the terms Azure AD application and service principal interchangeably. For a detailed explanation on Azure AD applications and security principals, see [Application and service principal objects in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals).
 
-&nbsp;
+To view the service principal, open the Azure portal and navigate to your instance of Azure Active directory. Select the `App registrations` section and you should see the `Azure Synapse Analytics GA Labs` application under the `Owned applications` tab.
 
-* Go to App Registrations and create a new application
+![Azure Active Directory application and service principal](./../media/lab-02-ex-01-task-01-service-principal.png)
 
-![Create a new Application](./../media/app-create-01.png)
+Select the application to view its properties and copy the value of the `Application (client) ID` property (you will need it in a moment to configure the linked service).
 
-&nbsp;
+![Azure Active Directory application client ID](./../media/lab-02-ex-01-task-01-service-principal-clientid.png)
 
-* Choose a name for your application and press Register
+To view the secret, open the Azure Portal and navigate to the Azure Key Vault instance that has been created in your resource group. Select the `Secrets` section and you should see the `ASA-GA-LABS` secret:
 
-![Register Application](./../media/app-create-02.png)
+![Azure Key Vault secret for security principal](./../media/lab-02-ex-01-task-01-keyvault-secret.png)
 
-&nbsp;
+First, you need to make sure the service principal has permissions to work with the Azure Data Explorer cluster and database. The setup procedure has already configured the necessary permissions, so you will just inspect them to make sure everything is in place.
 
-* The new application must be configured, click on Certificates & Secrets
+Open the Azure Portal and navigate to the Azure Data Explorer cluster that has been created in your resource group. Select the `Databases` section on the left, then select the `ASA-Data-Explorer-DB-01` from the list of databases, and then select the `Permissions` section on the left. You should see the `Azure Synapse Analytica GA Labs` application listed under the `Database Admin` role.
 
-![Configure Application](./../media/app-create-03.png)
+![Azure Data Explorer database permissions](./../media/lab-02-ex-01-task-01-database-permissions.png)
 
-&nbsp;
+You are now ready to create the Azure Data Explorer linked service.
 
-* Choose a name for your new secret and press Add. The secret is now generated and ready to be used.
+To create a new linked service, open Synapse Studio, select the `Manage` hub, select `Linked services`, and the select `+ New`. In the search field from the `New linked service` dialog, enter `Azure Machine Learning`. Select the `Azure Machine Learning` option and then select `Continue`.
 
-![Add New Secret](./../media/app-create-04.png)
+![Create new linked service in Synapse Studio](./../media/lab-02-ex-01-task-01-new-linked-service.png)
 
-&nbsp;
+In the `New linked service (Azure Data Explorer (Kusto))` dialog, provide the following properties:
 
-* Your secret is only visible once. Keep a copy of it so that you can store it safely for further use.
+- **Name**: enter `asagadataexplorer01`.
+- **Azure subscription**: make sure the Azure subscription containing your resource group is selected.
+- **Cluster**: make sure your Azure Data Explorer cluster is selected.
+- **Tenant**: notice how `Tenant identifier` has been already filled in for you.
+- **Service principal ID**: enter the application client ID that you copied earlier.
+- Select the `Azure Key Vault` option.
+- **AKV linked service**: make sure your Azure Key Vault service is selected.
+- **Secret name**: enter `ASA-GA-LABS`.
+- **Database**: enter `ASA-Data-Explorer-DB-01`.
 
-![Store The Secret](./../media/app-create-05.png)
+![Configure linked service in Synapse Studio](./../media/lab-02-ex-01-task-01-configure-linked-service.png)
 
+Next, select `Test connection` to make sure all settings are correct, and then select `Create`. The Azure Machine Learning linked service will now be created in the Synapse Analytics workspace.
 
-### Task 2 - Create the linked service
+>**IMPORTANT**
+>
+>The linked service is not complete until you publish it to the workspace. Notice the indicator near your Azure Machine Learning linked service. To publish it, select `Publish all` and then `Publish`.
 
-&nbsp;
+![Publish Azure Machine Learning linked service in Synapse Studio](./../media/lab-02-ex-01-task-01-publish-linked-service.png)
 
-* Open your Azure Synapse workspace
+### Task 2 - Explore the Azure Data Explorer database in Synapse Studio
 
-![Open workspace](./../media/asa-ade-linked-create-01.png)
+Once the linked service is published, you can view the Azure Data Explorer databases and tables in Synapse Studio. Select the `Data` hub on the left site, then select the `Linked` section and the expand the `Azure Data Explorer` section to view the databases and tables under it. Activate the context menu next to the `SalesTelemetry` table by clicking on the `...` indicator (appears when you hover over the table name) and then select `New notebook > Read DataFrame from table`.
 
-&nbsp;
+![Read Spark DataFrame from Azure Data Explorer table](./../media/lab-02-ex-01-task-02-notebook-from-table.png)
 
-* Press Manage in the left vertical toolbar
+The notebook that is created for your shows how to load a Spark DataFrame from the `SalesTelemetry` table. Take a moment to observe the generated code, then select the `SparkPool01` Spark pool to attach to and run the cell. You will get the first 10 records from the table.
 
-![Manage workspace](./../media/asa-ade-linked-create-02.png)
-
-&nbsp;
-
-* Press Linked Services in the left list then press New
-
-![Manage workspace](./../media/asa-ade-linked-create-03.png)
-
-&nbsp;
-
-* The New linked service list appears. Select Azure Data Explorer (Kusto) in the list and press Continue
-
-![Choose Linked Service Type](./../media/asa-ade-linked-create-04.png)
-
-&nbsp;
-
-* Configure the Linked Service: choose a Name, the Azure subscription.
-Chose the ADE cluster you want to use. 
-Enter the Service Principal ID of the Application you want to use.
-As Service principal key use the secret you added to that Application.
-Enter the name of the ADE database you want to access through this linked service.
-To make sure the connection works you can press Test connection.
-Once successfull, press Create to make the new linked service available.
-
-![Configure Kusto Linked Service](./../media/asa-ade-linked-create-05.png)
-
-### Task 3 - Explore the Azure Data Explorer database in Synapse Studio
-
-&nbsp;
-
-* Open Azure Data Explorer Clusters, select your cluster in the left list
-
-![Open ADE](./../media/asa-ade-browse-01.png)
-
-&nbsp;
-
-* Click on the Databases item and choose your database
-
-![Open ADE database](./../media/asa-ade-browse-02.png)
-
-&nbsp;
-
-* Click Query in the left list
-
-![Open ADE Query Pane](./../media/asa-ade-browse-03.png)
-
-&nbsp;
-
-* Select your database and then double click on the table name.
-A default query is generate it. Click Run to execute it.
-The results are available in the lower pane.
-
-![Open ADE Query Pane](./../media/asa-ade-browse-04.png)
-
+![View Spark DataFrame content](./../media/lab-02-ex-01-task-02-load-table.png)
 
 ## Exercise 2 - Load and enrich data with Spark
 
-We will use spark to handle our datasets coming from different datasources.
-
-In order to execute our code, we will use the Azure Analytics Synapse workspace that we have already created.
-
-In a workspace you can create notebooks in order to use code snippets, written in scala, python or sql, to be executed on top of your datasources.
-
-To execute the code for our tasks below we'll use such notebooks, so let's see how notebooks are created first.
-
-&nbsp;
-
-* Create a notebook: go to the left vertical menu, choose Notebooks, press the + button in the toolbar
-
-![Create a notebook](./../media/asa-notebook-01.png)
-
-&nbsp;
-
-* Configure your new notebooks: go to Properties, choose a name. To save changes, you'll have to click on `Publish all`
-
-![Configure the notebook](./../media/asa-notebook-02.png)
-
-&nbsp;
-
-* Save your new notebooks: go to the `Publish all` button in your toolbar, then press `Publish` to save changes. Wait until publishing finishes.
-
-![Publish the notebook](./../media/asa-notebook-03.png)
-
-&nbsp;
-
-* You can now edit your notebook's contents. Select your notebook in the left list, then press `Add code` or `Add text` in the main pane.
-
-![Edit the notebook](./../media/asa-notebook-04.png)
-
-&nbsp;
-
-* Each item, code or text is called a `Cell`. You can execute your code cells. First, choose a Spark pool to be used for your code. Then press the `Run cell`
-Once execution is done, a pane below your code cell shows the output for that cell.
-
-![Run the notebook's code](./../media/asa-notebook-05.png)
-
-Our tasks below use python or scala or sql code. Code cells can use the "magic" prefix to indicate the syntax we use for that code. 
-We use `%%pyspark` to indicate python code, `%%spark` for scala code and `%%sql` for SQL.
+In this exercise you will load data into Spark DataFrames from multiple sources and then perform enrichment steps to consolidate and correlate that data. In the process, you will explore the use of the `Hyperspace` indexing engine and of the `MSSparkUtil` library.
 
 ### Task 1 - Load data from Azure Data Explorer
 
-To load the data stored in the linked service for Azure Data Explorer, we can use the following code:
+To load all the data stored in the Data Explorer table, remove the `| take 10` part from line 10 and change line 13 into
 
 ```python
-%%pyspark
-
-# kusto connector 
-# https://techcommunity.microsoft.com/t5/azure-data-explorer/announcing-azure-data-explorer-data-connector-for-azure-synapse/ba-p/1743868
-
-# Read data from Azure Data Explorer table(s)
-# Full Sample Code available at: https://github.com/Azure/azure-kusto-spark/blob/master/samples/src/main/python/SynapseSample.py
-kustoDf  = spark.read \
-    .format("com.microsoft.kusto.spark.synapse.datasource") \
-    .option("spark.synapse.linkedService", "asadataexplorer01") \
-    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
-    .option("kustoQuery", "ASA-Data-Explorer-DB-01-Table-01") \
-    .load()
-
-display(kustoDf)
+kustoDf.count()
 ```
+
+Run the cell again. This time, the execution should take longer as the DataFrame is fully loaded with the content of the Data Explorer table. The loaded DataFrame contains 12.79 million records.
+
+![Load SalesTelemetry into Spark DataFrame](./../media/lab-02-ex-02-task-01-load-sales-telemetry.png)
 
 ### Task 2 - Index the Data Lake storage with Hyperspace
 
