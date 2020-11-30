@@ -15,7 +15,8 @@
         "storageAccount": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "keyVault": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "applicationInsights": "[resourceId(resourceGroup().name, 'Microsoft.Insights/components', variables('applicationInsightsName'))]",
-        "containerRegistry": "[resourceId(resourceGroup().name, 'Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]"
+        "containerRegistry": "[resourceId(resourceGroup().name, 'Microsoft.ContainerRegistry/registries', variables('containerRegistryName'))]",
+        "cognitiveServicesName": "[concat('asagacognitiveservices', variables('uniqueSuffix'))]"
     },
     "resources": [
         {
@@ -89,6 +90,21 @@
                 "keyVault": "[variables('keyVault')]",
                 "applicationInsights": "[variables('applicationInsights')]",
                 "containerRegistry": "[if(empty(variables('containerRegistryName')), json('null'), variables('containerRegistry'))]"
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2017-04-18",
+            "name": "[variables('cognitiveServicesName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "S0"
+            },
+            "kind": "CognitiveServices",
+            "properties": {
+                "apiProperties": {},
+                "customSubDomainName": "[variables('cognitiveServicesName')]",
+                "publicNetworkAccess": "Enabled"
             }
         }
     ]
