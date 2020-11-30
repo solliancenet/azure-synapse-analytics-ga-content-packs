@@ -265,7 +265,8 @@ SELECT
     CAST([TransactionDate] AS [bigint]) AS [TransactionDate],
     CAST([Hour] AS [bigint]) AS [Hour]
 INTO #ProductQuantityForecast
-FROM [wwi].[ProductQuantityForecast];
+FROM [wwi].[ProductQuantityForecast]
+WHERE TotalQuantity = 0;
 
 SELECT
     ProductId

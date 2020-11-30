@@ -212,6 +212,7 @@ if ($download)
                 dates = "wwi-02/data-generators/generator-date.csv"
                 customer = "wwi-02/data-generators/generator-customer-clean.csv"
                 reviews = "wwi-02/sale-small-product-reviews/ProductReviews.csv"
+                forecast = "wwi-02/sale-small-product-quantity-forecast/ProductQuantity-20201209-11.csv"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
