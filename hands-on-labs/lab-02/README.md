@@ -127,97 +127,15 @@ Run the cell again. This time, the execution should take longer as the DataFrame
 
 ### Task 2 - Index the Data Lake storage with Hyperspace
 
-Hyperspace introduces the ability for Apache Spark users to create indexes on their datasets, such as CSV, JSON, and Parquet, and use them for potential query and workload acceleration.
+When loading data from Azure Data Lake Gen 2, searching in the data in one of the most resource consuming operations. [Hyperspace](https://github.com/microsoft/hyperspace) introduces the ability for Apache Spark users to create indexes on their datasets, such as CSV, JSON, and Parquet, and use them for potential query and workload acceleration.
 
-Hyperspace lets you create indexes on records scanned from persisted data files. After they're successfully created, an entry that corresponds to the index is added to the Hyperspace's metadata. This metadata is later used by Apache Spark's optimizer (with our extensions) during query processing to find and use proper indexes.
+Hyperspace lets you create indexes on records scanned from persisted data files. After they're successfully created, an entry that corresponds to the index is added to the Hyperspace's metadata. This metadata is later used by Apache Spark's optimizer during query processing to find and use proper indexes. If the underlying data changes, you can refresh an existing index to capture that.
 
-If the underlying data changes, you can refresh an existing index to capture that.
+Also, Hyperspace allows users to compare their original plan versus the updated index-dependent plan before running their query.
 
-Hyperspace allows users to compare their original plan versus the updated index-dependent plan before running their query
-
-```scala
-%%spark
-
-//
-// Hyperspace: An indexing subsystem for Apache Spark
-//
-// https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-performance-hyperspace?pivots=programming-language-scala
-//
-// 1. Indices are persistent, only create them once
-// 2. Only creating index over HDFS file based scan nodes is supported.
-//
-
-import com.microsoft.hyperspace._
-import com.microsoft.hyperspace.index._
-
-// Disable BroadcastHashJoin, so Spark will use standard SortMergeJoin. Currently, Hyperspace indexes utilize SortMergeJoin to speed up query.
-spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
-
-val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
-dfSales.show(10)
-
-val dfCustomers = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/data-generators/generator-customer-clean.csv")
-dfCustomers.show(10)
-
-//Create an instance of Hyperspace
-val hyperspace: Hyperspace = Hyperspace()
-
-//create indices: each one contains a name, a set of indexed columns and a set of included columns
-val indexConfigSales = IndexConfig("indexSALES", Seq("CustomerId"), Seq("TotalAmount"))
-val indexConfigCustomers = IndexConfig("indexCUSTOMERS", Seq("CustomerId"), Seq("FullName"))
-
-
-hyperspace.indexes.show
-//hyperspace.deleteIndex("indexSALES")
-//hyperspace.vacuumIndex("indexSALES")
-//hyperspace.deleteIndex("indexCUSTOMERS")
-//hyperspace.vacuumIndex("indexCUSTOMERS")
-hyperspace.createIndex(dfSales, indexConfigSales)             //only create index once
-hyperspace.createIndex(dfCustomers, indexConfigCustomers)     //only create index once
-hyperspace.indexes.show
-
-//Enable Hyperspace - Hyperspace optimization rules become visible to the Spark optimizer and exploit existing Hyperspace indexes to optimize user queries
-spark.enableHyperspace
-
-//If the original data on which an index was created changes, the index will no longer capture the latest state of data. You can refresh a stale index
-//hyperspace.refreshIndex("indexSALES")
-//hyperspace.refreshIndex("indexCUSTOMERS")
-
-val df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
-df1.show()
-df1.explain(true)
-
-val df2 = dfCustomers.filter("""CustomerId = 203""").select("""FullName""")
-df2.show()
-df2.explain(true)
-
-val eqJoin = dfSales.join(dfCustomers, dfSales("CustomerId") === dfCustomers("CustomerId")).select(dfSales("TotalAmount"), dfCustomers("FullName"))
-eqJoin.show()
-eqJoin.explain(true)
-
-//Plan with indexes versus... Plan without indexes
-//we should see this in the plan: InMemoryFileIndex[abfss://datasets@hyperspacebenchmark.dfs.core.windows.net/hyperspaceon...
-spark.conf.set("spark.hyperspace.explain.displayMode", "html")
-hyperspace.explain(eqJoin)(displayHTML(_))
-
-//Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
-//spark.disableHyperspace
-```
-
-Same example as above, this time using Python code
+Add a new cell to your notebook with the following code (remember to replace `<unique_suffix>` with the value you specified during the Synapse Analytics workspace deployment):
 
 ```python
-%%pyspark
-
-#
-# Hyperspace: An indexing subsystem for Apache Spark
-#
-# https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-performance-hyperspace?pivots=programming-language-python
-#
-# 1. Indices are persistent, only create them once
-# 2. Only creating index over HDFS file based scan nodes is supported.
-#
-
 from hyperspace import *  
 from com.microsoft.hyperspace import *
 from com.microsoft.hyperspace.index import *
@@ -225,67 +143,106 @@ from com.microsoft.hyperspace.index import *
 # Disable BroadcastHashJoin, so Spark will use standard SortMergeJoin. Currently, Hyperspace indexes utilize SortMergeJoin to speed up query.
 spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
 
-dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
+dfSales = spark.read.parquet("abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
 dfSales.show(10)
 
-dfCustomers = spark.read.load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/data-generators/generator-customer-clean.csv", format="csv", header=True)
+dfCustomers = spark.read.load("abfss://wwi-02@asagsdatalake<unique_suffix>.dfs.core.windows.net/data-generators/generator-customer-clean.csv", format="csv", header=True)
 dfCustomers.show(10)
 
 # Create an instance of Hyperspace
 hyperspace = Hyperspace(spark)
+```
 
-#create indices: each one contains a name, a set of indexed columns and a set of included columns
+Run the new cell. It will load the two DataFrames with data from the data lake and initalize Hyperspace.
+
+![Load data from the data lake and initialize Hyperspace](./../media/lab-02-ex-02-task-02-initialize-hyperspace.png)
+
+Add another new cell to your notebook with the following code:
+
+```python
+#create indexes: each one contains a name, a set of indexed columns and a set of included columns
 indexConfigSales = IndexConfig("indexSALES", ["CustomerId"], ["TotalAmount"])
 indexConfigCustomers = IndexConfig("indexCUSTOMERS", ["CustomerId"], ["FullName"])
 
-
-#hyperspace.indexes().show()
-#hyperspace.deleteIndex("indexSALES")
-#hyperspace.vacuumIndex("indexSALES")
-#hyperspace.deleteIndex("indexCUSTOMERS")
-#hyperspace.vacuumIndex("indexCUSTOMERS")
 hyperspace.createIndex(dfSales, indexConfigSales)			# only create index once
 hyperspace.createIndex(dfCustomers, indexConfigCustomers)	# only create index once
 hyperspace.indexes().show()
+```
 
-#Enable Hyperspace - Hyperspace optimization rules become visible to the Spark optimizer and exploit existing Hyperspace indexes to optimize user queries
-Hyperspace.enable(spark)
+Run the new cell. It will create two indexes and display their structure.
 
-#If the original data on which an index was created changes, the index will no longer capture the latest state of data. You can refresh a stale index
-#hyperspace.refreshIndex("indexSALES")
-#hyperspace.refreshIndex("indexCUSTOMERS")
+![Create new indexes and display their structure](./../media/lab-02-ex-02-task-02-create-indexes.png)
 
+Add another new cell to your notebook with the following code:
+
+```python
 df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
 df1.show()
 df1.explain(True)
-
-df2 = dfCustomers.filter("""CustomerId = 203""").select("""FullName""")
-df2.show()
-df2.explain(True)
-
-eqJoin = dfSales.join(dfCustomers, dfSales.CustomerId == dfCustomers.CustomerId).select(dfSales.TotalAmount, dfCustomers.FullName)
-eqJoin.show()
-eqJoin.explain(True)
-
-#Plan with indexes versus... Plan without indexes
-#we should see this in the plan: InMemoryFileIndex[abfss://datasets@hyperspacebenchmark.dfs.core.windows.net/hyperspaceon...
-spark.conf.set("spark.hyperspace.explain.displayMode", "html")
-hyperspace.explain(eqJoin, True, displayHTML)
-
-#Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
-#Hyperspace.disable(spark)
 ```
 
-When running the spark queries with Hyperspace enabled and indices are present, the query plan shows that the Hyperspace indices are being used.
+Run the new cell. The output will show that the physical execution plan is not taking into account any of the indexes (performs a file scan on the original data file).
 
+![Hyperspace explained - no indexes used](./../media/lab-02-ex-02-task-02-explain-hyperspace-01.png)
+
+Now add another new cell to your notebook with the following code (notice the extra line at the beginning used to enable Hyperspace optimization in the Spark engine):
+
+```python
+# Enable Hyperspace - Hyperspace optimization rules become visible to the Spark optimizer and exploit existing Hyperspace indexes to optimize user queries
+Hyperspace.enable(spark)
+df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
+df1.show()
+df1.explain(True)
+```
+
+Run the new cell. The output will show that the physical execution plan is now using the index instead of the orginal data file.
+
+![Hyperspace explained - using an index](./../media/lab-02-ex-02-task-02-explain-hyperspace-02.png)
+
+Hyperspace provides an Explain API that allows you to compare the execution plans without indexes vs. with indexes. Add a new cell with the following code:
+
+```python
+df1 = dfSales.filter("""CustomerId = 203""").select("""TotalAmount""")
+
+spark.conf.set("spark.hyperspace.explain.displayMode", "html")
+hyperspace.explain(df1, True, displayHTML)
+```
+
+Run the new cell. The output shows a comparison `Plan with indexes` vs. `Plan without indexes`. Observe how, in the first case the index file is used while in the second case the original data file is used.
+
+![Hyperspace explained - plan comparison](./../media/lab-02-ex-02-task-02-explain-hyperspace-03.png)
+
+Let's investigate now a more complex case, involving a join operation. Add a new cell with the following code:
+
+```python
+eqJoin = dfSales.join(dfCustomers, dfSales.CustomerId == dfCustomers.CustomerId).select(dfSales.TotalAmount, dfCustomers.FullName)
+
+hyperspace.explain(eqJoin, True, displayHTML)
+```
+
+Run the new cell. The output shows again a comparison `Plan with indexes` vs. `Plan without indexes`, where indexes are used in the first case and the original data files in the second.
+
+![Hyperspace explained - plan comparison for join](./../media/lab-02-ex-02-task-02-explain-hyperspace-04.png)
+
+In case you want to deactivate Hyperspace and cleanup the indexes, you can run the following code:
+
+```python
+# Disable Hyperspace - Hyperspace rules no longer apply during query optimization. Disabling Hyperspace has no impact on created indexes because they remain intact
+Hyperspace.disable(spark)
+
+hyperspace.deleteIndex("indexSALES")
+hyperspace.vacuumIndex("indexSALES")
+hyperspace.deleteIndex("indexCUSTOMERS")
+hyperspace.vacuumIndex("indexCUSTOMERS")
+```
 
 ### Task 3 - Explore the Data Lake storage with the MSSparkUtil library
 
 Microsoft Spark Utilities (MSSparkUtils) is a builtin package to help you easily perform common tasks. You can use MSSparkUtils to work with file systems, to get environment variables, and to work with secrets.
 
-```python
-%%pyspark
+Continue with the same notebook from the previous task and add a new cell with the following code (remember to replace `<unique_suffix>` with the value you specified during the Synapse Analytics workspace deployment):
 
+```python
 from notebookutils import mssparkutils
 
 #
@@ -295,10 +252,10 @@ from notebookutils import mssparkutils
 #
 
 # Azure storage access info
-blob_account_name = 'asadatalake01'
+blob_account_name = 'asagadatalake<unique_suffix>'
 blob_container_name = 'wwi-02'
 blob_relative_path = '/'
-linkedServiceName = 'asadatalake01'
+linkedServiceName = 'asagadatalake<unique_suffix>'
 blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linkedServiceName)
 
 # Allow SPARK to access from Blob remotely
@@ -315,21 +272,24 @@ for file in files:
     print(file.name, file.isDir, file.isFile, file.path, file.size)
 ```
 
+Run the new cell and observe how `mssparkutils` is used to work with the file system.
+
 ### Task 4 - Load data from Data Lake storage
 
-Use spark to read parquet files from DataLake
+In Task 2, you have already loaded data into the notebook from the Data Lake storage. Here is the code snipped that loads a Spark DataFrame from the Data Lake (in case you want to run this, remember to replace `<unique_suffix>` with the value you specified during the Synapse Analytics workspace deployment):
 
 ```python
-%%pyspark
-#load parquet as a spark dataframe
-dfSales = spark.read.parquet('abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet')
+# load parquet as a spark dataframe
+dfSales = spark.read.parquet('abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet')
 dfSales.printSchema()
 dfSales.show(10)
 ```
 
 ### Task 5 - Load data from SQL Pool
 
-Use spark to read SQLDB contents via the `sqlanalytics` connector. Only Scala is supported.
+The Azure Synapse Apache Spark to Synapse SQL connector (`sqlanalytics`) is designed to efficiently transfer data between serverless Apache Spark pools and SQL pools in Azure Synapse. The Azure Synapse Apache Spark to Synapse SQL connector works on dedicated SQL pools only, it doesn't work with serverless SQL pool. The connector works only in Scala currently.
+
+Continue with the same notebook from the previous task and add a new cell with the following code:
 
 ```scala
 %%spark
@@ -337,12 +297,22 @@ Use spark to read SQLDB contents via the `sqlanalytics` connector. Only Scala is
 import com.microsoft.spark.sqlanalytics.utils.Constants
 import org.apache.spark.sql.SqlAnalyticsConnector._
 
-//read from SQLDB
-val dfProducts = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
+// read from SQL pool
+val dfProducts = spark.read.sqlanalytics("SQLPool01.wwi.Product")
 dfProducts.head(10)
 ```
 
+Run the new cell and observe the results loaded into the Spark DataFrame. To learn more about the `sqlanalytics` connector read the [Ingest and prepare data - Introduction](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/synapse-spark-sql-pool-import-export) section in the Synapse Analytics Apache Spark documentation.
+
 ### Task 6 - Enrich data from multiple sources
+
+You are now familiar with the details of loading data into Spark DataFrames from several sources:
+
+- Azure Data Explorer
+- Azure Data Lake Gen 2
+- Azyre Synapse Analytics SQL pool
+
+In this task you will peform a complex data enrichment taks involving all of the three sources.
 
 Using Spark we can perform powerful queries on all our data.
 
