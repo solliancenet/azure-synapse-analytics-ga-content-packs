@@ -69,3 +69,17 @@ $cognitiveServicesKeys = Get-AzCognitiveServicesAccountKey -ResourceGroupName $r
 
 $secretValue = ConvertTo-SecureString $cognitiveServicesKeys.Key1 -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-COGNITIVE-SERVICES" -SecretValue $secretValue
+
+
+Write-Information "Create data sets for Product Quantity Forecast data load in SQL pool $($sqlPoolName)"
+
+$loadingDatasets = @{
+        wwi02_sale_small_product_quentity_forecast_adls = $dataLakeAccountName
+        wwi02_sale_small_product_quentity_forecast_asa = $sqlPoolName.ToLower()
+}
+
+foreach ($dataset in $loadingDatasets.Keys) {
+        Write-Information "Creating dataset $($dataset)"
+        $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+        Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+}
