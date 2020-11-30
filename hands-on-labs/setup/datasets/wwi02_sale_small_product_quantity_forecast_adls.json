@@ -30,6 +30,10 @@
             {
                 "name": "Hour",
                 "type": "String"
+            },
+            {
+                "name": "TotalQuantity",
+                "type": "String"
             }
         ]
     }

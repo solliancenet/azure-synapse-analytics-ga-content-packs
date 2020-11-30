@@ -155,6 +155,20 @@
         "sqlAdministratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]"
       },
       "resources": [
+        {
+          "apiVersion": "2019-06-01-preview",
+          "dependsOn": [
+              "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+          ],
+          "location": "[variables('location')]",
+          "name": "default",
+          "properties": {
+              "grantSqlControlToManagedIdentity": {
+                  "desiredState": "Enabled"
+              }
+          },
+          "type": "managedIdentitySqlControlSettings"
+        }
       ]
     },
     {
@@ -167,6 +181,18 @@
       "properties": {
         "startIpAddress": "0.0.0.0",
         "endIpAddress": "255.255.255.255"
+      }
+    },
+    {
+      "type": "Microsoft.Synapse/workspaces/firewallRules",
+      "apiVersion": "2019-06-01-preview",
+      "name": "[concat(variables('workspaceName'), '/AllowAllWindowsAzureIps')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Synapse/workspaces', variables('workspaceName'))]"
+      ],
+      "properties": {
+          "startIpAddress": "0.0.0.0",
+          "endIpAddress": "0.0.0.0"
       }
     },
     {
