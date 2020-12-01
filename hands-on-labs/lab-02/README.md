@@ -146,7 +146,7 @@ spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
 dfSales = spark.read.parquet("abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet")
 dfSales.show(10)
 
-dfCustomers = spark.read.load("abfss://wwi-02@asagsdatalake<unique_suffix>.dfs.core.windows.net/data-generators/generator-customer-clean.csv", format="csv", header=True)
+dfCustomers = spark.read.load("abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/data-generators/generator-customer-clean.csv", format="csv", header=True)
 dfCustomers.show(10)
 
 # Create an instance of Hyperspace
