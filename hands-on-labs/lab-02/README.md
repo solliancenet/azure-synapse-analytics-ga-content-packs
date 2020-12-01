@@ -416,50 +416,29 @@ Run the cell. It will save the enriched dataset to the Data Lake, under the `sal
 
 ## Exercise 3 - Consume enriched data
 
-The persisted output data will be now used for further analysis.
+In this exercise, you will view the information in the enriched dataset in a Power BI report.
 
 ### Task 1 - Access data with the SQL built-in pool
 
-&nbsp;
+In Synapse Studio, select the `Data` hub on the left side, select the `Linked` section, and then select the primary data lake account under `Azure Data Lake Storage Gen 2`. Next, select the `wwi-02` file system, select the `sale-small-stats` folder, and then select `New SQL script > Select TOP 100 rows` from the context menu available by right-clicking on the Parquet file.
 
-* Create SQL query: go to your datalake source, find the container and the path where enriched data is stored. Right click on the desired file, choose New SQL Script, pick one of the scripts.
+![Open new SQL script on the enriched data file in the data lake](./../media/lab-02-ex-03-task-01-new-sql-script.png)
 
-![Create SQL query](./../media/asa-enriched-consume-01.png)
-
-By default an SQL query that allows us to browse the first rows in the dataset is generated. You can customize the SQL query.
+Change the T-SQL script to the following (remember to replace `<unique_suffix>` in line 1 with the value you specified during the Synapse Analytics workspace deployment):
 
 ```sql
 SELECT
     TOP 100 *
 FROM
     OPENROWSET(
-        BULK 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/*.parquet',
+        BULK 'https://asagadatalake<unique_suffix>.dfs.core.windows.net/wwi-02/sale-small-stats/*.parquet',
         FORMAT='PARQUET'
     ) AS [result]
 ```
-&nbsp;
 
-Run query and view results: click on the Run button to execute your query and the lower pane will show the results.
+Run the query on the `Built-in` serverless pool and observe the results.
 
-![Run SQL query](./../media/asa-enriched-consume-02.png)
-
-Note that we can also create shared database/table metadata (between the Apache Spark pools and the SQL pool)
-
-```python
-%%pyspark
-
-#
-# create an external/unmanaged database/table from datalake information
-#
-# see https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/overview
-#
-spark.sql("CREATE DATABASE IF NOT EXISTS ASA_SPARK_DB01")
-spark.sql("CREATE TABLE IF NOT EXISTS ASA_SPARK_DB01.salesmallstats201912 USING Parquet LOCATION 'https://asadatalake01.dfs.core.windows.net/wwi-02/test/sale-small-stats/TransactionDate=20191201/*.parquet'")
-
-#since we now have table metadata, we can now use SQL queries (with or without spark)
-dfExt = spark.sql("SELECT * FROM asa_spark_db01.salesmallstats201912")
-dfExt.show(10)
-```
+![Explore the enriched dataset using SQL serverless](./../media/lab-02-ex-03-task-01-execute-sql-script.png)
 
 ### Task 2 - Display enriched data in Power BI
 
