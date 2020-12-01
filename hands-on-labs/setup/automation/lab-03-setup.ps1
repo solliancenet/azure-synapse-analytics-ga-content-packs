@@ -70,5 +70,5 @@ $secretValue = ConvertTo-SecureString $dataLakeAccountKey -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-DATA-LAKE" -SecretValue $secretValue
 
 $dataFactoryServicePrincipal = (Get-AzADServicePrincipal -DisplayName $dataFactoryAccountName)
-$dataFactoryServicePrincipal
+Write-Output $dataFactoryServicePrincipal
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $dataFactoryServicePrincipal.Id -PermissionsToSecrets set,delete,get,list
