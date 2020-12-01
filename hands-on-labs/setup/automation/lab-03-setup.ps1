@@ -80,7 +80,7 @@ $templateContent = $template.Replace("#LINKED_SERVICE_NAME#", "asagakeyvault01")
 Set-Content -Path .\temp.json -Value $templateContent
 Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
     -ResourceGroupName $resourceGroupName -Name "asagakeyvault01" `
-    -DefinitionFile ".\temp.json"
+    -DefinitionFile ".\temp.json" -Force
 Remove-Item -Path .\temp.json -Force
 
 
@@ -89,5 +89,13 @@ $templateContent = $template.Replace("#LINKED_SERVICE_NAME#", "asagadatalake01")
 Set-Content -Path .\temp.json -Value $templateContent
 Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
     -ResourceGroupName $resourceGroupName -Name "asagadatalake01" `
-    -DefinitionFile ".\temp.json"
+    -DefinitionFile ".\temp.json" -Force
+Remove-Item -Path .\temp.json -Force
+
+$template = Get-Content -Path "$($templatesPath)/sql_pool_key_vault_linked_service.json"
+$templateContent = $template.Replace("#LINKED_SERVICE_NAME#", "asagasqlpool01").Replace("#WORKSPACE_NAME#", $workspaceName).Replace("#DATABASE_NAME#", "SQLPool01").Replace("#USER_NAME#", "asaga.sql.admin").Replace("#KEY_VAULT_LINKED_SERVICE_NAME#", "asagakeyvault01").Replace("#SECRET_NAME#", "SQL-USER-ASA")
+Set-Content -Path .\temp.json -Value $templateContent
+Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "asagasqlpool01" `
+    -DefinitionFile ".\temp.json" -Force
 Remove-Item -Path .\temp.json -Force
