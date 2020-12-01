@@ -291,7 +291,7 @@ In the code above, make sure you replace `<your_model_id>` with the actual ID of
 
 >**NOTE**:
 >
->Our version of the stored procedure uses the `MERGE` commdand to update the values of the `TotalQuantity` field in-place, in the `wwi.ProductQuantityForecast` table. The `MERGE` command has been recently added to Azure Synapse Analytics. For more details, read [New MERGE command for Auzre Synapse Analytics](https://azure.microsoft.com/en-us/updates/new-merge-command-for-azure-synapse-analytics/).
+>Our version of the stored procedure uses the `MERGE` commdand to update the values of the `TotalQuantity` field in-place, in the `wwi.ProductQuantityForecast` table. The `MERGE` command has been recently added to Azure Synapse Analytics. For more details, read [New MERGE command for Azure Synapse Analytics](https://azure.microsoft.com/en-us/updates/new-merge-command-for-azure-synapse-analytics/).
 
 You are now ready to perform the forecast on the `TotalQuantity` column. Open a new SQL script and run the following statement:
 
