@@ -107,7 +107,7 @@ Replace the content of the notebook cell with the following code and then run th
 ```python
 import pyspark.sql.functions as f
 
-df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*/*.parquet',
+df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet',
     format='parquet')
 df_consolidated = df.groupBy('ProductId', 'TransactionDate', 'Hour').agg(f.sum('Quantity').alias('TotalQuantity'))
 df_consolidated.write.mode("overwrite").saveAsTable("default.SaleConsolidated")
@@ -206,7 +206,7 @@ Select your run, and then select the `Models` tab to view the current list of mo
 
 ![Models built by AutoML run](./../media/lab-01-ex-02-task-02-run-details.png)
 
-Select the best model (the one at the top of the list) and then select the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
+Select the best model (the one at the top of the list) then click on `View Explanations` to open the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
 
 ![Explainability of the best AutoML model](./../media/lab-01-ex-02-task-02-best-mode-explained.png)
 
