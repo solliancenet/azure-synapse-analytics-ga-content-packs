@@ -1,0 +1,45 @@
+{
+    "name": "wwi02_sale_small_stats_adls",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "asagadatalake01",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "Parquet",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation",
+                "folderPath": "sale-small-stats",
+                "fileSystem": "wwi-02"
+            },
+            "compressionCodec": "snappy"
+        },
+        "schema": [
+            {
+                "name": "CustomerId",
+                "type": "INT32"
+            },
+            {
+                "name": "TransactionId",
+                "type": "UTF8"
+            },
+            {
+                "name": "TransactionTime",
+                "type": "INT96"
+            },
+            {
+                "name": "TotalClicksToPurchase",
+                "type": "INT64"
+            },
+            {
+                "name": "TotalSecondsToPurchase",
+                "type": "INT64"
+            },
+            {
+                "name": "Age",
+                "type": "INT32"
+            }
+        ]
+    }
+}
