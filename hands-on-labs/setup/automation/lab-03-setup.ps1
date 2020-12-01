@@ -63,8 +63,10 @@ $global:tokenTimes = [ordered]@{
         PowerBI = (Get-Date -Year 1)
 }
 
-
+$dataFactoryAccountName = "asagadatafactory($uniqueId)"
 $dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
 
 $secretValue = ConvertTo-SecureString $dataLakeAccountKey -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-DATA-LAKE" -SecretValue $secretValue
+
+Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -UserPrincipalName $dataFactoryAccountName -PermissionsToSecrets set,delete,get,list
