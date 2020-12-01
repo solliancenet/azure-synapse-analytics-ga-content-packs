@@ -64,6 +64,7 @@ $global:tokenTimes = [ordered]@{
 }
 
 $dataFactoryAccountName = "asagadatafactory$($uniqueId)"
+
 $dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
 
 $secretValue = ConvertTo-SecureString $dataLakeAccountKey -AsPlainText -Force
@@ -72,3 +73,12 @@ Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-DATA-LAKE" -SecretVa
 Write-Output "Data Factory v2 account name is $($dataFactoryAccountName)"
 $dataFactoryServicePrincipal = (Get-AzADServicePrincipal -DisplayName $dataFactoryAccountName)
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $dataFactoryServicePrincipal.Id -PermissionsToSecrets set,delete,get,list
+
+
+$keyVaultTemplate = Get-Content -Path "$($templatesPath)/key_vault_linked_service.json"
+$keyVaultContent = $keyVaultTemplate.Replace("#LINKED_SERVICE_NAME#", "asagakeyvault01").Replace("#KEY_VAULT_NAME#", $keyVaultName)
+Set-Content -Path .\temp.json -Value $keyVaultContent
+Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "asagakeyvault01" `
+    -DefinitionFile ".\temp.json"
+Remove-Item -Path .\temp.json -Force
