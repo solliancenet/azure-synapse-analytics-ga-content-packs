@@ -10,9 +10,9 @@ This lab has the following structure:
   - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
   - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
 - [Exercise 1 - Script an Azure Data Factory (ADF) pipeline](#exercise-1---script-an-azure-data-factory-adf-pipeline)
-  - [Task 1 - Script an ADF linked service](#task-1---script-an-adf-linked-service)
-  - [Task 2 - Script an ADF dataset](#task-2---script-an-adf-dataset)
-  - [Task 3 - Script an ADF pipeline activity](#task-3---script-an-adf-pipeline-activity)
+  - [Task 1 - View and run the ADF pipeline](#task-1---view-and-run-the-adf-pipeline)
+  - [Task 2 - Script an ADF linked service](#task-2---script-an-adf-linked-service)
+  - [Task 3 - Script an ADF dataset](#task-3---script-an-adf-dataset)
   - [Task 4 - Script an ADF pipeline](#task-4---script-an-adf-pipeline)
 - [Exercise 2 - Import a scripted ADF pipeline into Azure Synapse](#exercise-2---import-a-scripted-adf-pipeline-into-azure-synapse)
   - [Task 1 - Import a linked service](#task-1---import-a-linked-service)
@@ -44,15 +44,15 @@ Follow the instructions in [Deploy resources for Lab 03](./../setup/lab-03-deplo
 
 Exercise description
 
-### Task 1 - Script an ADF linked service
+### Task 1 - View and run the ADF pipeline
+
+### Task 2 - Script an ADF linked service
 
 Task content
 
-### Task 2 - Script an ADF dataset
+### Task 3 - Script an ADF dataset
 
 Task content
-
-### Task 3 - Script an ADF pipeline activity
 
 Task content
 
