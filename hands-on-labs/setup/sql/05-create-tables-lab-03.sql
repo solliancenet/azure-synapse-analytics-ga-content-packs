@@ -4,12 +4,12 @@ DROP TABLE [wwi].[SaleStatistic]
 
 CREATE TABLE [wwi].[SaleStatistic]
 ( 
-	[CustomerId] [bigint] NOT NULL,
+	[CustomerId] [int] NOT NULL,
 	[TransactionId] [uniqueidentifier]  NOT NULL,
 	[TransactionDate] [datetime]  NOT NULL,
 	[TotalClicksToPurchase] [bigint]  NOT NULL,
     [TotalSecondsToPurchase] [bigint] NOT NULL,
-    [Age] [bigint] NOT NULL
+    [Age] [int] NOT NULL
 )
 WITH
 (
