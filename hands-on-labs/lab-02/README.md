@@ -314,7 +314,7 @@ You are now familiar with the details of loading data into Spark DataFrames from
 
 In this task you will peform a complex data enrichment taks involving all of the three sources.
 
-Using Spark we can perform powerful queries on all our data.
+Continue with the same notebook from the previous task and add a new cell with the following code:
 
 ```scala
 %%spark
@@ -322,103 +322,97 @@ Using Spark we can perform powerful queries on all our data.
 import com.microsoft.spark.sqlanalytics.utils.Constants
 import org.apache.spark.sql.SqlAnalyticsConnector._
 
-import org.apache.spark.sql.functions.udf
-import org.apache.spark.sql.expressions.Window
+// read from SQL pool
+val dfProduct = spark.read.sqlanalytics("SQLPool01.wwi.Product")
+val dfCustomer = spark.read.sqlanalytics("SQLPool01.wwi.Customer")
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.Duration
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-
-val zoneId = ZoneId.systemDefault()
-
-//
-// 1. read customers/products from sqldb
-//
-
-//CustomerId,FirstName,MiddleInitial,LastName,FullName,Gender,Age,BirthDate,Address_PostalCode,Address_Street,Address_City,Address_Country,Mobile,Email
-//val dfCustomers = spark.read.sqlanalytics("SQLPool02.wwi.Customer") 
-//dfCustomers.show
-
-//ProductId,Seasonality,Price,Profit
-//val dfProducts = spark.read.sqlanalytics("SQLPool02.wwi.Product") 
-
-//inner join to link sales with product details
-//df1 = dfSales.join(dfProducts, dfSales.name == dfProducts.name)
-//df2 = dfTelemetry.join(df1, (dfTelemetry.ProductId == df1.ProductId) & (dfTelemetry.CustomerId == df1.CustomerId))
-
-//
-// 2. read sales from datalake
-//
-
-//TransactionId,CustomerId,ProductId,Quantity,Price,TotalAmount,TransactionDate,ProfitAmount,Hour,Minute,StoreId
-val dfSales = spark.read.parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")
-
-val func1 = udf((dt:String, hh:Int, mm:Int) => {
-    val fmt = DateTimeFormatter.ofPattern("yyyyMMdd")
-    val theDate =  LocalDate.parse(dt, fmt)
-    val dtSales = LocalDateTime.of(theDate.getYear, theDate.getMonth, theDate.getDayOfMonth, hh, mm, 0, 0)
-    dtSales.atZone(zoneId).toEpochSecond().toLong
-})
-
-val dfSales2 = dfSales.withColumn("DtSales", func1('TransactionDate, 'Hour, 'Minute))
-dfSales2.show
-
-//
-// 3. read telemetry from ade/kusto
-//
-
-//CustomerId,ProductId,Timestamp,Url
-val dfTelemetry = spark.read.format("csv").option("header", "true").load("abfss://wwi-02@asadatalake01.dfs.core.windows.net/sale-small-telemetry/telemData20191201new.csv")
-
-//dfTelemetry  = spark.read \
-//    .format("com.microsoft.kusto.spark.synapse.datasource") \
-//    .option("spark.synapse.linkedService", "asadataexplorer01") \
-//    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
-//    .option("kustoQuery", "ASA-Data-Explorer-DB-01-Table-01") \
-//    .load()
-
-val func2 = udf((tsTelem:String) => {
-    val fmt2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val dtTelem =  LocalDateTime.parse(tsTelem, fmt2)
-
-    dtTelem.atZone(zoneId).toEpochSecond().toLong
-})
-val dfTelemetry2 = dfTelemetry.withColumn("DtTelem", func2('Timestamp)).withColumnRenamed("CustomerId", "TCustomerId").withColumnRenamed("ProductId", "TProductId")
-dfTelemetry2.show
-
-//
-// Enrichment
-//
-
-//match transactions with telemetry entries based on this fuzzy logic:
-//a telemetry entry belongs to a transaction if it was logged during the 15 minutes before the transaction
-val dfEnriched = dfTelemetry2.repartition(800).join(dfSales2, dfTelemetry2("TCustomerId")===dfSales2("CustomerId") && dfTelemetry2("TProductId")===dfSales2("ProductId")).withColumn("deltaSec", 'DtSales - 'DtTelem).where('deltaSec > 0 and 'deltaSec < 900).drop("TCustomerId").drop("TProductId")
-dfEnriched.show
-
-//compute the time-to-trans and clicks-to-trans
-val windowSpec = Window.partitionBy($"TransactionId", $"ProductId", $"CustomerId").orderBy('Timestamp desc)
-val countClicks = count('*).over(windowSpec)
-val countTime = max('deltaSec).over(windowSpec)
-
-val dfOut = dfEnriched.withColumn("ClicksBeforePurchase", countClicks).withColumn("SecondsBeforePurchase", countTime)
-val dfResult = dfOut.groupBy($"TransactionId", $"ProductId", $"CustomerId").agg(max('ClicksBeforePurchase) as "ClicksToPurchase", max('SecondsBeforePurchase) as "TimeToPurchase")
-dfResult.show
-
-val df = dfResult.withColumnRenamed("CustomerId", "GCustomerId").withColumnRenamed("ProductId", "GProductId").withColumnRenamed("TransactionId", "GTransactionId")
-df.show
-
-val dfSaved = df.join(dfOut, df("GCustomerId")===dfOut("CustomerId") && df("GProductId")===dfOut("ProductId") && df("GTransactionId")===dfOut("TransactionId")).drop("GCustomerId").drop("GProductId").drop("GTransactionId")
-dfSaved.show
-
-//
-// write output to datalake
-//
-//dfSaved.coalesce(1).write.partitionBy("TransactionDate").format("csv").option("header", "true").mode("overwrite").save("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
-dfSaved.coalesce(1).write.partitionBy("TransactionDate").parquet("abfss://wwi-02@asadatalake01.dfs.core.windows.net/test/sale-small-stats")
-
+dfProduct.createOrReplaceTempView("Product")
+dfCustomer.createOrReplaceTempView("Customer")
 ```
+
+Run the new cell. It will read data from the `Product` and `Customer` tables from the SQL pool.
+
+Add a new cell with the following code:
+
+```python
+prod_df = spark.sql("SELECT * FROM Product")
+prod_df.cache()
+
+cust_df = spark.sql("SELECT CustomerId, Age from Customer")
+cust_df.cache()
+```
+
+Run the new cell. It will load the product and customer data into Spark DataFrames in PySpark.
+
+Add a new cell with the following code (remember to replace `<unique_suffix>` in line 14 with the value you specified during the Synapse Analytics workspace deployment):
+
+```python
+import datetime
+
+from pyspark.sql.functions import udf, col
+from pyspark.sql.types import TimestampType
+
+timeUDF = udf(lambda tran_date, hour, minute:to_datetime(tran_date, hour, minute), TimestampType())
+
+def to_datetime(tranDate, hour, minute):
+    year = tranDate // 10000
+    month = (tranDate - year * 10000) // 100
+    day = tranDate - year * 10000 - month * 100
+    return datetime.datetime(year, month, day, hour, minute, 0)
+
+sales_df = spark.read.parquet("abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191201/*.parquet")
+
+sales_df = sales_df.withColumn("TransactionTime", timeUDF(sales_df.TransactionDate, sales_df.Hour, sales_df.Minute))
+display(sales_df.take(10))
+```
+
+Run the new cell. It will load sales data for December 1st, 2019 from the Data Lake.
+
+Add a new cell with the following code:
+
+```python
+telemetry_df  = spark.read \
+    .format("com.microsoft.kusto.spark.synapse.datasource") \
+    .option("spark.synapse.linkedService", "asagadataexplorer01") \
+    .option("kustoDatabase", "ASA-Data-Explorer-DB-01") \
+    .option("kustoQuery", "SalesTelemetry | where Timestamp >= datetime(2019-12-01) and Timestamp < datetime(2019-12-02)") \
+    .load()
+
+display(telemetry_df.take(10))
+```
+
+Run the new cell. It will load online telemetry data for December 1st, 2019, from the Data Explorer database.
+
+Add a new cell with the following code:
+
+```python
+df = telemetry_df.join(sales_df, on=['CustomerId', 'ProductId'], how='inner') \
+    .withColumn('TimeDelta', col('TransactionTime').cast('long') - col('Timestamp').cast('long')) \
+    .where((col('TimeDelta') > 0) & (col('TimeDelta') < 900)) \
+    .groupBy('CustomerId', 'TransactionId', 'TransactionTime') \
+    .agg(
+        f.count('Timestamp').alias('TotalClicksToPurchase'),
+        f.min('Timestamp').alias('TransactionStartTime')) \
+    .withColumn('TotalSecondsToPurchase', col('TransactionTime').cast('long') - col('TransactionStartTime').cast('long')) \
+    .drop('TransactionStartTime') \
+    .join(cust_df, on=['CustomerId'], how='inner')
+
+display(df.take(10))
+```
+
+Run the cell. It will perform the following tasks:
+
+- Join telemetry data with sales data and apply the following fuzzy matching rule: if the telemetry entry refers to the same customer and product, and occurs at most 900 seconds before the sales transaction, it is considered to refer to that transaction.
+- Calculate the number of telemetry entries per transaction (`TotalClicksToPurchase` - each telemetry entry is considered to be the equivalent of one click on the web site) and the total time to make the purchase (`TotalSecondsToPurchase` - number of seconds between the timestamp of the earliest associated telemetry entry and the transaction timestamp).
+- Join with customer data, to get customer age information.
+
+Finally, add a new cell with the following code (remember to replace `<unique_suffix>` in line 1 with the value you specified during the Synapse Analytics workspace deployment):
+
+```python
+df.coalesce(1).write.parquet("abfss://wwi-02@asagadatalake<unique_suffix>.dfs.core.windows.net/sale-small-stats")
+```
+
+Run the cell. It will save the enriched dataset to the Data Lake, under the `sale-small-stats` folder.
 
 ## Exercise 3 - Consume enriched data
 
