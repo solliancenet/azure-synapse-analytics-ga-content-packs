@@ -109,6 +109,9 @@ Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
 
 Write-Information "Create tables for Lab 03 in $($sqlPoolName)"
 
+$secret = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name SQL-USER-ASA
+$global:sqlPassword = $secret.SecretValue | ConvertFrom-SecureString -AsPlainText
+
 $params = @{}
 $result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-lab-03" -Parameters $params
 $result
