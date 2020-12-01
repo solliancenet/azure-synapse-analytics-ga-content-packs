@@ -127,7 +127,7 @@ Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
 
 # Create pipeline
 
-$template = Get-Content -Path "$($pipelinesPath)/import_sale_small_stats.json"
+$template = Get-Content -Path "$($pipelinesPath)/import_sale_small_stats_data.json"
 $templateContent = $template.Replace("#BLOB_STORAGE_LINKED_SERVICE_NAME#", $dataLakeAccountName)
 Set-Content -Path .\temp.json -Value $templateContent
 Set-AzDataFactoryV2Pipeline -DataFactoryName $dataFactoryAccountName `
