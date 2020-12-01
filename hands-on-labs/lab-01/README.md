@@ -256,7 +256,7 @@ From the new SQL script that is created for you, copy the ID of the model:
 The T-SQL code that is generated will only return the results of the prediction, without actually saving them. To save the results of the prediction directly into the `[wwi].[ProductQuantityForecast]` table, replace the generated code with the following:
 
 ```sql
-CREATE PROC [dbo].[ProductQuantityPrediction] AS
+CREATE PROC [wwi].[ForecastProductQuantity] AS
 BEGIN
 
 SELECT
