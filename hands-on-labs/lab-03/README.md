@@ -70,7 +70,7 @@ Return to the ADF designer and explore the structure of the pipeline. Notice the
 - **Datasets**: `wwi02_sale_small_stats_adls`, `wwi02_sale_small_stats_asa`
 - **Linked services**: `asagakeyvault01`, `asagadatalake01`, `asagasqlpool01`
 
-The reminder of this exercise covers the procedure to get the JSON templates associated with these objects.
+The remainder of this exercise covers the procedure to get the JSON templates associated with these objects.
 
 ### Task 2 - Script an ADF pipeline and all its related components
 
