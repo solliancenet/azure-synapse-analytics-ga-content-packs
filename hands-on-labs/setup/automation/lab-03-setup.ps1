@@ -75,10 +75,19 @@ $dataFactoryServicePrincipal = (Get-AzADServicePrincipal -DisplayName $dataFacto
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $dataFactoryServicePrincipal.Id -PermissionsToSecrets set,delete,get,list
 
 
-$keyVaultTemplate = Get-Content -Path "$($templatesPath)/key_vault_linked_service.json"
-$keyVaultContent = $keyVaultTemplate.Replace("#LINKED_SERVICE_NAME#", "asagakeyvault01").Replace("#KEY_VAULT_NAME#", $keyVaultName)
-Set-Content -Path .\temp.json -Value $keyVaultContent
+$template = Get-Content -Path "$($templatesPath)/key_vault_linked_service.json"
+$templateContent = $template.Replace("#LINKED_SERVICE_NAME#", "asagakeyvault01").Replace("#KEY_VAULT_NAME#", $keyVaultName)
+Set-Content -Path .\temp.json -Value $templateContent
 Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
     -ResourceGroupName $resourceGroupName -Name "asagakeyvault01" `
+    -DefinitionFile ".\temp.json"
+Remove-Item -Path .\temp.json -Force
+
+
+$template = Get-Content -Path "$($templatesPath)/data_lake_key_vault_linked_service.json"
+$templateContent = $template.Replace("#LINKED_SERVICE_NAME#", "asagadatalake01").Replace("#DATA_LAKE_ACCOUNT_NAME#", $dataLakeAccountName).Replace("#KEY_VAULT_LINKED_SERVICE_NAME#", "asagakeyvault01").Replace("#SECRET_NAME#", "ASA-GA-DATA-LAKE")
+Set-Content -Path .\temp.json -Value $templateContent
+Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "asagadatalake01" `
     -DefinitionFile ".\temp.json"
 Remove-Item -Path .\temp.json -Force

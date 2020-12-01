@@ -1,0 +1,18 @@
+{
+    "name": "#LINKED_SERVICE_NAME#",
+    "properties": {
+        "annotations": [],
+        "type": "AzureBlobFS",
+        "typeProperties": {
+            "url": "https://#DATA_LAKE_ACCOUNT_NAME#.dfs.core.windows.net",
+            "accountKey": {
+                "type": "AzureKeyVaultSecret",
+                "store": {
+                    "referenceName": "#KEY_VAULT_LINKED_SERVICE_NAME#",
+                    "type": "LinkedServiceReference"
+                },
+                "secretName": "#SECRET_NAME#"
+            }
+        }
+    }
+}
