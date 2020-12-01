@@ -2,7 +2,7 @@
     "name": "wwi02_sale_small_stats_adls",
     "properties": {
         "linkedServiceName": {
-            "referenceName": "asagadatalake01",
+            "referenceName": "asagadatalake01_adf",
             "type": "LinkedServiceReference"
         },
         "annotations": [],

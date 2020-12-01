@@ -42,13 +42,52 @@ Follow the instructions in [Deploy resources for Lab 03](./../setup/lab-03-deplo
 
 ## Exercise 1 - Script an Azure Data Factory (ADF) pipeline
 
-Exercise description
+In this exercise you will run an existing Azure Data Factory v2 pipeline and then script its components. This will prepare the necessary inputs to re-create the pipeline as a Synapse Analytics Pipeline in your workspace.
 
 ### Task 1 - View and run the ADF pipeline
 
+In the Azure Portal, select your Azure Data Factory v2 workspace and then select `Author & Monitor` to load the ADF designer. In the designer, select the `Author` hub on the left side, select the `Pipelines` section and then select the `Lab 03 - Import Sales Stats` pipeline. Start the pipeline in debug mode by selecting the `Debug` option on the toolbar and wait until the pipeline completes successfully.
+
+![View and run ADF v2 pipeline](./../media/lab-03-ex-01-task-01-run-adf-pipeline.png)
+
+In the Azure Portal, select your Synapse Analytics workspace and then select `Open Synapse Studio` to load Synapse Studio. In Synapse Studio, select the `Develop` hub on the left side, open a new SQL script and run the following statement on `SQLPool01`:
+
+```sql
+SELECT
+    COUNT(*)
+FROM    
+    wwi.SaleStatistic
+```
+
+You should get a count of around 27.000 records which proves the ADF pipeline executed successfully.
+
+![View ADF v2 pipeline results](./../media/lab-03-ex-01-task-01-view-pipeline-result.png)
+
+Return to the ADF designer and explore the structure of the pipeline. Notice the following ADF objects:
+
+- **Pipelines**: `Lab 03 - Import Sales Stats`
+- **Datasets**: `wwi02_sale_small_stats_adls`, `wwi02_sale_small_stats_asa`
+- **Linked services**: `asagakeyvault01`, `asagadatalake01`, `asagasqlpool01`
+
+The reminder of this exercise covers the procedure to get the JSON templates associated with these objects.
+
 ### Task 2 - Script an ADF linked service
 
-Task content
+Open an Azure Cloud Shell instance and run `az login` to make sure you are authenticated with the right account.
+
+Run the following commdands to create a working folder:
+
+```cmd
+md adfartifacts
+cd adfartifacts
+```
+
+Next, run the following command to get the `asagakeyvault01` linked service (remember to replace `<unique_suffix>` and `<resource_group_name>` with the values you specified during the Synapse Analytics workspace deployment):
+
+```powershell
+$linkedService = Get-AzDataFactoryV2LinkedService -DataFactoryName "asagadatafactory<unique_prefix>" -ResourceGroupName "<resource_group_name>" -Name "asagakeyvault01"
+$linkedService
+```
 
 ### Task 3 - Script an ADF dataset
 

@@ -52,4 +52,4 @@ Enter the name of the resource group where you deployed the Synapse Analytics wo
 
 The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
 
-The process should take a couple of minutes to finish. Once it completes successfully, you have completed the deployment of the lab.
+The process should take a few of minutes to finish. Once it completes successfully, you have completed the deployment of the lab.

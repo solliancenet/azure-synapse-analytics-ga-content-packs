@@ -2,7 +2,7 @@
     "name": "wwi02_sale_small_stats_asa",
     "properties": {
         "linkedServiceName": {
-            "referenceName": "asagasqlpool01",
+            "referenceName": "asagasqlpool01_adf",
             "type": "LinkedServiceReference"
         },
         "annotations": [],
