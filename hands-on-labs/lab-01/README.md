@@ -71,7 +71,7 @@ First, you need to make sure the service principal has permissions to work with 
 
 You are now ready to create the Azure Machine Learning linked service.
 
-To create a new linked service, open Synapse Studio, select the `Manage` hub, select `Linked services`, and the select `+ New`. In the search field from the `New linked service` dialog, enter `Azure Machine Learning`. Select the `Azure Machine Learning` option and then select `Continue`.
+To create a new linked service, open your Synapse workspace, open Synapse Studio, select the `Manage` hub, select `Linked services`, and the select `+ New`. In the search field from the `New linked service` dialog, enter `Azure Machine Learning`. Select the `Azure Machine Learning` option and then select `Continue`.
 
 ![Create new linked service in Synapse Studio](./../media/lab-01-ex-01-task-01-new-linked-service.png)
 
@@ -107,7 +107,7 @@ Replace the content of the notebook cell with the following code and then run th
 ```python
 import pyspark.sql.functions as f
 
-df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*/*.parquet',
+df = spark.read.load('abfss://wwi-02@<data_lake_account_name>.dfs.core.windows.net/sale-small/Year=2019/Quarter=Q4/Month=12/*/*.parquet',
     format='parquet')
 df_consolidated = df.groupBy('ProductId', 'TransactionDate', 'Hour').agg(f.sum('Quantity').alias('TotalQuantity'))
 df_consolidated.write.mode("overwrite").saveAsTable("default.SaleConsolidated")
@@ -206,7 +206,7 @@ Select your run, and then select the `Models` tab to view the current list of mo
 
 ![Models built by AutoML run](./../media/lab-01-ex-02-task-02-run-details.png)
 
-Select the best model (the one at the top of the list) and then select the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
+Select the best model (the one at the top of the list) then click on `View Explanations` to open the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
 
 ![Explainability of the best AutoML model](./../media/lab-01-ex-02-task-02-best-mode-explained.png)
 
@@ -256,7 +256,7 @@ From the new SQL script that is created for you, copy the ID of the model:
 The T-SQL code that is generated will only return the results of the prediction, without actually saving them. To save the results of the prediction directly into the `[wwi].[ProductQuantityForecast]` table, replace the generated code with the following:
 
 ```sql
-CREATE PROC [dbo].[ProductQuantityPrediction] AS
+CREATE PROC [wwi].[ForecastProductQuantity] AS
 BEGIN
 
 SELECT
@@ -274,7 +274,7 @@ SELECT
     ,CAST(variable_out1 as INT) as TotalQuantity
 INTO
     #Pred
-FROM PREDICT (MODEL = (SELECT [model] FROM dbo.MLModel WHERE [ID] = '<your_model_id>'),
+FROM PREDICT (MODEL = (SELECT [model] FROM wwi.Model WHERE [ID] = '<your_model_id>'),
             DATA = #ProductQuantityForecast,
             RUNTIME = ONNX) WITH ([variable_out1] [real])
 
@@ -291,7 +291,7 @@ In the code above, make sure you replace `<your_model_id>` with the actual ID of
 
 >**NOTE**:
 >
->Our version of the stored procedure uses the `MERGE` commdand to update the values of the `TotalQuantity` field in-place, in the `wwi.ProductQuantityForecast` table. The `MERGE` command has been recently added to Azure Synapse Analytics. For more details, read [New MERGE command for Auzre Synapse Analytics](https://azure.microsoft.com/en-us/updates/new-merge-command-for-azure-synapse-analytics/).
+>Our version of the stored procedure uses the `MERGE` commdand to update the values of the `TotalQuantity` field in-place, in the `wwi.ProductQuantityForecast` table. The `MERGE` command has been recently added to Azure Synapse Analytics. For more details, read [New MERGE command for Azure Synapse Analytics](https://azure.microsoft.com/en-us/updates/new-merge-command-for-azure-synapse-analytics/).
 
 You are now ready to perform the forecast on the `TotalQuantity` column. Open a new SQL script and run the following statement:
 
@@ -379,7 +379,7 @@ From the `Move & transform` section, add a `Copy data` activity and name it `Imp
 
 In the `Source` section of the copy activity properties, provide the following values:
 
-- **Source dataset**: select the `wwi02_sale_small_product_quantity_prediction_adls` dataset.
+- **Source dataset**: select the `wwi02_sale_small_product_quantity_forecast_adls` dataset.
 - **File path type**: select `Wildcard file path`
 - **Wildcard paths**: enter `sale-small-product-quantity-forecast` in the first textbox, and `*.csv` in the second.
 
@@ -387,7 +387,7 @@ In the `Source` section of the copy activity properties, provide the following v
 
 In the `Sink` section of the copy activity properties, provide the following values:
 
--**Sink dataset**: select the `wwi02_sale_small_product_quantity_prediction_asa` dataset.
+-**Sink dataset**: select the `wwi02_sale_small_product_quantity_forecast_asa` dataset.
 
 ![Copy activity sink configuration](./../media/lab-01-ex-03-task-03-pipeline-sink.png)
 
