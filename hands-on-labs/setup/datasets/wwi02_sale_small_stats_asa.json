@@ -1,0 +1,47 @@
+{
+    "name": "wwi02_sale_small_stats_asa",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "asagasqlpool01",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlDWTable",
+        "schema": [
+            {
+                "name": "CustomerId",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "TransactionId",
+                "type": "uniqueidentifier"
+            },
+            {
+                "name": "TransactionDate",
+                "type": "datetime",
+                "precision": 23,
+                "scale": 3
+            },
+            {
+                "name": "TotalClicksToPurchase",
+                "type": "bigint",
+                "precision": 19
+            },
+            {
+                "name": "TotalSecondsToPurchase",
+                "type": "bigint",
+                "precision": 19
+            },
+            {
+                "name": "Age",
+                "type": "int",
+                "precision": 10
+            }
+        ],
+        "typeProperties": {
+            "schema": "wwi",
+            "table": "SaleStatistic"
+        }
+    }
+}

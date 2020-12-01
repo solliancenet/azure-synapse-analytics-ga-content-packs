@@ -102,11 +102,7 @@ Set-AzDataFactoryV2LinkedService -DataFactoryName $dataFactoryAccountName `
     -DefinitionFile ".\temp.json" -Force
 Remove-Item -Path .\temp.json -Force
 
-
-Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
-    -ResourceGroupName $resourceGroupName -Name "wwi02_sale_small_stats_adls" `
-    -DefinitionFile "$($datasetsPath)\wwi02_sale_small_stats_adls.json" -Force
-
+# Create tables in SQL pool
 Write-Information "Create tables for Lab 03 in $($sqlPoolName)"
 
 $secret = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name SQL-USER-ASA
@@ -115,3 +111,26 @@ $global:sqlPassword = $secret.SecretValue | ConvertFrom-SecureString -AsPlainTex
 $params = @{}
 $result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-lab-03" -Parameters $params
 $result
+
+
+# Create datasets
+
+Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "wwi02_sale_small_stats_adls" `
+    -DefinitionFile "$($datasetsPath)\wwi02_sale_small_stats_adls.json" -Force
+
+
+Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "wwi02_sale_small_stats_asa" `
+    -DefinitionFile "$($datasetsPath)\wwi02_sale_small_stats_asa.json" -Force
+
+
+# Create pipeline
+
+$template = Get-Content -Path "$($pipelinesPath)/import_sale_small_stats.json"
+$templateContent = $template.Replace("#BLOB_STORAGE_LINKED_SERVICE_NAME#", $dataLakeAccountName)
+Set-Content -Path .\temp.json -Value $templateContent
+Set-AzDataFactoryV2Pipeline -DataFactoryName $dataFactoryAccountName `
+    -ResourceGroupName $resourceGroupName -Name "Lab 03 - Import Sales Stats" `
+    -DefinitionFile ".\temp.json" -Force
+Remove-Item -Path .\temp.json -Force

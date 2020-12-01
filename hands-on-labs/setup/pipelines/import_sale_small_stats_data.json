@@ -1,0 +1,127 @@
+{
+    "name": "Lab 03 - Import Sales Stats",
+    "properties": {
+        "activities": [
+            {
+                "name": "Copy Sales Stats",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "ParquetSource",
+                        "storeSettings": {
+                            "type": "AzureBlobFSReadSettings",
+                            "recursive": true,
+                            "wildcardFileName": "*.parquet"
+                        }
+                    },
+                    "sink": {
+                        "type": "SqlDWSink",
+                        "preCopyScript": "truncate table wwi.SaleStatistic",
+                        "allowPolyBase": true,
+                        "polyBaseSettings": {
+                            "rejectValue": 0,
+                            "rejectType": "value",
+                            "useTypeDefault": true
+                        },
+                        "disableMetricsCollection": false
+                    },
+                    "enableStaging": true,
+                    "stagingSettings": {
+                        "linkedServiceName": {
+                            "referenceName": "#BLOB_STORAGE_LINKED_SERVICE_NAME#",
+                            "type": "LinkedServiceReference"
+                        },
+                        "path": "staging"
+                    },
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "mappings": [
+                            {
+                                "source": {
+                                    "name": "CustomerId",
+                                    "type": "Int32"
+                                },
+                                "sink": {
+                                    "name": "CustomerId",
+                                    "type": "Int32"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "TransactionId",
+                                    "type": "String"
+                                },
+                                "sink": {
+                                    "name": "TransactionId",
+                                    "type": "Guid"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "TransactionTime",
+                                    "type": "DateTime"
+                                },
+                                "sink": {
+                                    "name": "TransactionDate",
+                                    "type": "DateTime"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "TotalClicksToPurchase",
+                                    "type": "Int64"
+                                },
+                                "sink": {
+                                    "name": "TotalClicksToPurchase",
+                                    "type": "Int64"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "TotalSecondsToPurchase",
+                                    "type": "Int64"
+                                },
+                                "sink": {
+                                    "name": "TotalSecondsToPurchase",
+                                    "type": "Int64"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "Age",
+                                    "type": "Int32"
+                                },
+                                "sink": {
+                                    "name": "Age",
+                                    "type": "Int32"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "wwi02_sale_small_stats_adls",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "wwi02_sale_small_stats_asa",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "annotations": []
+    }
+}
