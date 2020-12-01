@@ -438,7 +438,9 @@ First, you will publish a simple Product Quantity Forecast report to Power BI.
 
 Download the `ProductQuantityForecast.pbix` file from the GitHub repo: https://github.com/solliancenet/azure-synapse-analytics-ga-content-packs/blob/main/hands-on-labs/lab-01/ProductQuantityForecast.pbix (select `Download` on the GitHub page).
 
-Open the file with Power BI Desktop (ignore the warning about missing credentials). In the `Home` section, select `Transform data`, then edit the `Source` entry in the `APPLIED STEPS` list of the `ProductQuantityForecast` query. Change the name of the server to `asagaworkspace<unique_suffix>.sql.azuresynapse.net` (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace).
+Open the file with Power BI Desktop (ignore the warning about missing credentials). Also, if you are first prompted to update credentials, ignore the messages and close the pop-ups without updating the connection information.
+
+In the `Home` section, select `Transform data`, then edit the `Source` entry in the `APPLIED STEPS` list of the `ProductQuantityForecast` query. Change the name of the server to `asagaworkspace<unique_suffix>.sql.azuresynapse.net` (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace).
 
 ![Edit server name in Power BI Desktop](./../media/lab-01-ex-04-task-01-server-in-power-bi-desktop.png)
 

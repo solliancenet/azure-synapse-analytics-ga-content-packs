@@ -442,7 +442,29 @@ Run the query on the `Built-in` serverless pool and observe the results.
 
 ### Task 2 - Display enriched data in Power BI
 
-TODO
+First, you will publish the `Transaction Statistics` report to Power BI.
+
+Download the `TransactionStatistics.pbix` file from the GitHub repo: https://github.com/solliancenet/azure-synapse-analytics-ga-content-packs/blob/main/hands-on-labs/lab-02/TransactionStatistics.pbix (select `Download` on the GitHub page).
+
+Open the file with Power BI Desktop (ignore the warning about missing credentials). Also, if you are first prompted to update credentials, ignore the messages and close the pop-ups without updating the connection information.
+
+In the `Home` section, select `Transform data`, then edit the `Source` entry in the `APPLIED STEPS` list of the `ProductQuantityForecast` query. Change the name of the server to `asagaworkspace<unique_suffix>-ondemand.sql.azuresynapse.net` (where `<unique_suffix>` is the unique suffix you provided when deploying the Synapse Analytics workspace). Also, ensure the Data Lake account name in the `SQL statement` textbox starts with `asagadatalake<unique_suffix>`.
+
+![Edit server name in Power BI Desktop](./../media/lab-02-ex-03-task-02-server-in-power-bi-desktop.png)
+
+The credentials window will pop up and promopt you to enter the credentials to connect to the Synapse Analytics SQL pool (in case it doesn't, select `Data source settings` on the ribbon, select your data source, select `Edit Permissions...`, and then select `Edit...` under `Credentials`).
+
+In the credentials window, select `Microsoft account` and then select `Sign in`. Use your Power BI Pro account to sign in.
+
+![Edit credentials in Power BI Desktop](./../media/lab-02-ex-03-task-02-credentials-in-power-bi-desktop.png)
+
+Close all open popup windows, select `Close & Apply` and then publish the file to your Power BI workspace.
+
+To view the results of the report, in Synapse Studio, select the `Develop` hub on the left side, expand the `Power BI` section, and select the `ProductQuantityForecast` report under the `Power BI reports` section from your workspace.
+
+![View Product Quantity Forecast report in Synapse Studio](./../media/lab-01-ex-04-task-01-view-report.png)
+
+
 
 ## After the hands-on lab
 
