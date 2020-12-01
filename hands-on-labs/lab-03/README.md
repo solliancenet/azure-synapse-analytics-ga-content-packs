@@ -168,7 +168,7 @@ Set-AzSynapsePipeline -WorkspaceName asagaworkspace<unique_suffix> -Name "Lab 03
 
 ## Exercise 3 - Test the imported pipeline
 
-In this exercise, you will test the Synapse Analytics pipeline that was imported from ADF vs.
+In this exercise, you will test the imported Synapse Analytics pipeline in ADF.
 
 ### Task 1 - Validate and run the imported pipeline
 
