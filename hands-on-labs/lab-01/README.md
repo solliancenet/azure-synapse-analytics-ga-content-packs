@@ -71,7 +71,7 @@ First, you need to make sure the service principal has permissions to work with 
 
 You are now ready to create the Azure Machine Learning linked service.
 
-To create a new linked service, open Synapse Studio, select the `Manage` hub, select `Linked services`, and the select `+ New`. In the search field from the `New linked service` dialog, enter `Azure Machine Learning`. Select the `Azure Machine Learning` option and then select `Continue`.
+To create a new linked service, open your Synapse workspace, open Synapse Studio, select the `Manage` hub, select `Linked services`, and the select `+ New`. In the search field from the `New linked service` dialog, enter `Azure Machine Learning`. Select the `Azure Machine Learning` option and then select `Continue`.
 
 ![Create new linked service in Synapse Studio](./../media/lab-01-ex-01-task-01-new-linked-service.png)
 
@@ -379,7 +379,7 @@ From the `Move & transform` section, add a `Copy data` activity and name it `Imp
 
 In the `Source` section of the copy activity properties, provide the following values:
 
-- **Source dataset**: select the `wwi02_sale_small_product_quantity_prediction_adls` dataset.
+- **Source dataset**: select the `wwi02_sale_small_product_quantity_forecast_adls` dataset.
 - **File path type**: select `Wildcard file path`
 - **Wildcard paths**: enter `sale-small-product-quantity-forecast` in the first textbox, and `*.csv` in the second.
 
@@ -387,7 +387,7 @@ In the `Source` section of the copy activity properties, provide the following v
 
 In the `Sink` section of the copy activity properties, provide the following values:
 
--**Sink dataset**: select the `wwi02_sale_small_product_quantity_prediction_asa` dataset.
+-**Sink dataset**: select the `wwi02_sale_small_product_quantity_forecast_asa` dataset.
 
 ![Copy activity sink configuration](./../media/lab-01-ex-03-task-03-pipeline-sink.png)
 
