@@ -274,7 +274,7 @@ SELECT
     ,CAST(variable_out1 as INT) as TotalQuantity
 INTO
     #Pred
-FROM PREDICT (MODEL = (SELECT [model] FROM dbo.MLModel WHERE [ID] = '<your_model_id>'),
+FROM PREDICT (MODEL = (SELECT [model] FROM wwi.Model WHERE [ID] = '<your_model_id>'),
             DATA = #ProductQuantityForecast,
             RUNTIME = ONNX) WITH ([variable_out1] [real])
 
