@@ -106,3 +106,9 @@ Remove-Item -Path .\temp.json -Force
 Set-AzDataFactoryV2Dataset -DataFactoryName $dataFactoryAccountName `
     -ResourceGroupName $resourceGroupName -Name "wwi02_sale_small_stats_adls" `
     -DefinitionFile "$($datasetsPath)\wwi02_sale_small_stats_adls.json" -Force
+
+Write-Information "Create tables for Lab 03 in $($sqlPoolName)"
+
+$params = @{}
+$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-lab-03" -Parameters $params
+$result
