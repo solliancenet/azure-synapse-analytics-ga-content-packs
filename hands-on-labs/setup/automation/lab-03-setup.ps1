@@ -69,4 +69,5 @@ $dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -R
 $secretValue = ConvertTo-SecureString $dataLakeAccountKey -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-DATA-LAKE" -SecretValue $secretValue
 
-Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -UserPrincipalName $dataFactoryAccountName -PermissionsToSecrets set,delete,get,list
+$id = (Get-AzADServicePrincipal -DisplayName $dataFactoryAccountName).id
+Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $id -PermissionsToSecrets set,delete,get,list
