@@ -140,6 +140,7 @@ Before starting to import Azure Synapse Analytics artifacts, you need to make su
 
 ```powershell
 Install-Module Az.Synapse
+Import-Module Az.Synapse
 ```
 
 Run the following commands to create the three linked services in Synapse Analytics (remember to replace `<unique_suffix>` with the value you specified during the Synapse Analytics workspace deployment):
