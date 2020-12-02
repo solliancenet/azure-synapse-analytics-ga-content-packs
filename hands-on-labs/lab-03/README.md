@@ -24,6 +24,7 @@ This lab has the following structure:
   - [Task 1 - Validate and run the imported pipeline](#task-1---validate-and-run-the-imported-pipeline)
 - [After the hands-on lab](#after-the-hands-on-lab)
 - [Resources](#resources)
+- [Report issues](#report-issues)
 
 ## Before the hands-on lab
 
@@ -184,3 +185,7 @@ To learn more about the topics covered in this lab, use these resources:
 
 - [Azure.Analytics.Synapse.Artifacts Namespace
 Classes](https://docs.microsoft.com/en-us/dotnet/api/azure.analytics.synapse.artifacts?view=azure-dotnet-preview)
+
+## Report issues
+
+In case you encounter any issues with the content in this repository, please follow the [How to report issues](./../../report-issues.md) guideline. We will try to address them as soon as possible. Please check your open issues to learn about their status.

@@ -152,3 +152,7 @@ Select `Create` to create the Power BI linked service.
 After the linked service is successfully created, select the `Develop` hub on the left side and expand the `Power BI` section. You should see your Power BI workspace listed.
 
 ![Check Power BI linked service configuration](./../media/asaworkspace-deploy-pbi-linked-service-03.png)
+
+## Report issues
+
+In case you encounter any issues with the content in this repository, please follow the [How to report issues](./../../report-issues.md) guideline. We will try to address them as soon as possible. Please check your open issues to learn about their status.
