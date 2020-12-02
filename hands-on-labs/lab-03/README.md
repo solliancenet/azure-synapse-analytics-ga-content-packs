@@ -71,7 +71,7 @@ Return to the ADF designer and explore the structure of the pipeline. Notice the
 - **Datasets**: `wwi02_sale_small_stats_adls`, `wwi02_sale_small_stats_asa`
 - **Linked services**: `asagakeyvault01`, `asagadatalake01`, `asagasqlpool01`
 
-The reminder of this exercise covers the procedure to get the JSON templates associated with these objects.
+The remainder of this exercise covers the procedure to get the JSON templates associated with these objects.
 
 ### Task 2 - Script an ADF pipeline and all its related components
 
@@ -169,7 +169,7 @@ Set-AzSynapsePipeline -WorkspaceName asagaworkspace<unique_suffix> -Name "Lab 03
 
 ## Exercise 3 - Test the imported pipeline
 
-In this exercise, you will test the Synapse Analytics pipeline that was imported from ADF vs.
+In this exercise, you will test the imported Synapse Analytics pipeline in ADF.
 
 ### Task 1 - Validate and run the imported pipeline
 
