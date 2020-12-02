@@ -136,6 +136,12 @@ $context = Select-AzSubscription -SubscriptionName "<subscription_name>"
 $context
 ```
 
+Before starting to import Azure Synapse Analytics artifacts, you need to make sure you have the `Az.Synapse` PowerShell module installed in your Cloud Shell. Run the following command to install the module:
+
+```powershell
+Install-Module Az.Synapse
+```
+
 Run the following commands to create the three linked services in Synapse Analytics (remember to replace `<unique_suffix>` with the value you specified during the Synapse Analytics workspace deployment):
 
 ```powershell

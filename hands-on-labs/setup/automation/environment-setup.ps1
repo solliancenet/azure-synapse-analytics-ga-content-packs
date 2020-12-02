@@ -213,7 +213,6 @@ if ($download)
                 customer = "wwi-02/data-generators/generator-customer-clean.csv"
                 reviews = "wwi-02/sale-small-product-reviews/ProductReviews.csv"
                 forecast = "wwi-02/sale-small-product-quantity-forecast/ProductQuantity-20201209-11.csv"
-                stats = "wwi-02/sale-small-stats-final/sale-small-stats-final.snappy.parquet"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
@@ -235,6 +234,7 @@ if ($download)
                 salesmall7 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191207"
                 salesmall8 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
                 salesmalltelemetry = "wwi-02,wwi-02/sale-small-telemetry"
+                stats = "wwi-02/sale-small-stats-final"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {
