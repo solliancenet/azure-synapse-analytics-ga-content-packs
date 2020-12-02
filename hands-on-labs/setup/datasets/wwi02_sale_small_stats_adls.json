@@ -10,7 +10,7 @@
         "typeProperties": {
             "location": {
                 "type": "AzureBlobFSLocation",
-                "folderPath": "sale-small-stats",
+                "folderPath": "sale-small-stats-final",
                 "fileSystem": "wwi-02"
             },
             "compressionCodec": "snappy"

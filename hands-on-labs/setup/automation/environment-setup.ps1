@@ -213,6 +213,7 @@ if ($download)
                 customer = "wwi-02/data-generators/generator-customer-clean.csv"
                 reviews = "wwi-02/sale-small-product-reviews/ProductReviews.csv"
                 forecast = "wwi-02/sale-small-product-quantity-forecast/ProductQuantity-20201209-11.csv"
+                stats = "wwi-02/sale-small-stats-final/sale-small-stats-final.snappy.parquet"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
