@@ -12,8 +12,8 @@ Lab 03 | [Migrating Data Factory Pipelines to Synapse Analytics Pipelines](./han
 
 Name | Description
 --- | ---
-[Adding an Azure Synapse Analytics workspace to an existing Azure SQL DataWarehouse instance](./videos/sqldw-synapse-workspace.md) | This video provides an overview on how to add an Azure Synapse Analytics workspace on top of an existing Azure Synapse Analytics (formerly SQL DW) instance.
-[Azure Synapse Analytics Git intergration and workspace management](./videos/git-and-workspace-management.md) | This video provides an overview of the new Git integration features in Synapse Analytics as well as of other features related to workspace management (folders, object renaming, and worskpace access control).
+[Adding an Azure Synapse Analytics workspace to an existing Azure SQL Data Warehouse instance](./videos/sqldw-synapse-workspace.md) | This video provides an overview on how to add an Azure Synapse Analytics workspace on top of an existing Azure Synapse Analytics (formerly SQL DW) instance.
+[Azure Synapse Analytics Git integration and workspace management](./videos/git-and-workspace-management.md) | This video provides an overview of the new Git integration features in Synapse Analytics as well as some of other features related to workspace management (folders, object renaming, and worskpace access control).
 [Azure Synapse Analytics monitoring](./videos/monitoring.md) | This video provides an overview of the new monitoring capabilities in Synapse Analytics. It covers Az Monitor integration as well as SQL and Spark pool monitoring.
 
 ## Report issues
