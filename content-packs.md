@@ -58,7 +58,7 @@ The following table shows the mapping of categories and topics to content packs:
         </tr>
         <tr>
             <td rowspan="4">Linked Services</td>
-            <td>Integration - Babylon</td>
+            <td>Integration - Purview</td>
             <td></td>
             <td>Markdown / Video 06</td>
             <td></td>
