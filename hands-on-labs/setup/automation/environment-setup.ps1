@@ -129,7 +129,9 @@ Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $key
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $id -PermissionsToSecrets set,delete,get,list
 
 #remove need to ask for the password in script.
-$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName).SecretValueText
+#$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName).SecretValueText
+$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName -AsPlainText)
+
 
 #Write-Information "Create SQL-USER-ASA Key Vault Secret"
 #$secretValue = ConvertTo-SecureString $sqlPassword -AsPlainText -Force

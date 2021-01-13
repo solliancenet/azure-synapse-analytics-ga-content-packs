@@ -105,8 +105,9 @@ Remove-Item -Path .\temp.json -Force
 # Create tables in SQL pool
 Write-Information "Create tables for Lab 03 in $($sqlPoolName)"
 
-$secret = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name SQL-USER-ASA
-$global:sqlPassword = $secret.SecretValue | ConvertFrom-SecureString -AsPlainText
+#$secret = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name SQL-USER-ASA
+#$global:sqlPassword = $secret.SecretValue | ConvertFrom-SecureString -AsPlainText
+$global:sqlPassword = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name SQL-USER-ASA -AsPlainText
 
 $params = @{}
 $result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-lab-03" -Parameters $params
