@@ -48,19 +48,31 @@ We have to open the corresponding container/folder:
 
 To view the actual data, we can use a SQL query. Right click on the corresponding data folder and choose `New SQL Script` then choose `Select TOP 100 rows`
 
-![Use SQL query to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-02.png)
+![Note the presence of the CDM manifest](./../media/lab-04/lab04-ex1-task1-read-cdm-02.png)
+
+You may right click and choose `Preview` to visualize contents for the `default.manifest.cdm.json` file.
+
+This file points to our entity which is part of our subfolder `SaleSmall`, see below.
+
+![Note the presence of the CDM entity](./../media/lab-04/lab04-ex1-task1-read-cdm-03.png)
+
+You may right click and choose `Preview` to visualize contents for the `SaleSmall.cdm.json` file.
+
+The data itself is stored in a subfolder: `2020-12-12`, see below.
+
+![Use SQL query to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-04.png)
 
 Click the `Run` button in the toolbar to execute the SQL query. Once executed, results are visible in the lower pane.
 
-![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-03.png)
+![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-05.png)
 
 Alternately we can load the CDM data in a Spark dataframe
 
-![Use spark to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-04.png)
+![Use spark to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-06.png)
 
 Choose a Spark pool first, then click the `Run` button in the toolbar to run the notebook. Once executed, results are visible in the lower pane.
 
-![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-05.png)
+![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-07.png)
 
 ### Task 2 - Load Spark dataframes from entities in CDM folders
 
