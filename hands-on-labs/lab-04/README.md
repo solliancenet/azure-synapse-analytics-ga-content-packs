@@ -293,6 +293,41 @@ readDf2.select("*").show()
 
 ### Task 1 - Automate raw data ingestion and coversion to CDM using Synapse Pipelines
 
+![Create a new pipeline](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-01.png)
+
+Go to the `Integrate` hub, press the `+` button then choose `Pipeline` to create a new pipeline.
+
+![Configure the pipeline](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-02.png)
+
+Name your pipeline, then pick an activity from the `Activities` list: drag a `Notebook` element found under the `Synapse` group.
+
+![Configure the activity](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-03.png)
+
+In the lower pane, choose the `Settings` tab and select the notebook you want to be used by our pipeline.
+
+In our example we chose the notebook that converts raw data to cdm format.
+
+![Automate the pipeline](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-04.png)
+
+Press `Add trigger` to use a condition that will automatically launch your new pipeline.
+
+![Creating the trigger](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-05.png)
+
+Press `New` to create a new trigger.
+
+![Configure the trigger](./../media/lab-04/lab04-ex3-task1-pipeline-cdm-06.png)
+
+* Name your trigger, and choose its type as `Event`. 
+* Choose the Azure subscription, Storage account name, Container name.
+* Setup a path prefix that will be used to detect changes in our datalake in a specific location.
+* Check the `Blob created` Event to make sure that pipeline is launched when new blob appears in your blob path.
+
+Save your trigger, then click on the `Validate` button and then press `Publish` to save your new pipeline.
+
+We chose to use a trigger that detects changes in our datalake. 
+Which means that everytime we get new data in our datalake, our pipeline will run.
+In our case, the notebook will be executed, and will convert the raw data to the CDM format.
+
 ### Task 2 - Use CDM data in Machine Learning 
 
 ### Task 3 - View CDM data in Power BI
