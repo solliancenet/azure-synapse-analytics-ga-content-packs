@@ -69,7 +69,7 @@ Return to the ADF designer and explore the structure of the pipeline. Notice the
 
 - **Pipelines**: `Lab 03 - Import Sales Stats`
 - **Datasets**: `wwi02_sale_small_stats_adls`, `wwi02_sale_small_stats_asa`
-- **Linked services**: `asagakeyvault01`, `asagadatalake01`, `asagasqlpool01`
+- **Linked services**: `asagakeyvault01`, `asagadatalake01`, `asagasqlpool01` (available in the `Manage` hub)
 
 The remainder of this exercise covers the procedure to get the JSON templates associated with these objects.
 
@@ -77,7 +77,7 @@ The remainder of this exercise covers the procedure to get the JSON templates as
 
 Open an Azure Cloud Shell instance and run `Connect-AzAccount -DeviceCode` to make sure you are authenticated with the right account.
 
-Run the following commdands to create a working folder:
+Run the following commands to create a working folder:
 
 ```cmd
 md adfartifacts
@@ -86,7 +86,7 @@ cd adfartifacts
 
 ![Create artifacts folder](./../media/lab-03-ex-01-task-02-create-adfartifacts-folder.png)
 
-In the ADF designer, select the `...` to the righ of the `Lab 03 - Import Sales Stats` pipeline (appears when you hover over the pipeline name) and then select `Download support files`.
+In the ADF designer, select the `...` to the right of the `Lab 03 - Import Sales Stats` pipeline (appears when you hover over the pipeline name) and then select `Download support files`.
 
 ![Download support files](./../media/lab-03-ex-01-task-02-download-support-files.png)
 
@@ -94,7 +94,7 @@ This will download a file named `Lab 03 - Import Sales Stats_support_live.zip` t
 
 ![Upload ZIP file to Cloud Shell](./../media/lab-03-ex-01-task-02-upload-file.png)
 
-Once the upload is complete, run the ```dir``` command to ensure the file exists in your home folder.
+Once the upload is complete, go back to the home folder (run `cd ..`), run the `dir` command to ensure the file exists in your home folder.
 
 ![Check uploaded file](./../media/lab-03-ex-01-task-02-check-uploaded-file.png)
 
