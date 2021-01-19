@@ -9,8 +9,8 @@ After completing the lab, you will know how to interact with the Common Data Mod
   - [Task 1 - Explore CDM data in the Synapse workspace data lake](#task-1---explore-cdm-data-in-the-synapse-workspace-data-lake)
   - [Task 2 - Load Spark dataframes from entities in CDM folders](#task-2---load-spark-dataframes-from-entities-in-cdm-folders)
 - [Exercise 2 - Update data that exists in the CDM](#exercise-2---update-data-that-exists-in-the-cdm)
-  - [Task 1 - Write data from Spark dataframes to CDM folders using dataframe schemas](#task-1---write-data-from-spark-dataframes-to-cdm-folders-using-dataframe-schemas)
-  - [Task 2 - Write data from Spark dataframes to CDM folders using CDM entity definitions](#task-2---write-data-from-spark-dataframes-to-cdm-folders-using-cdm-entity-definitions)
+  - [Task 1 - Update CDM data using dataframe schemas](#task-1---update-cdm-data-using-dataframe-schemas)
+  - [Task 2 - Update CDM data using CDM entity definitions](#task-2---update-cdm-data-using-cdm-entity-definitions)
   - [Task 3 - Use Spark to transform incoming raw data to CDM data](#task-3---use-spark-to-transform-incoming-raw-data-to-cdm-data)
 - [Exercise 3 - Create an end-to-end CDM-based data pipeline](#exercise-3---create-an-end-to-end-cdm-based-data-pipeline)
   - [Task 1 - Automate raw data ingestion and coversion to CDM using Synapse Pipelines](#task-1---automate-raw-data-ingestion-and-coversion-to-cdm-using-synapse-pipelines)
@@ -195,9 +195,17 @@ Some contents of `SaleSmall.cdm.json` is skipped for brevity:
 
 ## Exercise 2 - Update data that exists in the CDM
 
-### Task 1 - Write data from Spark dataframes to CDM folders using dataframe schemas
+### Task 1 - Update CDM data using dataframe schemas
+
+### Task 2 - Update CDM data using CDM entity definitions
+
+### Task 3 - Use Spark to transform incoming raw data to CDM data
+
+#### Task 3 A - creating CDM with implicit manifest
 
 We will write new CDM data based on existing Spark dataframes. 
+
+We will infer the CDM manifest based on the dataframe's schema.
 
 Open a notebook and use the following python code to save the CDM data:
 
@@ -237,11 +245,14 @@ readDf = (spark.read.format("com.microsoft.cdm")
 
 readDf.select("*").show()
 ```
-![Save new CDM data, use df schema](./../media/lab-04/lab04-ex2-task1-spark-write-cdm-01.png)
+![Save new CDM data, use df schema](./../media/lab-04/lab04-ex2-task3-spark-write-cdm-01.png)
 
-### Task 2 - Write data from Spark dataframes to CDM folders using CDM entity definitions
+
+#### Task 3 B - creating CDM with explicit manifest
 
 Writing new CDM data based on existing CDM models is just as easy. 
+
+The CDM manifest is explicit here, user specified.
 
 Open a notebook and use the following python code to save the CDM data:
 
@@ -285,9 +296,7 @@ readDf2 = (spark.read.format("com.microsoft.cdm")
 readDf2.select("*").show()
 ```
 
-![Save new CDM data, use CDM model](./../media/lab-04/lab04-ex2-task2-spark-write-cdm-02.png)
-
-### Task 3 - Use Spark to transform incoming raw data to CDM data
+![Save new CDM data, use CDM model](./../media/lab-04/lab04-ex2-task3-spark-write-cdm-02.png)
 
 ## Exercise 3 - Create an end-to-end CDM-based data pipeline
 
