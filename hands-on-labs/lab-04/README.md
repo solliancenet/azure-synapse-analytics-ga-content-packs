@@ -197,7 +197,75 @@ Some contents of `SaleSmall.cdm.json` is skipped for brevity:
 
 ### Task 1 - Update CDM data using dataframe schemas
 
+We will update existing CDM data by modifying the Spark dataframe schema. 
+
+```python
+from pyspark.sql.types import *
+from pyspark.sql import functions as f, Row
+
+from decimal import Decimal
+from datetime import datetime
+
+
+storageAccountName = "asadatalake01.dfs.core.windows.net"
+container = "wwi-02"
+outputContainer = "wwi-02"
+
+abfssRoot = "abfss://" + outputContainer + "@" + storageAccountName
+
+folder1 = "/cdm-data/input"
+folder2 = "/cdm-data/update-df"
+
+#read CDM
+df = (spark.read.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder1 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .load())
+
+df.printSchema()
+df.select("*").show()
+
+#update schema
+df2 = df.withColumn("x4", f.lit(0))
+df2.printSchema()
+df2.select("*").show()
+
+#write CDM
+(df2.write.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .option("format", "parquet")
+  .option("compression", "gzip")
+  .save())
+
+readDf2 = (spark.read.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .load())
+
+readDf2.select("*").show()
+```
+
+This is now the new schema as shown by the spark dataframe:
+
+![New df schema](./../media/lab-04/lab04-ex2-task1-update-cdm-01.png)
+
+Note that the CDM manifest was updated:
+
+![New CDM manifest](./../media/lab-04/lab04-ex2-task1-update-cdm-02.png)
+
 ### Task 2 - Update CDM data using CDM entity definitions
+
+We will update existing CDM data by using a modified CDM manifest. 
+
+```python
+```
+
+Note that the CDM manifest was updated:
+
 
 ### Task 3 - Use Spark to transform incoming raw data to CDM data
 
