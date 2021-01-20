@@ -216,7 +216,7 @@ outputContainer = "wwi-02"
 abfssRoot = "abfss://" + outputContainer + "@" + storageAccountName
 
 folder1 = "/cdm-data/input"
-folder2 = "/cdm-data/update-df"
+folder2 = "/cdm-data/update-implicit"
 
 #read CDM
 df = (spark.read.format("com.microsoft.cdm")
@@ -228,12 +228,12 @@ df = (spark.read.format("com.microsoft.cdm")
 df.printSchema()
 df.select("*").show()
 
-#update schema
+#update dataframe/schema
 df2 = df.withColumn("x4", f.lit(0))
 df2.printSchema()
 df2.select("*").show()
 
-#write CDM
+#write CDM; entity manifest is implicitly created based on df schema
 (df2.write.format("com.microsoft.cdm")
   .option("storage", storageAccountName)
   .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
@@ -264,9 +264,65 @@ Note that the CDM manifest was updated:
 We will update existing CDM data by using a modified CDM manifest. 
 
 ```python
+from pyspark.sql.types import *
+from pyspark.sql import functions as f, Row
+
+from decimal import Decimal
+from datetime import datetime
+
+
+storageAccountName = "asadatalake01.dfs.core.windows.net"
+container = "wwi-02"
+outputContainer = "wwi-02"
+
+abfssRoot = "abfss://" + outputContainer + "@" + storageAccountName
+
+folder1 = "/cdm-data/input"
+folder2 = "/cdm-data/update-explicit"
+
+#read CDM
+df = (spark.read.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder1 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .load())
+
+df.printSchema()
+df.select("*").show()
+
+#update dataframe/schema
+df2 = df.withColumn("x5", f.lit(0))
+df2.printSchema()
+df2.select("*").show()
+
+#write CDM; entity manifest is explicitly passed as SaleSmall-Modified.cdm.json
+(df2.write.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .option("entityDefinitionModelRoot", container + folder1)                                      #root folder for our own CDM models
+  .option("entityDefinitionPath", "/salesmall/SaleSmall/SaleSmall-Modified.cdm.json/SaleSmall")  #relative path for our own CDM model
+  .option("format", "parquet")
+  .option("compression", "gzip")
+  .save())
+
+readDf2 = (spark.read.format("com.microsoft.cdm")
+  .option("storage", storageAccountName)
+  .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
+  .option("entity", "SaleSmall")
+  .load())
+
+readDf2.select("*").show()
 ```
 
-Note that the CDM manifest was updated:
+This is now the new schema as shown by the spark dataframe:
+
+![New df schema](./../media/lab-04/lab04-ex2-task2-update-cdm-01.png)
+
+Note that the CDM manifest contains a member that matches our new column.
+
+![New CDM manifest](./../media/lab-04/lab04-ex2-task2-update-cdm-02.png)
+
 
 
 ### Task 3 - Use Spark to transform incoming raw data to CDM data
@@ -287,7 +343,7 @@ outputContainer = "wwi-02"
 abfssRoot = "abfss://" + outputContainer + "@" + storageAccountName
 
 # WARNING: if output folder exists, writer will fail with a java.lang.NullPointerException
-folder1 = "/cdm-data/output"
+folder1 = "/cdm-data/output-implicit"
 
 from pyspark.sql.types import *
 from pyspark.sql import functions, Row
@@ -335,7 +391,7 @@ abfssRoot = "abfss://" + outputContainer + "@" + storageAccountName
 
 # WARNING: if output folder exists, writer will fail with a java.lang.NullPointerException
 folderInput = "/cdm-data/input"
-folder2 = "/cdm-data/output2"
+folder2 = "/cdm-data/output-explicit"
 
 from pyspark.sql.types import *
 from pyspark.sql import functions, Row
@@ -346,7 +402,7 @@ df2 = spark.read.parquet(abfssRoot + "/sale-small/Year=2019/Quarter=Q4/Month=12/
 df2.show(10)
 df2.printSchema()
 
-#save dataframe using CDM format; entity manifest is explicitly created based on our own CDM model
+#save dataframe using CDM format; entity manifest is explicitly passed as SaleSmall/SaleSmall.cdm.json
 (df2.write.format("com.microsoft.cdm")
   .option("storage", storageAccountName)
   .option("manifestPath", container + folder2 + "/salesmall/default.manifest.cdm.json")
