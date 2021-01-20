@@ -58,21 +58,23 @@ This file points to our entity which is part of our subfolder `SaleSmall`, see b
 
 You may right click and choose `Preview` to visualize contents for the `SaleSmall.cdm.json` file.
 
+![Check the manifest of our CDM entity](./../media/lab-04/lab04-ex1-task1-read-cdm-04.png)
+
 The data itself is stored in a subfolder: `2020-12-12`, see below.
 
-![Use SQL query to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-04.png)
+![Use SQL query to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-05.png)
 
 Click the `Run` button in the toolbar to execute the SQL query. Once executed, results are visible in the lower pane.
 
-![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-05.png)
+![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-06.png)
 
 Alternately we can load the CDM data in a Spark dataframe
 
-![Use spark to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-06.png)
+![Use spark to select CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-07.png)
 
 Choose a Spark pool first, then click the `Run` button in the toolbar to run the notebook. Once executed, results are visible in the lower pane.
 
-![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-07.png)
+![View the available CDM data](./../media/lab-04/lab04-ex1-task1-read-cdm-08.png)
 
 ### Task 2 - Load Spark dataframes from entities in CDM folders
 
