@@ -58,7 +58,7 @@ Click the `Deploy to Azure` button below to start the deployment process.
 You should see next the `Custom deployment` screen where you need to provide the following (see [Pre-requisites for deployment](#pre-requisites-for-deployment) above for details):
 
 - The resource group where the Synapse Analytics workspace will be deployed.
-- The unique suffix used to generate the name of the workspace.
+- The unique suffix used to generate the name of the workspace (**NOTE**: Make sure this value has a **maximum** length of **5 characters**).
 - The password for the SQL Administrator account.
 
 Select `Review + create` to validate the settings.
