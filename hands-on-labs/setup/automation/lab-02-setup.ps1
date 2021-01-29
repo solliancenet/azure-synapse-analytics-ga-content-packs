@@ -65,7 +65,7 @@ $global:tokenTimes = [ordered]@{
 
 Write-Information "Creating the SalesTelemetry table"
 
-$kustoClusterName = "asagadataexplorer$($uniqueId)"
+$kustoClusterName = "asagadataexpl$($uniqueId)"
 $kustoDatabaseName = "ASA-Data-Explorer-DB-01"
 $kustoStatement = ".create table SalesTelemetry ( CustomerId:int32, ProductId:int32, Timestamp:datetime, Url:string)"
 

@@ -58,7 +58,7 @@ Click the `Deploy to Azure` button below to start the deployment process.
 You should see next the `Custom deployment` screen where you need to provide the following (see [Pre-requisites for deployment](#pre-requisites-for-deployment) above for details):
 
 - The resource group where the Synapse Analytics workspace will be deployed.
-- The unique suffix used to generate the name of the workspace (**NOTE**: Make sure this value has a **maximum** length of **5 characters**).
+- The unique suffix used to generate the name of the workspace (**NOTE**: Make sure this value has a **maximum** length of **9 characters**).
 - The password for the SQL Administrator account.
 
 Select `Review + create` to validate the settings.
@@ -127,7 +127,7 @@ Enter the name of the resource group where you deployed the Synapse Analytics wo
 
 ![Cloud Shell select resource group](./../media/cloudshell-setup-04.png)
 
-The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
+The setup script will now proceed to create all necessary Synapse Analytics artifacts in your environment.
 
 The process should take 5 to 10 minutes to finish. Wait until the setup script is finished before proceeding to the next steps.
 

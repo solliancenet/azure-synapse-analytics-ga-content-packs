@@ -4,7 +4,7 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
-        "clusterName": "[concat('asagadataexplorer', variables('uniqueSuffix'))]"
+        "clusterName": "[concat('asagadataexpl', variables('uniqueSuffix'))]"
     },
     "resources": [
         {
