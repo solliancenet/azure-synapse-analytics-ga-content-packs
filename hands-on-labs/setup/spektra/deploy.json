@@ -193,7 +193,7 @@
               "autoUpgradeMinorVersion": true,
               "settings": {
                 "fileUris": [
-                  "https://raw.githubusercontent.com/SpektraSystems/azure-synapse-analytics-workshop-400/master/artifacts/environment-setup/spektra/post-install-script01.ps1"
+                  "https://raw.githubusercontent.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/setup/spektra/post-install-script01.ps1"
                 ]
               },
               "protectedSettings": {
