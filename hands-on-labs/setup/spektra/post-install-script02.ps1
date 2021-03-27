@@ -186,8 +186,41 @@ Import-Module Az.CosmosDB
 Write-Host "Download Git repo." -ForegroundColor Green -Verbose
 git clone https://github.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs.git asa
 
+#ARM template
+. C:\LabFiles\AzureCreds.ps1
+
+$userName = $AzureUserName                # READ FROM FILE
+$password = $AzurePassword                # READ FROM FILE
+$clientId = $TokenGeneratorClientId       # READ FROM FILE
+$global:sqlPassword = $AzureSQLPassword          # READ FROM FILE
+
+$securePassword = $password | ConvertTo-SecureString -AsPlainText -Force
+$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $userName, $SecurePassword
+
+Connect-AzAccount -Credential $cred | Out-Null
+ 
+# Template deployment
+$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
+$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+
+$url = "https://github.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/blob/main/hands-on-labs/setup/spektra/armdeploy.parameters.json"
+$output = "c:\LabFiles\parameters.json";
+$wclient = New-Object System.Net.WebClient;
+$wclient.CachePolicy = new-object System.Net.Cache.RequestCachePolicy([System.Net.Cache.RequestCacheLevel]::NoCacheNoStore);
+$wclient.Headers.Add("Cache-Control", "no-cache");
+$wclient.DownloadFile($url, $output)
+(Get-Content -Path "c:\LabFiles\parameters.json") | ForEach-Object {$_ -Replace "GET-AZUSER-PASSWORD", "$AzurePassword"} | Set-Content -Path "c:\LabFiles\parameters.json"
+(Get-Content -Path "c:\LabFiles\parameters.json") | ForEach-Object {$_ -Replace "GET-DEPLOYMENT-ID", "$deploymentId"} | Set-Content -Path "c:\LabFiles\parameters.json"
+
+Write-Host "Starting main deployment." -ForegroundColor Green -Verbose
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateUri "https://raw.githubusercontent.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/setup/spektra/armdeploy.json" -TemplateParameterFile "c:\LabFiles\parameters.json"
+
+New-AzRoleAssignment -ResourceGroupName $resourceGroupName -ErrorAction Ignore -ObjectId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e" -RoleDefinitionName "Owner"
+
+#Download PowerBI
 $WebClient = New-Object System.Net.WebClient
 $WebClient.DownloadFile("https://download.microsoft.com/download/8/8/0/880BCA75-79DD-466A-927D-1ABF1F5454B0/PBIDesktopSetup_x64.exe","C:\LabFiles\PBIDesktop_x64.exe")
+
 
 $LabFilesDirectory = "C:\LabFiles"
 $WebClient = New-Object System.Net.WebClient
