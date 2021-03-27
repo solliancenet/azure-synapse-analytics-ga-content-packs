@@ -237,6 +237,7 @@ if ($download)
                 salesmall8 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
                 salesmalltelemetry = "wwi-02,wwi-02/sale-small-telemetry"
                 stats = "wwi-02,wwi-02/sale-small-stats-final"
+                cdm = "wwi-02,wwi-02/cdm-data"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {
