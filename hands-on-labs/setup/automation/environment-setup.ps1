@@ -435,6 +435,7 @@ $userName = $AzureUserName
 $password = $AzurePassword
 
 az login --username "$userName" --password "$password"
-$app = (az ad sp crea$pass= $app.passwordte-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+$pass= $app.password
 $secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
