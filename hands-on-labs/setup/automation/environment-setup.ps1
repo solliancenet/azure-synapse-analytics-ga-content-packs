@@ -20,7 +20,7 @@ if($IsCloudLabs){
         
         Connect-AzAccount -Credential $cred | Out-Null
 
-        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*-L400*" }).ResourceGroupName
+        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
 
         if ($resourceGroupName.Count -gt 1)
         {
@@ -60,7 +60,9 @@ if($IsCloudLabs){
                 Select-AzSubscription -SubscriptionName $selectedSubName
         }
 
-        $resourceGroupName = Read-Host "Enter the resource group name";
+        #$resourceGroupName = Read-Host "Enter the resource group name";
+        
+        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
         
         $userName = ((az ad signed-in-user show) | ConvertFrom-JSON).UserPrincipalName
         
@@ -105,15 +107,15 @@ $global:tokenTimes = [ordered]@{
         PowerBI = (Get-Date -Year 1)
 }
 
-#Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
+Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
 
 #add the current user...
 $user = Get-AzADUser -UserPrincipalName $userName
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
 #Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId $user.id  # Apache Spark Admin
 
 #Set the Azure AD Admin - otherwise it will bail later
@@ -422,9 +424,18 @@ foreach ($dataset in $loadingDatasets.Keys) {
 
 Write-Information "Preparing environment for labs"
 
+<#$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+
+$secretValue = ConvertTo-SecureString $app.password -AsPlainText -Force
+Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue #>
+
+. C:\LabFiles\AzureCreds.ps1
+
+$userName = $AzureUserName
+$password = $AzurePassword
+
+az login --username "$userName" --password "$password"
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
 
 $secretValue = ConvertTo-SecureString $app.password -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
-
-
