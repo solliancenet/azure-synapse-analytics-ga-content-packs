@@ -203,7 +203,7 @@ Connect-AzAccount -Credential $cred | Out-Null
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
 $deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 
-$url = "https://github.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/blob/main/hands-on-labs/setup/spektra/armdeploy.parameters.json"
+$url = "https://raw.githubusercontent.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/setup/spektra/armdeploy.parameters.post.json"
 $output = "c:\LabFiles\parameters.json";
 $wclient = New-Object System.Net.WebClient;
 $wclient.CachePolicy = new-object System.Net.Cache.RequestCachePolicy([System.Net.Cache.RequestCacheLevel]::NoCacheNoStore);
