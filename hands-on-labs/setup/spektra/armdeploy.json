@@ -37,7 +37,6 @@
     "sparkAutoPauseDelayInMinutes": "15",
     "sparkVersion": "2.4",
     "keyVaultName": "[concat('asagakeyvault', parameters('uniqueSuffix'))]",
-    #"uniqueSuffix": "[resourceGroup().tags['DeploymentId']]",
     "mlworkspaceName": "[concat('asagamachinelearning', parameters('uniqueSuffix'))]",
     "sku": "enterprise",
     "storageAccountName": "[concat('asagastorage', parameters('uniqueSuffix'))]",
