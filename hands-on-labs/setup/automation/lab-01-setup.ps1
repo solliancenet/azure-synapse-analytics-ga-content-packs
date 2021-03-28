@@ -30,7 +30,7 @@ $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force
 $cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $userName, $SecurePassword
 Connect-AzAccount -Credential $cred | Out-Null
 
-$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
+$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" }).ResourceGroupName
 
 $userName = ((az ad signed-in-user show) | ConvertFrom-JSON).UserPrincipalName
 
