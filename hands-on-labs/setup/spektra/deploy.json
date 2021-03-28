@@ -37,7 +37,7 @@
       "virtualMachineSize": "Standard_D2s_v3",
       "virtualNetworkName": "labvm-vnet",
       "vmName": "[concat('labvm-',parameters('deploymentId'))]",
-      "adlsStorageAccountName": "[concat('asadatalake', parameters('deploymentId'))]",
+      "adlsStorageAccountName": "[concat('asagadatalake', parameters('deploymentId'))]",
       "location": "[resourceGroup().location]"
     },
     "resources": [
