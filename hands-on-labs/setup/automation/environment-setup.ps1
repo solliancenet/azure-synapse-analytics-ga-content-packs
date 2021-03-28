@@ -1,3 +1,5 @@
+Cd 'C:\LabFiles\asa\hands-on-labs\setup\automation'
+
 $InformationPreference = "Continue"
 
 $IsCloudLabs = Test-Path C:\LabFiles\AzureCreds.ps1;
