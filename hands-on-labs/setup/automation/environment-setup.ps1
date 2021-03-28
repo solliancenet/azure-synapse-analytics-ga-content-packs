@@ -82,7 +82,7 @@ Write-Information "Using $resourceGroupName";
 
 #$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 . C:\LabFiles\AzureCreds.ps1
-$uniqueId = $DeploymentID
+$uniqueId = $deploymentID
 
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
