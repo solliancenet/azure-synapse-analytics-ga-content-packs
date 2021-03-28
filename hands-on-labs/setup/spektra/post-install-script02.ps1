@@ -201,7 +201,9 @@ Connect-AzAccount -Credential $cred | Out-Null
  
 # Template deployment
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
-$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+#$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+. C:\LabFiles\AzureCreds.ps1
+$deploymentId = $deploymentID
 
 $url = "https://raw.githubusercontent.com/CloudLabsAI-Azure/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/setup/spektra/armdeploy.parameters.post.json"
 $output = "c:\LabFiles\parameters.json";
