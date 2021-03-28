@@ -437,18 +437,18 @@ $password = $AzurePassword
 
 az login --username "$userName" --password "$password"
 
-#Shared sub
+<#Shared sub
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
 $pass= $app.password
 $secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
+Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue #>
 
-<#Ded tenant
+#Ded tenant
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
 $pass= $app.password
 $id= $app.appId
 $objid= az ad user show -o tsv --query objectId --id "$AzureUserName"
-az ad app owner add --id $id --owner-object-id $objid #>
+az ad app owner add --id $id --owner-object-id $objid 
 
 $secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
