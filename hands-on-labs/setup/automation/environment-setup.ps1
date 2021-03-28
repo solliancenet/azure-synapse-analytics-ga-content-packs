@@ -1,3 +1,5 @@
+Cd 'C:\LabFiles\asa\hands-on-labs\setup\automation'
+
 $InformationPreference = "Continue"
 
 $IsCloudLabs = Test-Path C:\LabFiles\AzureCreds.ps1;
@@ -20,7 +22,8 @@ if($IsCloudLabs){
         
         Connect-AzAccount -Credential $cred | Out-Null
 
-        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
+        #$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" }).ResourceGroupName
+        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" -and  $_.ResourceGroupName -notlike "*internal*" }).ResourceGroupName
 
         if ($resourceGroupName.Count -gt 1)
         {
@@ -80,7 +83,10 @@ if($IsCloudLabs){
 
 Write-Information "Using $resourceGroupName";
 
-$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+#$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+. C:\LabFiles\AzureCreds.ps1
+$uniqueId = $deploymentID
+
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
 $global:logindomain = (Get-AzContext).Tenant.Id;
@@ -424,18 +430,25 @@ foreach ($dataset in $loadingDatasets.Keys) {
 
 Write-Information "Preparing environment for labs"
 
-<#$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
-
-$secretValue = ConvertTo-SecureString $app.password -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue #>
-
 . C:\LabFiles\AzureCreds.ps1
 
 $userName = $AzureUserName
 $password = $AzurePassword
 
 az login --username "$userName" --password "$password"
+
+<#Shared sub
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
 $pass= $app.password
+$secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
+Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue #>
+
+#Ded tenant
+$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+$pass= $app.password
+$id= $app.appId
+$objid= az ad user show -o tsv --query objectId --id "$AzureUserName"
+az ad app owner add --id $id --owner-object-id $objid 
+
 $secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue

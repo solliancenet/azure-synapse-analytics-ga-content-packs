@@ -30,7 +30,9 @@ $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force
 $cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $userName, $SecurePassword
 Connect-AzAccount -Credential $cred | Out-Null
 
-$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
+#$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" }).ResourceGroupName
+$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" -and  $_.ResourceGroupName -notlike "*internal*" }).ResourceGroupName
+
 
 $userName = ((az ad signed-in-user show) | ConvertFrom-JSON).UserPrincipalName
 
@@ -46,7 +48,9 @@ $sqlScriptsPath = "..\sql"
 Write-Information "Using $resourceGroupName";
 
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
-$uniqueId =  $resourceGroup.Tags["DeploymentId"]
+#$uniqueId =  $resourceGroup.Tags["DeploymentId"]
+. C:\LabFiles\AzureCreds.ps1
+$uniqueId = $deploymentID
 $location = $resourceGroup.Location
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
