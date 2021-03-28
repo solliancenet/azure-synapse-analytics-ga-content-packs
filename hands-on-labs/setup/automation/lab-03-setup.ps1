@@ -45,7 +45,9 @@ $sqlScriptsPath = "..\sql"
 Write-Information "Using $resourceGroupName";
 
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
-$uniqueId =  $resourceGroup.Tags["DeploymentId"]
+#$uniqueId =  $resourceGroup.Tags["DeploymentId"]
+. C:\LabFiles\AzureCreds.ps1
+$uniqueId = $DeploymentID
 $location = $resourceGroup.Location
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
