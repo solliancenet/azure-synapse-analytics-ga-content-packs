@@ -4,21 +4,24 @@ This lab demonstrates using Synapse Analytics Spark to work with the Common Data
 
 After completing the lab, you will know how to interact with the Common Data Model in Synapse Analytics.
 
-- [Before the hands-on lab](#before-the-hands-on-lab)
-- [Exercise 1 - Read data that exists in the CDM](#exercise-1---read-data-that-exists-in-the-cdm)
-  - [Task 1 - Explore CDM data in the Synapse workspace data lake](#task-1---explore-cdm-data-in-the-synapse-workspace-data-lake)
-  - [Task 2 - Load Spark dataframes from entities in CDM folders](#task-2---load-spark-dataframes-from-entities-in-cdm-folders)
-- [Exercise 2 - Update data that exists in the CDM](#exercise-2---update-data-that-exists-in-the-cdm)
-  - [Task 1 - Update CDM data using dataframe schemas](#task-1---update-cdm-data-using-dataframe-schemas)
-  - [Task 2 - Update CDM data using CDM entity definitions](#task-2---update-cdm-data-using-cdm-entity-definitions)
-  - [Task 3 - Use Spark to transform incoming raw data to CDM data](#task-3---use-spark-to-transform-incoming-raw-data-to-cdm-data)
-- [Exercise 3 - Create an end-to-end CDM-based data pipeline](#exercise-3---create-an-end-to-end-cdm-based-data-pipeline)
-  - [Task 1 - Automate raw data ingestion and coversion to CDM using Synapse Pipelines](#task-1---automate-raw-data-ingestion-and-coversion-to-cdm-using-synapse-pipelines)
-  - [Task 2 - Use CDM data in Machine Learning](#task-2---use-cdm-data-in-machine-learning)
-  - [Task 3 - View CDM data in Power BI](#task-3---view-cdm-data-in-power-bi)
-- [After the hands-on lab](#after-the-hands-on-lab)
-- [Resources](#resources)
-- [Report issues](#report-issues)
+- [Lab 04 - Working with the Common Data Model in Synapse Analytics](#lab-04---working-with-the-common-data-model-in-synapse-analytics)
+  - [Before the hands-on lab](#before-the-hands-on-lab)
+    - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
+    - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
+  - [Exercise 1 - Read data that exists in the CDM](#exercise-1---read-data-that-exists-in-the-cdm)
+    - [Task 1 - Explore CDM data in the Synapse workspace data lake](#task-1---explore-cdm-data-in-the-synapse-workspace-data-lake)
+    - [Task 2 - Load Spark dataframes from entities in CDM folders](#task-2---load-spark-dataframes-from-entities-in-cdm-folders)
+  - [Exercise 2 - Update data that exists in the CDM](#exercise-2---update-data-that-exists-in-the-cdm)
+    - [Task 1 - Update CDM data using dataframe schemas](#task-1---update-cdm-data-using-dataframe-schemas)
+    - [Task 2 - Update CDM data using CDM entity definitions](#task-2---update-cdm-data-using-cdm-entity-definitions)
+    - [Task 3 - Use Spark to transform incoming raw data to CDM data](#task-3---use-spark-to-transform-incoming-raw-data-to-cdm-data)
+      - [Task 3 A - creating CDM with implicit manifest](#task-3-a---creating-cdm-with-implicit-manifest)
+      - [Task 3 B - creating CDM with explicit manifest](#task-3-b---creating-cdm-with-explicit-manifest)
+  - [Exercise 3 - Create an end-to-end CDM-based data pipeline](#exercise-3---create-an-end-to-end-cdm-based-data-pipeline)
+    - [Task 1 - Automate raw data ingestion and coversion to CDM using Synapse Pipelines](#task-1---automate-raw-data-ingestion-and-coversion-to-cdm-using-synapse-pipelines)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+  - [Resources](#resources)
+  - [Report issues](#report-issues)
 
 ## Before the hands-on lab
 
@@ -463,10 +466,6 @@ We chose to use a trigger that detects changes in our datalake.
 Which means that everytime we get new data in our datalake, our pipeline will run.
 In our case, the notebook will be executed, and will convert the raw data to the CDM format.
 
-### Task 2 - Use CDM data in Machine Learning 
-
-### Task 3 - View CDM data in Power BI
-
 ## After the hands-on lab
 
 Follow the instructions in [Clean-up your subscription](./../setup/cleanup.md) to clean-up your environment after the hands-on lab.
@@ -478,7 +477,6 @@ To learn more about the topics covered in this lab, use these resources:
 - [Azure.Analytics.Synapse.Artifacts Namespace Classes](https://docs.microsoft.com/en-us/dotnet/api/azure.analytics.synapse.artifacts?view=azure-dotnet-preview)
 - [Using the Spark CDM Connector](https://github.com/Azure/spark-cdm-connector/blob/master/documentation/overview.md)
 - [Common Data Model (CDM) Schema](https://github.com/microsoft/CDM)
-
 
 ## Report issues
 

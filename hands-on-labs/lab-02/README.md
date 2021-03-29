@@ -6,24 +6,26 @@ After completing the lab, you will understand the main steps of an end-to-end da
 
 This lab has the following structure:
 
-- [Before the hands-on lab](#before-the-hands-on-lab)
-  - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
-  - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
-- [Exercise 1 - Configure an Azure Data Explorer linked service](#exercise-1---configure-an-azure-data-explorer-linked-service)
-  - [Task 1 - Create the linked service](#task-1---create-the-linked-service)
-  - [Task 2 - Explore the Azure Data Explorer database in Synapse Studio](#task-2---explore-the-azure-data-explorer-database-in-synapse-studio)
-- [Exercise 2 - Load and enrich data with Spark](#exercise-2---load-and-enrich-data-with-spark)
-  - [Task 1 - Load data from Azure Data Explorer](#task-1---load-data-from-azure-data-explorer)
-  - [Task 2 - Index the Data Lake storage with Hyperspace](#task-2---index-the-data-lake-storage-with-hyperspace)
-  - [Task 3 - Explore the Data Lake storage with the MSSparkUtil library](#task-3---explore-the-data-lake-storage-with-the-mssparkutil-library)
-  - [Task 4 - Load data from Data Lake storage](#task-4---load-data-from-data-lake-storage)
-  - [Task 5 - Load data from SQL Pool](#task-5---load-data-from-sql-pool)
-  - [Task 6 - Enrich data from multiple sources](#task-6---enrich-data-from-multiple-sources)
-- [Exercise 3 - Consume enriched data](#exercise-3---consume-enriched-data)
-  - [Task 1 - Access data with the SQL built-in pool](#task-1---access-data-with-the-sql-built-in-pool)
-  - [Task 2 - Display enriched data in Power BI](#task-2---display-enriched-data-in-power-bi)
-- [After the hands-on lab](#after-the-hands-on-lab)
-- [Resources](#resources)
+- [Lab 02 - Working with Apache Spark in Synapse Analytics](#lab-02---working-with-apache-spark-in-synapse-analytics)
+  - [Before the hands-on lab](#before-the-hands-on-lab)
+    - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
+    - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
+  - [Exercise 1 - Configure an Azure Data Explorer linked service](#exercise-1---configure-an-azure-data-explorer-linked-service)
+    - [Task 1 - Create the linked service](#task-1---create-the-linked-service)
+    - [Task 2 - Explore the Azure Data Explorer database in Synapse Studio](#task-2---explore-the-azure-data-explorer-database-in-synapse-studio)
+  - [Exercise 2 - Load and enrich data with Spark](#exercise-2---load-and-enrich-data-with-spark)
+    - [Task 1 - Load data from Azure Data Explorer](#task-1---load-data-from-azure-data-explorer)
+    - [Task 2 - Index the Data Lake storage with Hyperspace](#task-2---index-the-data-lake-storage-with-hyperspace)
+    - [Task 3 - Explore the Data Lake storage with the MSSparkUtil library](#task-3---explore-the-data-lake-storage-with-the-mssparkutil-library)
+    - [Task 4 - Load data from Data Lake storage](#task-4---load-data-from-data-lake-storage)
+    - [Task 5 - Load data from SQL Pool](#task-5---load-data-from-sql-pool)
+    - [Task 6 - Enrich data from multiple sources](#task-6---enrich-data-from-multiple-sources)
+  - [Exercise 3 - Consume enriched data](#exercise-3---consume-enriched-data)
+    - [Task 1 - Access data with the SQL built-in pool](#task-1---access-data-with-the-sql-built-in-pool)
+    - [Task 2 - Display enriched data in Power BI](#task-2---display-enriched-data-in-power-bi)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+  - [Resources](#resources)
+  - [Report issues](#report-issues)
 
 ## Before the hands-on lab
 
@@ -101,7 +103,7 @@ Next, select `Test connection` to make sure all settings are correct, and then s
 
 ### Task 2 - Explore the Azure Data Explorer database in Synapse Studio
 
-Once the linked service is published, you can view the Azure Data Explorer databases and tables in Synapse Studio. Select the `Data` hub on the left site, then select the `Linked` section and the expand the `Azure Data Explorer` section to view the databases and tables under it. Activate the context menu next to the `SalesTelemetry` table by clicking on the `...` indicator (appears when you hover over the table name) and then select `New notebook > Read DataFrame from table`.
+Once the linked service is published, you can view the Azure Data Explorer databases and tables in Synapse Studio. Select the `Data` hub on the left site, then select the `Linked` section and the expand the `Azure Data Explorer` section to view the databases and tables under it. Activate the context menu next to the `SalesTelemetry` table by clicking on the `...` indicator (appears when you hover over the table name) and then select `New notebook > Load to `.
 
 ![Read Spark DataFrame from Azure Data Explorer table](./../media/lab-02-ex-01-task-02-notebook-from-table.png)
 
@@ -386,6 +388,8 @@ Run the new cell. It will load online telemetry data for December 1st, 2019, fro
 Add a new cell with the following code:
 
 ```python
+import pyspark.sql.functions as f
+
 df = telemetry_df.join(sales_df, on=['CustomerId', 'ProductId'], how='inner') \
     .withColumn('TimeDelta', col('TransactionTime').cast('long') - col('Timestamp').cast('long')) \
     .where((col('TimeDelta') > 0) & (col('TimeDelta') < 900)) \
