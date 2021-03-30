@@ -6,24 +6,26 @@ After completing the lab, you will understand the main steps of an end-to-end Ma
 
 This lab has the following structure:
 
-- [Before the hands-on lab](#before-the-hands-on-lab)
-  - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
-  - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
-- [Exercise 1 - Create an Azure Machine Learning linked service](#exercise-1---create-an-azure-machine-learning-linked-service)
-  - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
-  - [Task 2 - Explore Azure Machine Learning integration features in Synapse Studio](#task-2---explore-azure-machine-learning-integration-features-in-synapse-studio)
-- [Exercise 2 - Trigger an Auto ML experiment using data from a Spark table](#exercise-2---trigger-an-auto-ml-experiment-using-data-from-a-spark-table)
-  - [Task 1 - Trigger a regression Auto ML experiment on a Spark table](#task-1---trigger-a-regression-auto-ml-experiment-on-a-spark-table)
-  - [Task 2 - View experiment details in Azure Machine Learning workspace](#task-2---view-experiment-details-in-azure-machine-learning-workspace)
-- [Exercise 3 - Enrich data using trained models](#exercise-3---enrich-data-using-trained-models)
-  - [Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning](#task-1---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-machine-learning)
-  - [Task 2 - Enrich data in a Spark table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-spark-table-using-a-trained-model-from-azure-cognitive-services)
-  - [Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline](#task-3---integrate-a-machine-learning-based-enrichment-procedure-in-a-synapse-pipeline)
-- [Exercise 4 - Serve prediction results using Power BI](#exercise-4---serve-prediction-results-using-power-bi)
-  - [Task 1 - Display prediction results in a Power BI report](#task-1---display-prediction-results-in-a-power-bi-report)
-  - [Task 2 - Trigger the pipeline using an event-based trigger](#task-2---trigger-the-pipeline-using-an-event-based-trigger)
-- [After the hands-on lab](#after-the-hands-on-lab)
-- [Resources](#resources)
+- [Lab 01 - The Integrated Machine Learning Process in Synapse Analytics](#lab-01---the-integrated-machine-learning-process-in-synapse-analytics)
+  - [Before the hands-on lab](#before-the-hands-on-lab)
+    - [Task 1 - Create and configure the Azure Synapse Analytics workspace](#task-1---create-and-configure-the-azure-synapse-analytics-workspace)
+    - [Task 2 - Create and configure additional resources for this lab](#task-2---create-and-configure-additional-resources-for-this-lab)
+  - [Exercise 1 - Create an Azure Machine Learning linked service](#exercise-1---create-an-azure-machine-learning-linked-service)
+    - [Task 1 - Create and configure an Azure Machine Learning linked service in Synapse Studio](#task-1---create-and-configure-an-azure-machine-learning-linked-service-in-synapse-studio)
+    - [Task 2 - Explore Azure Machine Learning integration features in Synapse Studio](#task-2---explore-azure-machine-learning-integration-features-in-synapse-studio)
+  - [Exercise 2 - Trigger an Auto ML experiment using data from a Spark table](#exercise-2---trigger-an-auto-ml-experiment-using-data-from-a-spark-table)
+    - [Task 1 - Trigger a regression Auto ML experiment on a Spark table](#task-1---trigger-a-regression-auto-ml-experiment-on-a-spark-table)
+    - [Task 2 - View experiment details in Azure Machine Learning workspace](#task-2---view-experiment-details-in-azure-machine-learning-workspace)
+  - [Exercise 3 - Enrich data using trained models](#exercise-3---enrich-data-using-trained-models)
+    - [Task 1 - Enrich data in a SQL pool table using a trained model from Azure Machine Learning](#task-1---enrich-data-in-a-sql-pool-table-using-a-trained-model-from-azure-machine-learning)
+    - [Task 2 - Enrich data in a Spark table using a trained model from Azure Cognitive Services](#task-2---enrich-data-in-a-spark-table-using-a-trained-model-from-azure-cognitive-services)
+    - [Task 3 - Integrate a Machine Learning-based enrichment procedure in a Synapse pipeline](#task-3---integrate-a-machine-learning-based-enrichment-procedure-in-a-synapse-pipeline)
+  - [Exercise 4 - Serve prediction results using Power BI](#exercise-4---serve-prediction-results-using-power-bi)
+    - [Task 1 - Display prediction results in a Power BI report](#task-1---display-prediction-results-in-a-power-bi-report)
+    - [Task 2 - Trigger the pipeline using an event-based trigger](#task-2---trigger-the-pipeline-using-an-event-based-trigger)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+  - [Resources](#resources)
+  - [Report issues](#report-issues)
 
 ## Before the hands-on lab
 
@@ -186,7 +188,7 @@ Once your run is successfully submitted, you will get another notification that 
 >
 >![Open AutoML code in notebook](./../media/lab-01-ex-02-task-01-open-in-notebook.png)
 >
->Take a moment to read through the code that is generated for you.
+>Take a moment to read through the code that is generated for you. The total time elapsed for the experiment run will take around 20 minutes.
 
 ### Task 2 - View experiment details in Azure Machine Learning workspace
 
@@ -206,7 +208,7 @@ Select your run, and then select the `Models` tab to view the current list of mo
 
 ![Models built by AutoML run](./../media/lab-01-ex-02-task-02-run-details.png)
 
-Select the best model (the one at the top of the list) then click on `View Explanations` to open the `Explanations (preview)` tab to see the model explanation. You are now able to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
+Select the best model (the one at the top of the list) then click on `View Explanations` to open the `Explanations (preview)` tab to see the model explanation. You are now able to select one of the explanations, then choose `Aggregates` to see the global importance of the input features. For your model, the feature that influences the most the value of the predicted value is   `ProductId`.
 
 ![Explainability of the best AutoML model](./../media/lab-01-ex-02-task-02-best-mode-explained.png)
 
