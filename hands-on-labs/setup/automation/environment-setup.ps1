@@ -1,3 +1,5 @@
+Cd 'C:\LabFiles\asa\hands-on-labs\setup\automation'
+
 $InformationPreference = "Continue"
 
 $IsCloudLabs = Test-Path C:\LabFiles\AzureCreds.ps1;
@@ -20,7 +22,8 @@ if($IsCloudLabs){
         
         Connect-AzAccount -Credential $cred | Out-Null
 
-        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*-L400*" }).ResourceGroupName
+        #$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" }).ResourceGroupName
+        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA*" -and  $_.ResourceGroupName -notlike "*internal*" }).ResourceGroupName
 
         if ($resourceGroupName.Count -gt 1)
         {
@@ -60,7 +63,9 @@ if($IsCloudLabs){
                 Select-AzSubscription -SubscriptionName $selectedSubName
         }
 
-        $resourceGroupName = Read-Host "Enter the resource group name";
+        #$resourceGroupName = Read-Host "Enter the resource group name";
+        
+        $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*Synapse-Analytics-GA-*" }).ResourceGroupName
         
         $userName = ((az ad signed-in-user show) | ConvertFrom-JSON).UserPrincipalName
         
@@ -78,7 +83,10 @@ if($IsCloudLabs){
 
 Write-Information "Using $resourceGroupName";
 
-$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+#$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+. C:\LabFiles\AzureCreds.ps1
+$uniqueId = $deploymentID
+
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
 $global:logindomain = (Get-AzContext).Tenant.Id;
@@ -105,15 +113,15 @@ $global:tokenTimes = [ordered]@{
         PowerBI = (Get-Date -Year 1)
 }
 
-#Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
+Write-Information "Assign Ownership to L400 Proctors on Synapse Workspace"
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
 
 #add the current user...
 $user = Get-AzADUser -UserPrincipalName $userName
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
-#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId $user.id  # Workspace Admin
+Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId $user.id  # SQL Admin
 #Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId $user.id  # Apache Spark Admin
 
 #Set the Azure AD Admin - otherwise it will bail later
@@ -237,6 +245,7 @@ if ($download)
                 salesmall8 = "wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12,wwi-02/sale-small/Year=2019/Quarter=Q4/Month=12/Day=20191208"
                 salesmalltelemetry = "wwi-02,wwi-02/sale-small-telemetry"
                 stats = "wwi-02,wwi-02/sale-small-stats-final"
+                cdm = "wwi-02,wwi-02/cdm-data"
         }
 
         foreach ($dataDirectory in $dataDirectories.Keys) {
@@ -421,9 +430,25 @@ foreach ($dataset in $loadingDatasets.Keys) {
 
 Write-Information "Preparing environment for labs"
 
+. C:\LabFiles\AzureCreds.ps1
+
+$userName = $AzureUserName
+$password = $AzurePassword
+
+az login --username "$userName" --password "$password"
+
+<#Shared sub
 $app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+$pass= $app.password
+$secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
+Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue #>
 
-$secretValue = ConvertTo-SecureString $app.password -AsPlainText -Force
+#Ded tenant
+$app = (az ad sp create-for-rbac -n "Azure Synapse Analytics GA Labs" --skip-assignment) | ConvertFrom-Json
+$pass= $app.password
+$id= $app.appId
+$objid= az ad user show -o tsv --query objectId --id "$AzureUserName"
+az ad app owner add --id $id --owner-object-id $objid 
+
+$secretValue = $pass | ConvertTo-SecureString -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $keyVaultName -Name "ASA-GA-LABS" -SecretValue $secretValue
-
-

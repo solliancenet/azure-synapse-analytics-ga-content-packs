@@ -1,0 +1,37 @@
+[
+  {
+    "ResourceType": "Microsoft.Compute/virtualMachines",
+    "Parameter": [
+      {
+        "Name": "max-cpu-cores",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "ResourceType": "Microsoft.Synapse/workspaces/bigDataPools",
+    "Parameter": [
+      {
+        "Name": "max-node-size",
+        "Value": "small"
+      },
+      {
+        "Name": "max-node-count",
+        "Value": "4"
+      },
+      {
+        "Name": "auto-pause-status",
+        "Value": "true"
+      }
+    ]
+  },
+  {
+    "ResourceType": "Microsoft.Sql/servers/databases",
+    "Parameter": [
+      {
+        "Name": "max-DW",
+        "Value": "100"
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[ {
+  "Name": "Azure Synapse Analytics GA Content Packs",
+  "Language": "English",
+  "Files": [
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/SpektraSystems/azure-synapse-analytics-workshop-400/master/labintro.md",
+      "Order": 1
+    },
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/solliancenet/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/lab-01/README.md",
+      "Order": 2
+    },
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/solliancenet/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/lab-02/README.md",
+      "Order": 3
+    },
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/solliancenet/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/lab-03/README.md",
+      "Order": 4
+    },
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/solliancenet/azure-synapse-analytics-ga-content-packs/main/hands-on-labs/lab-04/README.md",
+      "Order": 5
+    }
+  ]
+} ]
